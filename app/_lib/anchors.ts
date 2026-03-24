@@ -1,4 +1,5 @@
 export const ANCHOR_IDS = {
+  gallery: "gallery",
   pricing: "pricing",
   access: "access",
   booking: "booking",
