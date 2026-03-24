@@ -49,7 +49,7 @@ export function Hero() {
   return (
     <section
       aria-label="ファーストビュー"
-      className="relative flex min-h-[480px] items-end sm:min-h-[560px]"
+      className="relative flex min-h-[90vh] items-center sm:min-h-screen"
     >
       {/* ----- 背景画像 ----- */}
       {/*
@@ -67,23 +67,29 @@ export function Hero() {
         sizes="100vw"
       />
 
-      {/* ----- 黒の半透明オーバーレイ ----- */}
+      {/* ----- グラデーションオーバーレイ ----- */}
       {/*
-       * テキストが画像に埋もれないよう bg-black/40 で 40% の黒を重ねる
-       * （docs/DESIGN.md 3.2 より）
+       * bg-gradient-to-t: 下から上へグラデーション
+       * from-black/65: 下端は 65% の黒でテキストを読みやすくする
+       * via-black/25: 中間は 25% に抑えて写真を活かす
+       * to-transparent: 上端は透明にして空の青さを生かす
        * aria-hidden: スクリーンリーダーには意味のない装飾要素なので隠す
        */}
-      <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
+      <div
+        className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent"
+        aria-hidden="true"
+      />
 
       {/* ----- コンテンツ（画像・オーバーレイより手前に表示） ----- */}
       <div className="relative mx-auto w-full max-w-6xl space-y-6 px-4 py-12 sm:px-6 sm:py-16">
         {/* キャッチコピー: h1 はページに 1 つ（docs/DESIGN.md 2.2 より） */}
-        <h1 className="max-w-2xl text-3xl font-semibold leading-snug tracking-tight text-white sm:text-4xl">
+        {/* font-bold + text-6xl でインパクトを最大化。leading-tight で行間を詰める */}
+        <h1 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
           {CATCH_COPY}
         </h1>
 
-        {/* サブコピー */}
-        <p className="max-w-xl text-base leading-7 text-white/90">{SUB_COPY}</p>
+        {/* サブコピー: text-lg に拡大して読みやすさを向上 */}
+        <p className="max-w-xl text-lg leading-7 text-white/90">{SUB_COPY}</p>
 
         {/* 主要 CTA: ご宿泊予約（URL 未設定時は「準備中」） */}
         <CTAButton
@@ -97,14 +103,20 @@ export function Hero() {
           ご宿泊予約
         </CTAButton>
 
-        {/* ページ内ショートカット（Hero 直下でセクションへ飛べる） */}
+        {/* ページ内ショートカット: ピル形状バッジで視認性・タップ領域を改善 */}
+        {/*
+         * rounded-full: 角丸にしてバッジ/ピル形状にする
+         * border border-white/40: 薄い白枠で存在感を出す
+         * bg-white/10: 半透明の白背景（glass morphism 風）
+         * backdrop-blur-sm: 背景を少しぼかしてグラスエフェクトを演出
+         */}
         <nav aria-label="ページ内ショートカット">
-          <ul className="flex flex-wrap gap-4">
+          <ul className="flex flex-wrap gap-2">
             {SHORTCUTS.map(({ label, href }) => (
               <li key={href}>
                 <a
                   href={href}
-                  className="text-sm font-medium text-white/80 underline-offset-4 hover:text-white hover:underline"
+                  className="rounded-full border border-white/40 bg-white/10 px-4 py-1.5 text-sm text-white backdrop-blur-sm transition-colors hover:bg-white/20"
                 >
                   {label}
                 </a>
