@@ -173,16 +173,21 @@ export function SummarySection() {
     <section
       id="summary"
       aria-labelledby="summary-heading"
-      className="border-b border-stone-200 bg-stone-50 py-8 sm:py-10"
+      /**
+       * bg-sky-600: Hero 直後に海ブルーの accent 帯を置き、施設スペックを目立たせる（Issue #25）
+       * py-10 sm:py-14: 余白を少し広げて帯の存在感を強調
+       */
+      className="bg-sky-600 py-10 sm:py-14"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         {/*
          * h2: 見出し階層を守るために必須（h1=Hero, h2=各セクション）
          * text-xl に押えてコンパクトさを維持する
+         * text-white: accent帯では白文字に反転（Issue #25）
          */}
         <h2
           id="summary-heading"
-          className="mb-6 text-xl font-semibold tracking-tight text-stone-900"
+          className="mb-6 text-xl font-semibold tracking-tight text-white"
         >
           基本情報
         </h2>
@@ -198,30 +203,30 @@ export function SummarySection() {
           {SUMMARY_ITEMS.map((item) => (
             <li key={item.label} className="flex flex-col gap-2">
               {/*
-               * アイコン: text-stone-600 で本文より薄め
+               * アイコン: accent帯では text-sky-200 で少し抑えた白（眩しくしない）（Issue #25）
                * サイズは 24×24 px（タッチ対象ではないため小さくてよい）
                */}
-              <span className="text-stone-600" aria-hidden="true">
+              <span className="text-sky-200" aria-hidden="true">
                 {item.icon}
               </span>
 
               {/*
-               * ラベル: 小さめのサポートテキスト（text-sm / text-stone-600）
+               * ラベル: accent帯では text-sky-100 でサポートテキストを柔らかく表示（Issue #25）
                * <dt> ではなく <span> にして視覚的なシンプルさを保つ
                */}
-              <span className="text-sm leading-tight text-stone-600">
+              <span className="text-sm leading-tight text-sky-100">
                 {item.label}
               </span>
 
               {/*
-               * 値: 主役テキスト（text-base / font-semibold / text-stone-900）
+               * 値: 主役テキスト。accent帯では text-white に反転（Issue #25）
                * 住所のみ text-sm に縮小して折り返しを制御
                */}
               <span
                 className={
                   item.label === "住所"
-                    ? "text-sm font-semibold leading-snug text-stone-900"
-                    : "text-base font-semibold text-stone-900"
+                    ? "text-sm font-semibold leading-snug text-white"
+                    : "text-base font-semibold text-white"
                 }
               >
                 {item.value}
