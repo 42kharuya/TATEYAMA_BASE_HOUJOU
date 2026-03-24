@@ -1,65 +1,101 @@
-import Image from "next/image";
+import { Section } from "./_components/Section";
+import { ANCHOR_IDS, anchorHref } from "./_lib/anchors";
+import { getFooterCtaItems } from "./_lib/navigation";
+import { SITE } from "./_lib/site";
 
 export default function Home() {
+  const ctas = getFooterCtaItems();
+
   return (
-    <div className="flex flex-1 flex-col items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex w-full max-w-3xl flex-1 flex-col items-center justify-between bg-white px-16 py-32 sm:items-start dark:bg-black">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl leading-10 font-semibold tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+    <div className="flex flex-1 flex-col">
+      <div className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-black">
+        <div className="mx-auto max-w-6xl space-y-6 px-4 py-14 sm:px-6 sm:py-16">
+          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{SITE.name}</h1>
+          <p className="max-w-3xl text-base leading-7 text-zinc-600 dark:text-zinc-400">
+            館山駅から徒歩約9分、海まで徒歩約30秒。4〜8名で泊まれる1棟貸しの貸別荘です。
+          </p>
+          <div className="flex flex-wrap items-center gap-4">
             <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href={anchorHref("pricing")}
+              className="text-sm font-medium text-zinc-900 underline-offset-4 hover:underline dark:text-zinc-50"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
+              料金を見る
+            </a>
             <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href={anchorHref("access")}
+              className="text-sm font-medium text-zinc-900 underline-offset-4 hover:underline dark:text-zinc-50"
             >
-              Learning
-            </a>{" "}
-            center.
+              アクセスを見る
+            </a>
+            <a
+              href={anchorHref("booking")}
+              className="text-sm font-medium text-zinc-900 underline-offset-4 hover:underline dark:text-zinc-50"
+            >
+              予約・問い合わせへ
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <Section
+        id={ANCHOR_IDS.pricing}
+        title="料金"
+        lead="料金はシーズンや人数によって変わります。詳細は順次整備します。"
+      >
+        <p className="text-base leading-7 text-zinc-600 dark:text-zinc-400">
+          MVPではまず導線と見出し構造を固定し、後続Issueで料金表を実装します。
+        </p>
+      </Section>
+
+      <Section
+        id={ANCHOR_IDS.access}
+        title="アクセス"
+        lead="住所と地図リンクは固定で掲載します。"
+      >
+        <div className="space-y-2 text-base leading-7 text-zinc-600 dark:text-zinc-400">
+          <div>{SITE.address}</div>
+          <a
+            href={SITE.mapUrl}
+            className="inline-flex text-sm font-medium text-zinc-900 underline-offset-4 hover:underline dark:text-zinc-50"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Googleマップで開く
+          </a>
+        </div>
+      </Section>
+
+      <Section
+        id={ANCHOR_IDS.booking}
+        title="予約・問い合わせ"
+        lead="予約は外部サービス（STORES）を利用します。"
+      >
+        <div className="flex flex-col items-start gap-3">
+          {ctas.map((cta) =>
+            cta.disabled || !cta.href ? (
+              <span
+                key={cta.key}
+                aria-disabled="true"
+                className="inline-flex h-11 items-center justify-center rounded-lg bg-zinc-200 px-4 text-sm font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300"
+                title="準備中"
+              >
+                {cta.label}（準備中）
+              </span>
+            ) : (
+              <a
+                key={cta.key}
+                href={cta.href}
+                className="inline-flex h-11 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white hover:opacity-90 dark:bg-zinc-50 dark:text-zinc-950"
+              >
+                {cta.label}
+              </a>
+            ),
+          )}
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            予約URLが未設定の場合は「準備中」と表示されます。
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="bg-foreground text-background flex h-12 w-full items-center justify-center gap-2 rounded-full px-5 transition-opacity hover:opacity-90 md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] md:w-[158px] dark:border-white/[.145] dark:hover:bg-white/[.08]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </Section>
     </div>
   );
 }
