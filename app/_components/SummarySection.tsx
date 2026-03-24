@@ -184,7 +184,7 @@ export function SummarySection() {
           id="summary-heading"
           className="mb-6 text-xl font-semibold tracking-tight text-slate-900"
         >
-          ひと目でわかること
+          基本情報
         </h2>
 
         {/*
