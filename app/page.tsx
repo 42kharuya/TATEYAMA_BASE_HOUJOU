@@ -47,18 +47,24 @@ export default function Home() {
       <AccessSection />
 
       {/* Booking: 予約・問い合わせ CTA（ページ下部で再掲） */}
+      {/*
+       * variant="accent-dark": bg-sky-700 の濃いブルー帯で予約 CTA を際立たせる（Issue #25）
+       * 隣の AccessSection（tinted）とコントラストをつけ、「状態が変わった」ことを視覚的に伝える
+       */}
       <Section
         id={ANCHOR_IDS.booking}
         title="予約・問い合わせ"
         lead="ご予約は外部サービス（STORES）から承ります。ご不明な点はお気軽に LINE でお問い合わせください。"
+        variant="accent-dark"
       >
         <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
           {/*
            * 予約 CTA（最重要）
+           * variant="outlined-white": accent-dark 帯の上で白枠で際立たせる（Issue #25）
            * NEXT_PUBLIC_BOOKING_URL 未設定時は「準備中」で自動的に無効化される
            */}
           <CTAButton
-            variant="primary"
+            variant="outlined-white"
             href={bookingUrl}
             external
             description={
@@ -70,10 +76,11 @@ export default function Home() {
 
           {/*
            * LINE 問い合わせ CTA（補助）
+           * variant="outlined-white": accent-dark 帯の上で白枠、予約ボタンとスタイルを揃える（Issue #25）
            * NEXT_PUBLIC_LINE_URL 未設定時は「準備中」で自動的に無効化される
            */}
           <CTAButton
-            variant="secondary"
+            variant="outlined-white"
             href={SITE.lineUrl}
             external
             description={

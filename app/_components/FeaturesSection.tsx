@@ -244,10 +244,12 @@ function FeatureCard({ title, description, Icon }: Feature) {
  */
 export function FeaturesSection() {
   return (
+    // variant="tinted": カードと背景のコントラストを確保（Issue #25）
     <Section
       id={ANCHOR_IDS.features}
       title="選ばれる理由"
       lead="TATEYAMA BASE 北条が選ばれる5つのポイントをご紹介します。"
+      variant="tinted"
     >
       {/*
        * カードグリッド

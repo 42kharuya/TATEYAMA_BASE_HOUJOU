@@ -4,9 +4,10 @@
  * 役割（variant）に応じてスタイルを変え、URL 未設定時は「準備中」で無効化する。
  *
  * variant の使い分け（docs/DESIGN.md 8.4 より）:
- *   - "primary"   : 最も押してほしい行動（塗り）   例: ご宿泊予約
- *   - "secondary" : 次点の補助行動（枠）           例: LINE で問い合わせ
- *   - "tertiary"  : 補助的なリンク（テキスト下線） 例: Googleマップで開く
+ *   - "primary"        : 最も押してほしい行動（塗り）        例: ご宿泊予約
+ *   - "secondary"      : 次点の補助行動（枠）                例: LINE で問い合わせ
+ *   - "tertiary"       : 補助的なリンク（テキスト下線）      例: Googleマップで開く
+ *   - "outlined-white" : accent 帯（sky-700）上での白枠ボタン 例: 予約CTA（Issue #25）
  *
  * 無効化（URL 未設定時）:
  *   - ボタン文言を「準備中」に切り替える
@@ -14,7 +15,11 @@
  *   - description が渡された場合は 1 行の補足説明を直下に表示する
  */
 
-type Variant = "primary" | "secondary" | "tertiary";
+/**
+ * outlined-white: accent 帯（bg-sky-600 / bg-sky-700）の上で使う白枠ボタン（Issue #25）
+ * 背景が濃い青帯の時に primary（bg-sky-600）は溶け込んでしまうため、反転色で際立たせる
+ */
+type Variant = "primary" | "secondary" | "tertiary" | "outlined-white";
 
 type CTAButtonProps = {
   /** ボタンの重要度（デフォルト: "primary"） */
@@ -53,6 +58,12 @@ const VARIANT_STYLES: Record<Variant, string> = {
     "border border-stone-900 text-stone-900 hover:opacity-80 dark:border-zinc-50 dark:text-zinc-50",
   tertiary:
     "text-stone-900 underline underline-offset-4 hover:opacity-70 dark:text-zinc-50",
+  /*
+   * outlined-white: accent 帯（bg-sky-600 / bg-sky-700）上で使用（Issue #25）
+   * 白い枠線 + 白文字で、濃い青背景に対してコントラストを確保する
+   */
+  "outlined-white":
+    "border border-white text-white hover:bg-white/10",
 };
 
 /**

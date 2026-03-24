@@ -171,7 +171,11 @@ export function GallerySection() {
   return (
     <>
       {/* ---- セクション全体 ---- */}
-      <section id="gallery" className="py-12 sm:py-16">
+      {/*
+       * bg-stone-50: 写真を明るく見せるオフホワイト帯（Issue #25）
+       * 白背景より写真の翌が身だ、スクロール時の湊切りになる
+       */}
+      <section id="gallery" className="bg-stone-50 py-12 sm:py-16">
         <div className="mx-auto max-w-6xl space-y-10 px-4 sm:px-6">
           {/* ---- セクションヘッダー ---- */}
           <header className="space-y-2">
