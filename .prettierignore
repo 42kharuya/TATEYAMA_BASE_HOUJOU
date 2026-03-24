@@ -1,0 +1,15 @@
+# build outputs
+.next
+out
+build
+
+# content/docs (keep diffs minimal)
+docs
+imgs
+
+# deps
+node_modules
+
+# misc
+coverage
+package-lock.json
