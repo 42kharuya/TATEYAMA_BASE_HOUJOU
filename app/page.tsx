@@ -4,6 +4,7 @@ import { GallerySection } from "./_components/GallerySection";
 import { Hero } from "./_components/Hero";
 import { PricingSection } from "./_components/PricingSection";
 import { Section } from "./_components/Section";
+import { SummarySection } from "./_components/SummarySection";
 import { ANCHOR_IDS } from "./_lib/anchors";
 import { SITE } from "./_lib/site";
 
@@ -15,6 +16,12 @@ export default function Home() {
     <div className="flex flex-1 flex-col">
       {/* Hero: ファーストビュー（画像・コピー・予約 CTA） */}
       <Hero />
+
+      {/* Summary: 要点サマリー（Hero 直後）
+       * 宿泊人数・海まで・館山駅から・住所をひと目で伝えるセクション
+       * IA.md セクション順 2番め（Hero の直後）
+       */}
+      <SummarySection />
 
       {/* Gallery: カテゴリ別写真ギャラリー + Lightbox */}
       <GallerySection />
