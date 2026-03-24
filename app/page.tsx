@@ -1,5 +1,6 @@
 import { AccessSection } from "./_components/AccessSection";
 import { CTAButton } from "./_components/CTAButton";
+import { FacilitiesSection } from "./_components/FacilitiesSection";
 import { FeaturesSection } from "./_components/FeaturesSection";
 import { GallerySection } from "./_components/GallerySection";
 import { Hero } from "./_components/Hero";
@@ -35,6 +36,12 @@ export default function Home() {
        * IA.md セクション順 4番め（料金の後・設備の前）
        */}
       <FeaturesSection />
+
+      {/* Facilities: 設備セクション（フロア別一覧）
+       * 屋外・1階・2階・屋上・その他の設備を一覧表示
+       * IA.md セクション順 5番め（特徴の後・アクセスの前）
+       */}
+      <FacilitiesSection />
 
       {/* Access: 住所・地図 CTA・最寄り・交通手段 */}
       <AccessSection />
