@@ -1,5 +1,6 @@
 import { AccessSection } from "./_components/AccessSection";
 import { CTAButton } from "./_components/CTAButton";
+import { GallerySection } from "./_components/GallerySection";
 import { Hero } from "./_components/Hero";
 import { PricingSection } from "./_components/PricingSection";
 import { Section } from "./_components/Section";
@@ -14,6 +15,9 @@ export default function Home() {
     <div className="flex flex-1 flex-col">
       {/* Hero: ファーストビュー（画像・コピー・予約 CTA） */}
       <Hero />
+
+      {/* Gallery: カテゴリ別写真ギャラリー + Lightbox */}
+      <GallerySection />
 
       {/* Pricing: 宿泊料金・キャンセルポリシー・レンタル料金 */}
       <PricingSection />

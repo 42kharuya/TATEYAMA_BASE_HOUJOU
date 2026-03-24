@@ -35,6 +35,7 @@ const SUB_COPY =
 
 /** ページ内ショートカットリンク */
 const SHORTCUTS = [
+  { label: "ギャラリー", href: anchorHref("gallery") },
   { label: "料金", href: anchorHref("pricing") },
   { label: "アクセス", href: anchorHref("access") },
   { label: "予約", href: anchorHref("booking") },
