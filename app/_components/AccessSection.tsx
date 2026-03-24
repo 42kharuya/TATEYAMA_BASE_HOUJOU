@@ -39,13 +39,13 @@ export function AccessSection() {
       lead="館山駅から徒歩圏内。海まで徒歩約30秒の好立地です。"
     >
       {/* ---- 住所 + 地図 CTA ---- */}
-      <div className="space-y-4 rounded-xl border border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-800 dark:bg-zinc-900/50">
+      <div className="space-y-4 rounded-xl border border-stone-200 bg-stone-100 p-5 dark:border-zinc-800 dark:bg-zinc-900/50">
         {/* 住所 */}
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-zinc-400">
             住所
           </p>
-          <p className="mt-1 text-base font-medium text-zinc-900 dark:text-zinc-50">
+          <p className="mt-1 text-base font-medium text-stone-900 dark:text-zinc-50">
             {SITE.address}
           </p>
         </div>
@@ -68,17 +68,17 @@ export function AccessSection() {
 
       {/* ---- 最寄り情報 ---- */}
       <div>
-        <h3 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h3 className="text-xl font-semibold tracking-tight text-stone-900 dark:text-zinc-50">
           最寄り
         </h3>
         {/* dl（definition list）: 名称と補足をペアで表現するセマンティックな要素 */}
         <dl className="mt-3 space-y-2">
           {NEARBY.map((item) => (
             <div key={item.label} className="flex items-baseline gap-3">
-              <dt className="w-28 shrink-0 text-sm font-medium text-zinc-900 dark:text-zinc-50">
+              <dt className="w-28 shrink-0 text-sm font-medium text-stone-900 dark:text-zinc-50">
                 {item.label}
               </dt>
-              <dd className="text-sm text-zinc-600 dark:text-zinc-400">
+              <dd className="text-sm text-stone-600 dark:text-zinc-400">
                 {item.detail}
               </dd>
             </div>
@@ -88,7 +88,7 @@ export function AccessSection() {
 
       {/* ---- 交通手段 ---- */}
       <div>
-        <h3 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h3 className="text-xl font-semibold tracking-tight text-stone-900 dark:text-zinc-50">
           交通手段
         </h3>
         {/* flex-wrap: 要素数が多い場合に自動で折り返す */}
@@ -96,7 +96,7 @@ export function AccessSection() {
           {TRANSPORT_OPTIONS.map((option) => (
             <span
               key={option}
-              className="rounded-full border border-zinc-200 px-3 py-1 text-sm text-zinc-700 dark:border-zinc-700 dark:text-zinc-300"
+              className="rounded-full border border-stone-200 px-3 py-1 text-sm text-stone-700 dark:border-zinc-700 dark:text-zinc-300"
             >
               {option}
             </span>

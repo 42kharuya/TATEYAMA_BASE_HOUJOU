@@ -173,16 +173,16 @@ export function SummarySection() {
     <section
       id="summary"
       aria-labelledby="summary-heading"
-      className="border-b border-slate-200 bg-slate-50 py-8 sm:py-10"
+      className="border-b border-stone-200 bg-stone-50 py-8 sm:py-10"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         {/*
          * h2: 見出し階層を守るために必須（h1=Hero, h2=各セクション）
-         * text-xl に抑えてコンパクトさを維持する
+         * text-xl に押えてコンパクトさを維持する
          */}
         <h2
           id="summary-heading"
-          className="mb-6 text-xl font-semibold tracking-tight text-slate-900"
+          className="mb-6 text-xl font-semibold tracking-tight text-stone-900"
         >
           基本情報
         </h2>
@@ -198,30 +198,30 @@ export function SummarySection() {
           {SUMMARY_ITEMS.map((item) => (
             <li key={item.label} className="flex flex-col gap-2">
               {/*
-               * アイコン: text-slate-600 で本文より薄め
+               * アイコン: text-stone-600 で本文より薄め
                * サイズは 24×24 px（タッチ対象ではないため小さくてよい）
                */}
-              <span className="text-slate-600" aria-hidden="true">
+              <span className="text-stone-600" aria-hidden="true">
                 {item.icon}
               </span>
 
               {/*
-               * ラベル: 小さめのサポートテキスト（text-sm / text-slate-600）
+               * ラベル: 小さめのサポートテキスト（text-sm / text-stone-600）
                * <dt> ではなく <span> にして視覚的なシンプルさを保つ
                */}
-              <span className="text-sm leading-tight text-slate-600">
+              <span className="text-sm leading-tight text-stone-600">
                 {item.label}
               </span>
 
               {/*
-               * 値: 主役テキスト（text-base / font-semibold / text-slate-900）
+               * 値: 主役テキスト（text-base / font-semibold / text-stone-900）
                * 住所のみ text-sm に縮小して折り返しを制御
                */}
               <span
                 className={
                   item.label === "住所"
-                    ? "text-sm font-semibold leading-snug text-slate-900"
-                    : "text-base font-semibold text-slate-900"
+                    ? "text-sm font-semibold leading-snug text-stone-900"
+                    : "text-base font-semibold text-stone-900"
                 }
               >
                 {item.value}
