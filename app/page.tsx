@@ -1,5 +1,6 @@
 import { AccessSection } from "./_components/AccessSection";
 import { CTAButton } from "./_components/CTAButton";
+import { FeaturesSection } from "./_components/FeaturesSection";
 import { GallerySection } from "./_components/GallerySection";
 import { Hero } from "./_components/Hero";
 import { PricingSection } from "./_components/PricingSection";
@@ -28,6 +29,12 @@ export default function Home() {
 
       {/* Pricing: 宿泊料金・キャンセルポリシー・レンタル料金 */}
       <PricingSection />
+
+      {/* Features: 特徴（選ばれる理由）
+       * 1棟貸し・屋上テラス・室内アクティビティ・レンタル・立地
+       * IA.md セクション順 4番め（料金の後・設備の前）
+       */}
+      <FeaturesSection />
 
       {/* Access: 住所・地図 CTA・最寄り・交通手段 */}
       <AccessSection />
