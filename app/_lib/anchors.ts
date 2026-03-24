@@ -2,6 +2,7 @@ export const ANCHOR_IDS = {
   summary: "summary",
   gallery: "gallery",
   pricing: "pricing",
+  features: "features",
   access: "access",
   booking: "booking",
 } as const;
