@@ -139,21 +139,25 @@ type SummaryItem = {
 const SUMMARY_ITEMS: SummaryItem[] = [
   {
     label: "宿泊人数",
+    // 「4〜8名」をそのままメイン値として大きく出す
     value: "4〜8名",
     icon: <UsersIcon />,
   },
   {
-    label: "海まで",
-    value: "徒歩約30秒",
+    // ラベルに「海まで徒歩」、数値（秒）だけを大きく打ち出す
+    label: "海まで徒歩",
+    value: "約30秒",
     icon: <WavesIcon />,
   },
   {
-    label: "館山駅から",
-    value: "徒歩約9分",
+    // ラベルに「館山駅から徒歩」、数値（分）だけを大きく打ち出す
+    label: "館山駅から徒歩",
+    value: "約9分",
     icon: <WalkIcon />,
   },
   {
     label: "住所",
+    // 住所は数値ではないため、value は小さめのままにする
     value: "〒294-0045 千葉県館山市北条2278-3",
     icon: <MapPinIcon />,
   },
@@ -219,14 +223,16 @@ export function SummarySection() {
               </span>
 
               {/*
-               * 値: 主役テキスト。accent帯では text-white に反転（Issue #25）
-               * 住所のみ text-sm に縮小して折り返しを制御
+               * 値（メインの数値・キーワード）: Issue #26 タイポグラフィ強弱
+               * - 住所: 数値ではないため text-sm font-semibold に留める
+               * - それ以外: text-3xl font-bold tabular-nums（桁揃え）で大きく打ち出す
+               * tabular-nums: 数字幅を均等にそろえ、数値の視認性を高める
                */}
               <span
                 className={
                   item.label === "住所"
                     ? "text-sm font-semibold leading-snug text-white"
-                    : "text-base font-semibold text-white"
+                    : "text-3xl font-bold tabular-nums text-white"
                 }
               >
                 {item.value}

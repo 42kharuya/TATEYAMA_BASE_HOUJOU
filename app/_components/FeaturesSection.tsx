@@ -211,9 +211,11 @@ function FeatureCard({ title, description, Icon }: Feature) {
   return (
     <article className="flex flex-col gap-4 rounded-xl bg-stone-100 p-6 shadow-sm dark:bg-zinc-800">
       {/* アイコン（装飾用。aria-hidden で読み上げをスキップ） */}
+      {/* Issue #26: bg-sky-50 / text-sky-600 でブランドカラーのアクセントを付与 */}
+      {/* dark モードは sky-900/40 背景 + sky-400 アイコンで視認性を維持 */}
       <div
         aria-hidden="true"
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-stone-700 shadow-sm dark:bg-zinc-700 dark:text-stone-300"
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-50 text-sky-600 dark:bg-sky-900/40 dark:text-sky-400"
       >
         <Icon />
       </div>

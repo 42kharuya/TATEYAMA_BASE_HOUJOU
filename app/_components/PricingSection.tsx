@@ -136,10 +136,22 @@ export function PricingSection() {
         <p className="text-sm font-semibold uppercase tracking-wider text-stone-500 dark:text-zinc-400">
           料金はじめに
         </p>
+
+        {/*
+         * Issue #26: アンカー価格（最安値）を大きく打ち出す
+         * text-4xl font-bold tabular-nums: 数値を大きく・桁揃えで表示
+         * text-sky-700: ブランドカラーで視線を誘導する
+         */}
+        <div className="mt-3 flex flex-wrap items-baseline gap-2">
+          <span className="text-4xl font-bold tabular-nums text-sky-700 dark:text-sky-400">
+            ¥46,000〜
+          </span>
+          <span className="text-sm text-stone-500 dark:text-zinc-400">清掃費込み</span>
+        </div>
+
         <ul className="mt-3 space-y-2 text-sm leading-6 text-stone-700 dark:text-zinc-300">
           <li>
             <span className="font-medium">最安：オフシーズン 4名まで</span>
-            &nbsp;— ¥46,000（清掃費込み）
           </li>
           <li>
             <span className="font-medium">宿泊人数：</span>4〜8名
