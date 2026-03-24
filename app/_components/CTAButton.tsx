@@ -44,11 +44,15 @@ const BASE =
 /** 有効時の variant 別スタイル */
 const VARIANT_STYLES: Record<Variant, string> = {
   primary:
-    "bg-zinc-900 text-white hover:opacity-90 dark:bg-zinc-50 dark:text-zinc-950",
+    /*
+     * bg-sky-600: 海ブルー（Issue #23 ブランドカラー）
+     * 北条海岸の海をイメージしたプライマリ CTA
+     */
+    "bg-sky-600 text-white hover:opacity-90 dark:bg-sky-500 dark:text-white",
   secondary:
-    "border border-zinc-900 text-zinc-900 hover:opacity-80 dark:border-zinc-50 dark:text-zinc-50",
+    "border border-stone-900 text-stone-900 hover:opacity-80 dark:border-zinc-50 dark:text-zinc-50",
   tertiary:
-    "text-zinc-900 underline underline-offset-4 hover:opacity-70 dark:text-zinc-50",
+    "text-stone-900 underline underline-offset-4 hover:opacity-70 dark:text-zinc-50",
 };
 
 /**
@@ -100,7 +104,7 @@ export function CTAButton({
 
       {/* 無効時にのみ description を表示する（1行の補足説明） */}
       {isDisabled && description && (
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">{description}</p>
+        <p className="text-xs text-stone-500 dark:text-zinc-400">{description}</p>
       )}
     </div>
   );

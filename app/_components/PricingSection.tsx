@@ -132,11 +132,11 @@ export function PricingSection() {
     >
       {/* ---- 1. 料金サマリー ---- */}
       {/* ページ上部から「料金を見る → #pricing」で到達した際に最短で要点を把握できるようにする */}
-      <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-800 dark:bg-zinc-900/50">
-        <p className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+      <div className="rounded-xl border border-stone-200 bg-stone-100 p-5 dark:border-zinc-800 dark:bg-zinc-900/50">
+        <p className="text-sm font-semibold uppercase tracking-wider text-stone-500 dark:text-zinc-400">
           料金はじめに
         </p>
-        <ul className="mt-3 space-y-2 text-sm leading-6 text-zinc-700 dark:text-zinc-300">
+        <ul className="mt-3 space-y-2 text-sm leading-6 text-stone-700 dark:text-zinc-300">
           <li>
             <span className="font-medium">最安：オフシーズン 4名まで</span>
             &nbsp;— ¥46,000（清掃費込み）
@@ -153,7 +153,7 @@ export function PricingSection() {
             GW・お盆・シルバーウィーク・年末年始は都度設定
           </li>
         </ul>
-        <p className="mt-3 text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="mt-3 text-xs text-stone-500 dark:text-zinc-400">
           ※ 詳細は下記の料金表をご確認ください。
         </p>
       </div>
@@ -163,16 +163,16 @@ export function PricingSection() {
       <div className="overflow-x-auto">
         <table className="w-full min-w-[520px] border-collapse text-sm">
           <thead>
-            <tr className="border-b border-zinc-200 dark:border-zinc-700">
+            <tr className="border-b border-stone-200 dark:border-zinc-700">
               {/* 人数列 */}
-              <th className="py-3 pr-4 text-left font-semibold text-zinc-900 dark:text-zinc-50">
+              <th className="py-3 pr-4 text-left font-semibold text-stone-900 dark:text-zinc-50">
                 人数
               </th>
               {/* シーズン列（4列） */}
               {SEASONS.map((s) => (
                 <th
                   key={s.key}
-                  className="px-3 py-3 text-right font-semibold text-zinc-900 dark:text-zinc-50"
+                  className="px-3 py-3 text-right font-semibold text-stone-900 dark:text-zinc-50"
                 >
                   {s.label}
                 </th>
@@ -183,12 +183,12 @@ export function PricingSection() {
             {PRICING_ROWS.map((row) => (
               <tr
                 key={row.guests}
-                className="border-b border-zinc-100 last:border-0 dark:border-zinc-800"
+                className="border-b border-stone-100 last:border-0 dark:border-zinc-800"
               >
                 {/* 人数 + 使用フロア注記 */}
-                <td className="py-3 pr-4 text-zinc-900 dark:text-zinc-50">
+                <td className="py-3 pr-4 text-stone-900 dark:text-zinc-50">
                   <span className="font-medium">{row.guests}名</span>
-                  <span className="ml-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+                  <span className="ml-1.5 text-xs text-stone-500 dark:text-zinc-400">
                     ({row.note})
                   </span>
                 </td>
@@ -196,7 +196,7 @@ export function PricingSection() {
                 {SEASONS.map((s) => (
                   <td
                     key={s.key}
-                    className="px-3 py-3 text-right tabular-nums text-zinc-700 dark:text-zinc-300"
+                    className="px-3 py-3 text-right tabular-nums text-stone-700 dark:text-zinc-300"
                   >
                     {yen(row.prices[s.key])}
                   </td>
@@ -209,16 +209,16 @@ export function PricingSection() {
 
       {/* シーズン定義の補足 */}
       <div className="space-y-1">
-        <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+        <p className="text-xs font-semibold text-stone-500 dark:text-zinc-400">
           シーズン区分の目安
         </p>
         <ul className="space-y-1">
           {SEASONS.map((s) => (
             <li
               key={s.key}
-              className="text-xs leading-5 text-zinc-500 dark:text-zinc-400"
+              className="text-xs leading-5 text-stone-500 dark:text-zinc-400"
             >
-              <span className="font-medium text-zinc-700 dark:text-zinc-300">
+              <span className="font-medium text-stone-700 dark:text-zinc-300">
                 {s.label}：
               </span>
               {s.description}
@@ -230,17 +230,17 @@ export function PricingSection() {
       {/* ---- 3. キャンセルポリシー ---- */}
       <div>
         {/* headingLevel=3: Section の h2 "料金" の下に位置する小見出し */}
-        <h3 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h3 className="text-xl font-semibold tracking-tight text-stone-900 dark:text-zinc-50">
           キャンセルポリシー
         </h3>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[280px] border-collapse text-sm">
             <thead>
-              <tr className="border-b border-zinc-200 dark:border-zinc-700">
-                <th className="py-2 pr-4 text-left font-semibold text-zinc-900 dark:text-zinc-50">
+              <tr className="border-b border-stone-200 dark:border-zinc-700">
+                <th className="py-2 pr-4 text-left font-semibold text-stone-900 dark:text-zinc-50">
                   キャンセル時期
                 </th>
-                <th className="py-2 text-right font-semibold text-zinc-900 dark:text-zinc-50">
+                <th className="py-2 text-right font-semibold text-stone-900 dark:text-zinc-50">
                   キャンセル料
                 </th>
               </tr>
@@ -249,12 +249,12 @@ export function PricingSection() {
               {CANCELLATION_RULES.map((rule) => (
                 <tr
                   key={rule.timing}
-                  className="border-b border-zinc-100 last:border-0 dark:border-zinc-800"
+                  className="border-b border-stone-100 last:border-0 dark:border-zinc-800"
                 >
-                  <td className="py-2 pr-4 text-zinc-700 dark:text-zinc-300">
+                  <td className="py-2 pr-4 text-stone-700 dark:text-zinc-300">
                     {rule.timing}
                   </td>
-                  <td className="py-2 text-right text-zinc-700 dark:text-zinc-300">
+                  <td className="py-2 text-right text-stone-700 dark:text-zinc-300">
                     {rule.rate}
                   </td>
                 </tr>
@@ -266,17 +266,17 @@ export function PricingSection() {
 
       {/* ---- 4. レンタル料金 ---- */}
       <div>
-        <h3 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h3 className="text-xl font-semibold tracking-tight text-stone-900 dark:text-zinc-50">
           レンタル料金
         </h3>
         <div className="mt-4 space-y-5">
           {RENTAL_ITEMS.map((item) => (
             <div key={item.name}>
-              <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
+              <p className="text-sm font-medium text-stone-900 dark:text-zinc-50">
                 {item.name}
               </p>
               {item.note ? (
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                <p className="text-xs text-stone-500 dark:text-zinc-400">
                   {item.note}
                 </p>
               ) : null}
@@ -285,12 +285,12 @@ export function PricingSection() {
                 {item.rows.map((r) => (
                   <div
                     key={r.label}
-                    className="rounded-md border border-zinc-200 px-3 py-1.5 text-sm dark:border-zinc-700"
+                    className="rounded-md border border-stone-200 px-3 py-1.5 text-sm dark:border-zinc-700"
                   >
-                    <span className="text-zinc-500 dark:text-zinc-400">
+                    <span className="text-stone-500 dark:text-zinc-400">
                       {r.label} :{" "}
                     </span>
-                    <span className="font-medium tabular-nums text-zinc-900 dark:text-zinc-50">
+                    <span className="font-medium tabular-nums text-stone-900 dark:text-zinc-50">
                       {yen(r.price)}
                     </span>
                   </div>

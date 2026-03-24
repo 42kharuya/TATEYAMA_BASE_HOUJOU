@@ -27,7 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col bg-zinc-50 font-sans text-zinc-900 dark:bg-black dark:text-zinc-50">
+      {/* bg-stone-50: 砂浜のオフホワイト（Issue #23 ブランドカラー導入）
+           text-stone-900: 読みやすい濃いテキスト */}
+      <body className="flex min-h-full flex-col bg-stone-50 font-sans text-stone-900 dark:bg-black dark:text-zinc-50">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

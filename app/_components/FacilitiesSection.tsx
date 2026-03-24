@@ -228,9 +228,9 @@ function FloorCard({ facility }: FloorCardProps) {
   const { floor, Icon, items } = facility;
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-700 dark:bg-zinc-800/60">
+    <div className="rounded-xl border border-stone-200 bg-white p-5 dark:border-zinc-700 dark:bg-zinc-800/60">
       {/* フロア見出し（h3）：アイコン + フロア名をセットで表示 */}
-      <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-zinc-900 dark:text-zinc-50">
+      <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-stone-900 dark:text-zinc-50">
         {/* アイコンは装飾扱い（aria-hidden はアイコン側で設定済み）
          * テキストのフロア名でスクリーンリーダーに意味を伝える
          */}
@@ -245,7 +245,7 @@ function FloorCard({ facility }: FloorCardProps) {
         {items.map((item) => (
           <li
             key={item}
-            className="flex items-start gap-2 text-sm text-zinc-700 dark:text-zinc-300"
+            className="flex items-start gap-2 text-sm text-stone-700 dark:text-zinc-300"
           >
             {/* チェックマーク（装飾）— aria-hidden で読み上げをスキップ */}
             <span aria-hidden="true" className="mt-0.5 shrink-0 text-sky-500">

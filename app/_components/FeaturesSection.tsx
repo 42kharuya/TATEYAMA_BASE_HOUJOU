@@ -205,15 +205,15 @@ const FEATURES: Feature[] = [
  * FeatureCard — 個別の特徴を1枚のカードとして表示する
  *
  * 構成: アイコン（装飾）→ h3 見出し → 説明文
- * デザイン: bg-slate-50 / rounded-xl / shadow-sm（docs/DESIGN.md §8.5）
+ * デザイン: bg-stone-100 / rounded-xl / shadow-sm（docs/DESIGN.md §8.5、Issue #23 でstone系に統一）
  */
 function FeatureCard({ title, description, Icon }: Feature) {
   return (
-    <article className="flex flex-col gap-4 rounded-xl bg-slate-50 p-6 shadow-sm dark:bg-zinc-800">
+    <article className="flex flex-col gap-4 rounded-xl bg-stone-100 p-6 shadow-sm dark:bg-zinc-800">
       {/* アイコン（装飾用。aria-hidden で読み上げをスキップ） */}
       <div
         aria-hidden="true"
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-slate-700 shadow-sm dark:bg-zinc-700 dark:text-slate-300"
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-stone-700 shadow-sm dark:bg-zinc-700 dark:text-stone-300"
       >
         <Icon />
       </div>
@@ -221,11 +221,11 @@ function FeatureCard({ title, description, Icon }: Feature) {
        * h3: Section（h2）の下に置くことで見出し階層を維持する
        * docs/DESIGN.md §2.2 「階層を飛ばさない」
        */}
-      <h3 className="text-lg font-semibold leading-snug text-slate-900 dark:text-zinc-50">
+      <h3 className="text-lg font-semibold leading-snug text-stone-900 dark:text-zinc-50">
         {title}
       </h3>
       {/* 説明文: text-base / leading-7 で読みやすい行間を確保 */}
-      <p className="text-base leading-7 text-slate-600 dark:text-zinc-400">
+      <p className="text-base leading-7 text-stone-600 dark:text-zinc-400">
         {description}
       </p>
     </article>

@@ -175,10 +175,10 @@ export function GallerySection() {
         <div className="mx-auto max-w-6xl space-y-10 px-4 sm:px-6">
           {/* ---- セクションヘッダー ---- */}
           <header className="space-y-2">
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+            <h2 className="text-2xl font-semibold tracking-tight text-stone-900">
               ギャラリー
             </h2>
-            <p className="max-w-3xl text-base leading-7 text-slate-600">
+            <p className="max-w-3xl text-base leading-7 text-stone-600">
               施設内外の写真でご滞在のイメージをご確認ください。写真をタップすると拡大表示します。
             </p>
           </header>
@@ -190,7 +190,7 @@ export function GallerySection() {
                * カテゴリ見出し（h3）
                * h2（セクション）→ h3（カテゴリ）で階層を崩さない（docs/DESIGN.md 2.2 より）
                */}
-              <h3 className="text-xl font-semibold text-slate-900">
+              <h3 className="text-xl font-semibold text-stone-900">
                 {category.title}
               </h3>
 
