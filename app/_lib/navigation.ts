@@ -1,7 +1,7 @@
 import { anchorHref } from "./anchors";
 
 export type NavItem = {
-  key: "booking" | "gallery" | "pricing" | "access";
+  key: "booking" | "pricing" | "access";
   label: string;
   href?: string;
   disabled?: boolean;
@@ -16,11 +16,6 @@ export function getHeaderNavItems(): NavItem[] {
       label: "予約",
       href: bookingUrl,
       disabled: !bookingUrl,
-    },
-    {
-      key: "gallery",
-      label: "ギャラリー",
-      href: anchorHref("gallery"),
     },
     {
       key: "pricing",
