@@ -83,8 +83,11 @@ export function Hero() {
       {/* ----- コンテンツ（画像・オーバーレイより手前に表示） ----- */}
       <div className="relative mx-auto w-full max-w-6xl space-y-6 px-4 py-12 sm:px-6 sm:py-16">
         {/* キャッチコピー: h1 はページに 1 つ（docs/DESIGN.md 2.2 より） */}
-        {/* font-bold + text-6xl でインパクトを最大化。leading-tight で行間を詰める */}
-        <h1 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
+        {/*
+         * leading-snug（行間 1.375）: leading-tight（1.25）より開放的で、宿泊サイトの「ゆったり感」に合わせる
+         * tracking-normal（字間 0）: tracking-tight の「詰め詰め感」をなくしてリゾート感を演出する
+         */}
+        <h1 className="max-w-2xl text-4xl font-bold leading-snug tracking-normal text-white sm:text-5xl lg:text-6xl">
           {CATCH_COPY}
         </h1>
 
