@@ -5,9 +5,10 @@
  *
  * 構成:
  *   1. 料金サマリー（最安値・前提を一目で把握）＋「料金を見る」アンカー導線
- *   2. 詳細料金表（シーズン × 宿泊人数）
- *   3. キャンセルポリシー
- *   4. レンタル料金
+ *   2. シーズン定義カード（料金表前に期間を先出し）
+ *   3. 詳細料金表（シーズン × 宿泊人数）
+ *   4. キャンセルポリシー
+ *   5. レンタル料金
  *
  * データの根拠: docs/FACTS.md（確定情報のみ）
  */
@@ -73,23 +74,43 @@ const PRICING_ROWS: PriceRow[] = [
   },
 ];
 
-/** シーズン定義（列ヘッダーと期間説明） */
+/**
+ * シーズン定義（列ヘッダー・期間説明・カラー）
+ * badgeColor: シーズンカードのバッジ色（Tailwindクラス）
+ * labelColor: テーブルヘッダーのテキスト色
+ */
 const SEASONS = [
-  { key: "offseason" as const, label: "オフシーズン", description: "左記以外" },
+  {
+    key: "offseason" as const,
+    label: "オフシーズン",
+    description: "左記以外",
+    badgeColor:
+      "bg-stone-100 text-stone-600 border-stone-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700",
+    labelColor: "text-stone-600 dark:text-zinc-400",
+  },
   {
     key: "regular" as const,
     label: "レギュラー",
     description: "日祝・春休み（土曜・祝前日・3連休2日目・7〜9月除く）",
+    badgeColor:
+      "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950 dark:text-sky-400 dark:border-sky-800",
+    labelColor: "text-sky-700 dark:text-sky-400",
   },
   {
     key: "high" as const,
     label: "ハイ",
     description: "土曜・祝前日・3連休2日目・7/10〜9/10（お盆除く）",
+    badgeColor:
+      "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-800",
+    labelColor: "text-amber-700 dark:text-amber-400",
   },
   {
     key: "top" as const,
     label: "トップ",
     description: "GW・お盆・シルバーウィーク・年末年始（12/28〜1/7）は都度設定",
+    badgeColor:
+      "bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-800",
+    labelColor: "text-red-700 dark:text-red-400",
   },
 ];
 
@@ -194,7 +215,33 @@ export function PricingSection() {
         </p>
       </div>
 
-      {/* ---- 2. 詳細料金表 ---- */}
+      {/* ---- 2. シーズン定義カード ---- */}
+      {/*
+       * テーブルより先にシーズン期間を見せることで「自分はいつ泊まるのか」を
+       * 確認してから料金表を読む自然な流れを作る。
+       * grid-cols-2 sm:grid-cols-4: モバイルは2列、PCは4列で並べる
+       */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {SEASONS.map((s) => (
+          <div
+            key={s.key}
+            className="rounded-xl border border-stone-200 p-3 dark:border-zinc-700"
+          >
+            {/* カラーバッジ: シーズンを色で直感的に区別する */}
+            <span
+              className={`inline-block rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.badgeColor}`}
+            >
+              {s.label}
+            </span>
+            {/* 期間説明: 自分がどのシーズンに当たるか確認できる */}
+            <p className="mt-2 text-xs leading-5 text-stone-600 dark:text-zinc-400">
+              {s.description}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* ---- 3. 詳細料金表 ---- */}
       {/* overflow-x-auto: スマホでも横スクロールで表全体を確認できる */}
       <div className="overflow-x-auto">
         <table className="w-full min-w-[520px] border-collapse text-sm">
@@ -208,9 +255,10 @@ export function PricingSection() {
               {SEASONS.map((s) => (
                 <th
                   key={s.key}
-                  className="px-3 py-3 text-right font-semibold text-stone-900 dark:text-zinc-50"
+                  className="px-3 py-3 text-right font-semibold"
                 >
-                  {s.label}
+                  {/* テーブルヘッダーにもシーズンの色を付けてカードと対応させる */}
+                  <span className={s.labelColor}>{s.label}</span>
                 </th>
               ))}
             </tr>
@@ -243,27 +291,7 @@ export function PricingSection() {
         </table>
       </div>
 
-      {/* シーズン定義の補足 */}
-      <div className="space-y-1">
-        <p className="text-xs font-semibold text-stone-500 dark:text-zinc-400">
-          シーズン区分の目安
-        </p>
-        <ul className="space-y-1">
-          {SEASONS.map((s) => (
-            <li
-              key={s.key}
-              className="text-xs leading-5 text-stone-500 dark:text-zinc-400"
-            >
-              <span className="font-medium text-stone-700 dark:text-zinc-300">
-                {s.label}：
-              </span>
-              {s.description}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* ---- 3. キャンセルポリシー ---- */}
+      {/* ---- 4. キャンセルポリシー ---- */}
       <div>
         {/* headingLevel=3: Section の h2 "料金" の下に位置する小見出し */}
         <h3 className="text-xl font-semibold tracking-tight text-stone-900 dark:text-zinc-50">
@@ -300,7 +328,7 @@ export function PricingSection() {
         </div>
       </div>
 
-      {/* ---- 4. レンタル料金 ---- */}
+      {/* ---- 5. レンタル料金 ---- */}
       <div>
         <h3 className="text-xl font-semibold tracking-tight text-stone-900 dark:text-zinc-50">
           レンタル料金
