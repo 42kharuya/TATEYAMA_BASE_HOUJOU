@@ -26,7 +26,7 @@ import { CTAButton } from "./CTAButton";
 // ---- コンテンツ定数（docs/CONTENT.md の確定文言を使用） ----
 
 /** h1 に載せるキャッチコピー */
-const CATCH_COPY = "海もアクティビティも観光も、遊びのベースキャンプ。";
+const CATCH_COPY = "海も観光もアクティビティも、遊びのベースキャンプ。";
 
 /** キャッチコピー直下のサブコピー */
 const SUB_COPY =
