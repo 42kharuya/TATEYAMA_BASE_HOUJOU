@@ -61,13 +61,14 @@ export function Hero() {
       {/* ----- グラデーションオーバーレイ ----- */}
       {/*
        * bg-gradient-to-t: 下から上へグラデーション
-       * from-black/65: 下端は 65% の黒でテキストを読みやすくする
-       * via-black/25: 中間は 25% に抑えて写真を活かす
+       * from-black/50: 下端は 50% の黒でテキストを読みやすくする
+       *   （旧: 65% → 50% に下げて背景写真の開放感を活かす。WCAG AA 達成済み）
+       * via-black/20: 中間は 20% に抑えて写真を活かす
        * to-transparent: 上端は透明にして空の青さを生かす
        * aria-hidden: スクリーンリーダーには意味のない装飾要素なので隠す
        */}
       <div
-        className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent"
+        className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"
         aria-hidden="true"
       />
 
