@@ -1,7 +1,7 @@
 /**
  * FeaturesSection — 特徴セクション（選ばれる理由）
  *
- * 目的: 施設の「選ばれる理由」を写真付きビジュアルカードで訴求し、予約への動機づけを強化する。
+ * 目的: 施設の「選ばれる理由」を写真付きで訴求し、予約への動機づけを強化する。
  *
  * 掲載情報（docs/FACTS.md の確定情報のみ使用）:
  *   - 1棟貸し（4〜8名）
@@ -11,6 +11,11 @@
  *   - レンタル用品（SUP等）
  *
  * Issue #35: アイコン → 写真へ刷新。PC で左右交互の2カラム、スマホで縦積みレイアウト。
+ * Issue #46: カード廃止・エディトリアルレイアウトへ刷新。
+ *   - 箱（bg-stone-100 / rounded-xl / shadow-sm）を撤去し余白と仕切り線で区切る
+ *   - PC: 写真幅 60%（3/5）、モバイル: aspect-[16/9] でシネマティック比率
+ *   - 写真に rounded-lg を適用して柔らかさを残す
+ *   - Section variant を default（白背景）に変更し写真の色が際立つようにする
  * デザイン準拠: docs/DESIGN.md（余白・フォント・カラールール）
  * セマンティック: <section> > <h2> > カード内 <h3> で見出し階層を維持
  * IA.md: セクション順 4番目（料金の後・設備の前）
@@ -105,19 +110,22 @@ const FEATURES: Feature[] = [
 // ────────────────────────────────────────────────────────
 
 /**
- * FeatureCard — 個別の特徴を写真付きビジュアルカードとして表示する
+ * FeatureItem — 個別の特徴をエディトリアルスタイルで表示する（Issue #46）
  *
  * レイアウト:
  *   - スマホ: 写真上 + テキスト下（flex-col）
- *   - PC (sm〜): 写真と テキストを横並び（flex-row）
+ *   - PC (sm〜): 写真とテキストを横並び（flex-row）
  *     - reversed=true のとき写真を右に配置（flex-row-reverse）で左右交互を実現
  *
  * 写真:
- *   - モバイル: aspect-[4/3]（アスペクト比を固定してレイアウトズレを防ぐ）
- *   - PC: 親の高さに合わせて伸縮（self-stretch + position:relative + Image fill）
+ *   - モバイル: aspect-[16/9]（シネマティック比率でダイナミックな印象を与える）
+ *   - PC: sm:w-3/5 で横幅 60%（以前の 50% より大きく主役感を出す）
+ *   - 写真の wrapper に rounded-lg + overflow-hidden を適用（箱ではなく写真に丸みをつける）
  *   - next/image の sizes でレスポンシブ画像配信を最適化
  *
- * デザイン: rounded-xl / shadow-sm / bg-stone-100（Issue #23 stone系カラー統一）
+ * 区切り:
+ *   - article に border-b border-stone-200 を適用（最終項目は last:border-b-0 で非表示）
+ *   - 箱（rounded-xl / shadow-sm / bg-stone-100）は使用しない
  */
 function FeatureCard({
   title,
@@ -135,20 +143,29 @@ function FeatureCard({
   return (
     <article
       className={[
-        "flex overflow-hidden rounded-xl bg-stone-100 shadow-sm dark:bg-zinc-800",
+        // 箱（角丸・背景・影）を廃止してエディトリアルな区切りに変更（Issue #46）
+        "flex",
+        // アイテム間は border-b の仕切り線で区切る。最終項目は last:border-b-0 で非表示
+        "border-b border-stone-200 dark:border-zinc-700 last:border-b-0",
+        // 上下の余白をパディングで確保（箱がないため内部で余白を持つ）
+        "py-10 sm:py-14",
         // スマホ: 縦積み（写真上・テキスト下）
         "flex-col",
         // SM以上: 横並び。reversed の場合は写真を右へ
         reversed ? "sm:flex-row-reverse" : "sm:flex-row",
+        // 横並び時のギャップ
+        "sm:gap-10",
       ].join(" ")}
     >
       {/* ── 写真エリア ── */}
       {/*
-       * モバイル: aspect-[4/3] で縦高さを確保（fill を使うために relative が必要）
-       * PC: sm:w-1/2 で半分の幅、sm:aspect-auto で aspect-[4/3] を解除し
-       *     自分自身の高さはテキスト側に合わせる（self-stretch は親 flex が決める）
+       * モバイル: aspect-[16/9] でシネマティック比率（Issue #46）
+       * PC: sm:w-3/5 で 60% の幅を確保し写真を主役にする（Issue #46）
+       *     sm:aspect-[4/3] で PC でも高さを固定確保する
+       *     ※ sm:aspect-auto にするとテキスト高さに引きずられて写真が潰れるため
+       * rounded-lg + overflow-hidden: 写真に丸みをつける（箱ではなく写真自体に適用）
        */}
-      <div className="relative aspect-[4/3] sm:aspect-auto sm:w-1/2">
+      <div className="relative aspect-[16/9] overflow-hidden rounded-lg sm:aspect-[4/3] sm:w-3/5">
         <Image
           src={image}
           alt={alt}
@@ -160,23 +177,25 @@ function FeatureCard({
           className="object-cover"
           /*
            * sizes: ブラウザが事前に読み込む画像サイズを最適化するヒント
-           * スマホ（100vw）+ PC（50vw = 2カラムの片方）
+           * スマホ（100vw）+ PC（60vw = 3/5 幅）（Issue #46 で 50vw → 60vw に更新）
            */
-          sizes="(min-width: 640px) 50vw, 100vw"
+          sizes="(min-width: 640px) 60vw, 100vw"
         />
       </div>
 
       {/* ── テキストエリア ── */}
       {/*
        * justify-center: 写真と高さが合わないとき縦方向に中央揃え
-       * sm:w-1/2: PC では写真と同じ幅の半分を占める
+       * sm:w-2/5: PC では残り 40% を占める（写真 60% + テキスト 40%）
+       * モバイルでは写真の下に mt-6 で余白を設ける
        */}
-      <div className="flex flex-col justify-center gap-4 p-6 sm:w-1/2">
+      <div className="mt-6 flex flex-col justify-center gap-4 sm:mt-0 sm:w-2/5">
         {/*
          * h3: Section（h2）の下に置くことで見出し階層を維持する
+         * text-xl に拡大して読み応えを持たせる（Issue #46）
          * docs/DESIGN.md §2.2 「階層を飛ばさない」
          */}
-        <h3 className="text-lg font-semibold leading-snug text-stone-900 dark:text-zinc-50">
+        <h3 className="text-xl font-semibold leading-snug text-stone-900 dark:text-zinc-50">
           {title}
         </h3>
         {/* 説明文: text-base / leading-7 で読みやすい行間を確保 */}
@@ -200,21 +219,23 @@ function FeatureCard({
  */
 export function FeaturesSection() {
   return (
-    // variant="tinted": カードと背景のコントラストを確保（Issue #25）
+    // variant="default"（白背景）: 写真の色が際立つようにする（Issue #46）
     <Section
       id={ANCHOR_IDS.features}
       title="選ばれる理由"
       lead="TATEYAMA BASE 北条が選ばれる5つのポイントをご紹介します。"
-      variant="tinted"
+      variant="default"
     >
       {/*
-       * ビジュアルカードリスト
-       * - 各カードが1行を占める縦積み（gap-6 で間隔を確保）
-       * - PC では各カード内部が左右2カラムになる（FeatureCard 内の flex-row）
-       * - 奇数番目のカード（index が奇数）は写真を右側に反転（reversed=true）
+       * エディトリアルアイテムリスト（Issue #46）
+       * - 各アイテムが1行を占める縦積み
+       * - gap は不要（各 article の py-10/py-14 パディングで間隔を確保）
+       * - PC では各アイテム内部が左右2カラムになる（FeatureItem 内の flex-row）
+       * - 奇数番目のアイテム（index が奇数）は写真を右側に反転（reversed=true）
        *   → 交互配置により単調さを避け、視線の流れを作る
+       * - border-b で仕切り線を表示し、最終アイテムは last:border-b-0 で非表示
        */}
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col">
         {FEATURES.map((feature, index) => (
           <FeatureCard
             key={feature.title}
