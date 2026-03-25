@@ -23,11 +23,15 @@ type Props = {
 
 /** セクション全体の背景クラス */
 const SECTION_BG: Record<Variant, string> = {
-  default: "bg-white",
-  tinted: "bg-stone-50",
+  // dark:bg-zinc-900: ダークモード時に暗いグレー背景を適用（Issue #45 コントラスト修正）
+  default: "bg-white dark:bg-zinc-900",
+  // dark:bg-zinc-800: tinted はライトより少し濃いグレーで default との差を維持
+  tinted: "bg-stone-50 dark:bg-zinc-800",
   // accent: 海ブルー帯。予約CTAや施設スペックを際立たせる
-  accent: "bg-sky-600",  // accent-dark: 浓いブルー帯。ページ最下部の予約CTAで隣の accent 帯と差別化
-  "accent-dark": "bg-sky-700",};
+  accent: "bg-sky-600",
+  // accent-dark: 濃いブルー帯。ページ最下部の予約CTAで隣の accent 帯と差別化
+  "accent-dark": "bg-sky-700",
+};
 
 /** 見出し（h2/h3）のテキスト色クラス */
 const HEADING_COLOR: Record<Variant, string> = {
