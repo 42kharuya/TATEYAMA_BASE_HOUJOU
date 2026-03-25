@@ -84,7 +84,14 @@ export function Hero() {
         </h1>
 
         {/* サブコピー: text-lg に拡大して読みやすさを向上 */}
-        <p className="max-w-xl text-lg leading-7 text-white/90">{SUB_COPY}</p>
+        {/*
+         * text-white: 不透明度を 90% → 100% に戻してオーバーレイが薄い状態でも視認性を確保
+         * [text-shadow:...]: Tailwind の任意値記法でテキストシャドウを付与
+         *   写真背景サイトの定番手法。オーバーレイに頼らずにコントラストを補強できる
+         */}
+        <p className="max-w-xl text-lg leading-7 text-white [text-shadow:0_1px_4px_rgba(0,0,0,0.70)]">
+          {SUB_COPY}
+        </p>
 
         {/* 主要 CTA: ご宿泊予約（URL 未設定時は「準備中」） */}
         <CTAButton
