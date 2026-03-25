@@ -26,7 +26,7 @@ import { CTAButton } from "./CTAButton";
 // ---- コンテンツ定数（docs/CONTENT.md の確定文言を使用） ----
 
 /** h1 に載せるキャッチコピー */
-const CATCH_COPY = "海もアクティビティも観光も、遊びのベースキャンプ。";
+const CATCH_COPY = "海も観光も\nアクティビティも\n遊びのベースキャンプ";
 
 /** キャッチコピー直下のサブコピー */
 const SUB_COPY =
@@ -40,7 +40,9 @@ export function Hero() {
   return (
     <section
       aria-label="ファーストビュー"
-      className="relative flex min-h-[90vh] items-center sm:min-h-screen"
+      // items-end: コンテンツを画面下部に寄せ、上の空・海・景色をたっぷり見せるリゾート構図
+      //   （映画ポスター的なレイアウト。items-center はコーポレート LP 寄り）
+      className="relative flex min-h-[90vh] items-end sm:min-h-screen"
     >
       {/* ----- 背景画像 ----- */}
       {/*
@@ -73,13 +75,17 @@ export function Hero() {
       />
 
       {/* ----- コンテンツ（画像・オーバーレイより手前に表示） ----- */}
-      <div className="relative mx-auto w-full max-w-6xl space-y-6 px-4 py-12 sm:px-6 sm:py-16">
+      {/*
+       * pb-16 sm:pb-20: 下余白でコンテンツが画面下端に近すぎないよう確保
+       * pt-0: items-end で下寄せのため上パディングは不要
+       */}
+      <div className="relative mx-auto w-full max-w-6xl space-y-6 px-4 pb-16 pt-0 sm:px-6 sm:pb-20">
         {/* キャッチコピー: h1 はページに 1 つ（docs/DESIGN.md 2.2 より） */}
         {/*
          * leading-snug（行間 1.375）: leading-tight（1.25）より開放的で、宿泊サイトの「ゆったり感」に合わせる
          * tracking-normal（字間 0）: tracking-tight の「詰め詰め感」をなくしてリゾート感を演出する
          */}
-        <h1 className="max-w-2xl text-4xl font-bold leading-snug tracking-normal text-white sm:text-5xl lg:text-6xl">
+        <h1 className="max-w-2xl text-4xl font-bold leading-snug tracking-normal text-white sm:text-5xl lg:text-6xlv whitespace-pre-wrap">
           {CATCH_COPY}
         </h1>
 
