@@ -12,6 +12,11 @@
  * データの根拠: docs/FACTS.md（確定情報のみ）
  */
 
+import Image, { StaticImageData } from "next/image";
+
+import sapImg from "../../imgs/sap.jpg";
+import wetSuitImg from "../../imgs/wet-suit.jpg";
+import lifeJacketImg from "../../imgs/life-jacket.jpg";
 import { ANCHOR_IDS } from "../_lib/anchors";
 import { Section } from "./Section";
 
@@ -95,11 +100,26 @@ const CANCELLATION_RULES = [
   { timing: "当日", rate: "ご利用料の100%" },
 ];
 
+/**
+ * レンタル料金（写真付き）
+ * image: next/image で読み込む静的画像（StaticImageData）
+ * alt:   スクリーンリーダー向けの代替テキスト
+ */
+type RentalItem = {
+  name: string;
+  note?: string;
+  image?: StaticImageData;
+  alt?: string;
+  rows: { label: string; price: number }[];
+};
+
 /** レンタル料金 */
-const RENTAL_ITEMS = [
+const RENTAL_ITEMS: RentalItem[] = [
   {
     name: "サップ（ウェットスーツ＋ライフジャケット付き・2人乗り）",
     note: "重量 100 ㎏ まで / 1日",
+    image: sapImg,
+    alt: "SUP（スタンドアップパドルボード）",
     rows: [
       { label: "1台", price: 3000 },
       { label: "2台", price: 5000 },
@@ -109,10 +129,14 @@ const RENTAL_ITEMS = [
   },
   {
     name: "ウェットスーツのみ",
+    image: wetSuitImg,
+    alt: "ウェットスーツ",
     rows: [{ label: "1着", price: 1000 }],
   },
   {
     name: "ライフジャケットのみ",
+    image: lifeJacketImg,
+    alt: "ライフジャケット",
     rows: [{ label: "1着", price: 1000 }],
   },
 ];
@@ -281,32 +305,68 @@ export function PricingSection() {
         <h3 className="text-xl font-semibold tracking-tight text-stone-900 dark:text-zinc-50">
           レンタル料金
         </h3>
-        <div className="mt-4 space-y-5">
+        <div className="mt-4 space-y-4">
           {RENTAL_ITEMS.map((item) => (
-            <div key={item.name}>
-              <p className="text-sm font-medium text-stone-900 dark:text-zinc-50">
-                {item.name}
-              </p>
-              {item.note ? (
-                <p className="text-xs text-stone-500 dark:text-zinc-400">
-                  {item.note}
-                </p>
+            /*
+             * 各レンタル品カード
+             * flex-col（モバイル）/ sm:flex-row（PC）: 縦積み→横並びのレスポンシブ切替
+             * overflow-hidden: 角丸から写真がはみ出さないよう制御
+             */
+            <div
+              key={item.name}
+              className="flex flex-col overflow-hidden rounded-xl border border-stone-200 dark:border-zinc-700 sm:flex-row"
+            >
+              {/* 写真エリア（画像がある場合のみ表示） */}
+              {item.image ? (
+                <div
+                  className="
+                    relative w-full shrink-0
+                    aspect-[4/3]
+                    sm:aspect-auto sm:w-40
+                  "
+                >
+                  {/*
+                   * next/image の fill: 親要素のサイズに合わせて画像を拡大縮小
+                   * object-cover: アスペクト比を保ちながらはみ出た部分をトリミング
+                   * sizes: ビューポート幅に応じた読み込み解像度を指定してデータ量を最適化
+                   */}
+                  <Image
+                    src={item.image}
+                    alt={item.alt ?? item.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, 160px"
+                  />
+                </div>
               ) : null}
-              {/* 料金行（台数 / 着数 × 金額） */}
-              <div className="mt-2 flex flex-wrap gap-3">
-                {item.rows.map((r) => (
-                  <div
-                    key={r.label}
-                    className="rounded-md border border-stone-200 px-3 py-1.5 text-sm dark:border-zinc-700"
-                  >
-                    <span className="text-stone-500 dark:text-zinc-400">
-                      {r.label} :{" "}
-                    </span>
-                    <span className="font-medium tabular-nums text-stone-900 dark:text-zinc-50">
-                      {yen(r.price)}
-                    </span>
-                  </div>
-                ))}
+
+              {/* テキスト・料金エリア */}
+              <div className="flex flex-1 flex-col justify-center p-4">
+                <p className="text-sm font-medium text-stone-900 dark:text-zinc-50">
+                  {item.name}
+                </p>
+                {item.note ? (
+                  <p className="mt-0.5 text-xs text-stone-500 dark:text-zinc-400">
+                    {item.note}
+                  </p>
+                ) : null}
+
+                {/* 料金行（台数 / 着数 × 金額） */}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {item.rows.map((r) => (
+                    <div
+                      key={r.label}
+                      className="rounded-md border border-stone-200 px-3 py-1.5 text-sm dark:border-zinc-700"
+                    >
+                      <span className="text-stone-500 dark:text-zinc-400">
+                        {r.label} :{" "}
+                      </span>
+                      <span className="font-medium tabular-nums text-stone-900 dark:text-zinc-50">
+                        {yen(r.price)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           ))}
