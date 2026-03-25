@@ -2,7 +2,6 @@ import { AccessSection } from "./_components/AccessSection";
 import { CTAButton } from "./_components/CTAButton";
 import { FacilitiesSection } from "./_components/FacilitiesSection";
 import { FeaturesSection } from "./_components/FeaturesSection";
-import { GallerySection } from "./_components/GallerySection";
 import { Hero } from "./_components/Hero";
 import { PricingSection } from "./_components/PricingSection";
 import { Section } from "./_components/Section";
@@ -24,9 +23,6 @@ export default function Home() {
        * IA.md セクション順 2番め（Hero の直後）
        */}
       <SummarySection />
-
-      {/* Gallery: カテゴリ別写真ギャラリー + Lightbox */}
-      <GallerySection />
 
       {/* Pricing: 宿泊料金・キャンセルポリシー・レンタル料金 */}
       <PricingSection />
