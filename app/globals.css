@@ -34,8 +34,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* --font-shippori-mincho は layout.tsx で CSS 変数として注入される */
+  --font-sans: var(--font-shippori-mincho);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -48,5 +48,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  /* フォントは layout.tsx で設定した Geist を font-sans 経由で適用するため、ここでは指定しない */
+  /* フォントは layout.tsx で設定した Shippori Mincho を font-sans 経由で適用するため、ここでは指定しない */
 }
