@@ -24,20 +24,22 @@ export default function Home() {
        */}
       <SummarySection />
 
-      {/* Pricing: 宿泊料金・キャンセルポリシー・レンタル料金 */}
-      <PricingSection />
-
       {/* Features: 特徴（選ばれる理由）
        * 1棟貸し・屋上テラス・室内アクティビティ・レンタル・立地
-       * IA.md セクション順 4番め（料金の後・設備の前）
+       * IA.md セクション順 3番め（Summary の後・設備の前）
        */}
       <FeaturesSection />
 
       {/* Facilities: 設備セクション（フロア別一覧）
        * 屋外・1階・2階・屋上・その他の設備を一覧表示
-       * IA.md セクション順 5番め（特徴の後・アクセスの前）
+       * IA.md セクション順 4番め（特徴の後・料金の前）
        */}
       <FacilitiesSection />
+
+      {/* Pricing: 宿泊料金・キャンセルポリシー・レンタル料金
+       * IA.md セクション順 5番め（設備の後・アクセスの前）
+       */}
+      <PricingSection />
 
       {/* Access: 住所・地図 CTA・最寄り・交通手段 */}
       <AccessSection />

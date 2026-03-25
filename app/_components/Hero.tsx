@@ -35,9 +35,10 @@ const SUB_COPY =
 
 /** ページ内ショートカットリンク */
 const SHORTCUTS = [
-  { label: "料金", href: anchorHref("pricing") },
+  { label: "特徴",     href: anchorHref("features") },
+  { label: "料金",     href: anchorHref("pricing") },
   { label: "アクセス", href: anchorHref("access") },
-  { label: "予約", href: anchorHref("booking") },
+  { label: "予約",     href: anchorHref("booking") },
 ] as const;
 
 export function Hero() {
