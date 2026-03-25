@@ -161,10 +161,11 @@ function FeatureCard({
       {/*
        * モバイル: aspect-[16/9] でシネマティック比率（Issue #46）
        * PC: sm:w-3/5 で 60% の幅を確保し写真を主役にする（Issue #46）
-       *     sm:aspect-auto で aspect-[16/9] を解除し、テキスト側の高さに合わせる
+       *     sm:aspect-[4/3] で PC でも高さを固定確保する
+       *     ※ sm:aspect-auto にするとテキスト高さに引きずられて写真が潰れるため
        * rounded-lg + overflow-hidden: 写真に丸みをつける（箱ではなく写真自体に適用）
        */}
-      <div className="relative aspect-[16/9] overflow-hidden rounded-lg sm:aspect-auto sm:w-3/5">
+      <div className="relative aspect-[16/9] overflow-hidden rounded-lg sm:aspect-[4/3] sm:w-3/5">
         <Image
           src={image}
           alt={alt}
