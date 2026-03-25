@@ -86,14 +86,14 @@ export function PricingSection() {
       title="料金"
       lead="清掃費込み。宿泊人数とシーズンによって料金が変わります。"
     >
-      {/* ---- 1. 料金シミュレーター ---- */}}
+      {/* ---- 1. 料金シミュレーター ---- */}
       {/*
        * PriceSimulator は「use client」のクライアントコンポーネント。
        * ユーザーが日付と人数を選ぶとシーズン判定 → 料金をその場で表示する。
        */}
       <PriceSimulator />
 
-      {/* ---- 2. シーズン定義カード ---- */}}
+      {/* ---- 2. シーズン定義カード ---- */}
       {/*
        * テーブルより先にシーズン期間を見せることで「自分はいつ泊まるのか」を
        * 確認してから料金表を読む自然な流れを作る。
@@ -119,7 +119,7 @@ export function PricingSection() {
         ))}
       </div>
 
-      {/* ---- 3. 詳細料金表 ---- */}}
+      {/* ---- 3. 詳細料金表 ---- */}
       {/* overflow-x-auto: スマホでも横スクロールで表全体を確認できる */}
       <div className="overflow-x-auto">
         <table className="w-full min-w-[520px] border-collapse text-sm">
@@ -169,7 +169,7 @@ export function PricingSection() {
         </table>
       </div>
 
-      {/* ---- 4. キャンセルポリシー ---- */}}
+      {/* ---- 4. キャンセルポリシー ---- */}
       <div>
         {/* headingLevel=3: Section の h2 "料金" の下に位置する小見出し */}
         <h3 className="text-xl font-semibold tracking-tight text-stone-900 dark:text-zinc-50">
