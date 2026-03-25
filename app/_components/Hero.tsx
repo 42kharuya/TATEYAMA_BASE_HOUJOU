@@ -8,7 +8,7 @@
  *   2. 黒の半透明オーバーレイ（文字視認性を担保）
  *   3. キャッチコピー / サブコピー（docs/CONTENT.md 確定文言）
  *   4. 主要 CTA（ご宿泊予約 / 準備中フォールバック）
- *   5. ページ内ショートカット（料金・アクセス・予約）
+ *   ※ ページ内ナビは Header（スクロール追従）に委ねる
  *
  * 画像最適化:
  *   - next/image の priority prop でファーストビューの LCP を改善する
@@ -21,7 +21,6 @@
 import Image from "next/image";
 
 import heroImage from "../../imgs/hero-exterior.jpg";
-import { anchorHref } from "../_lib/anchors";
 import { CTAButton } from "./CTAButton";
 
 // ---- コンテンツ定数（docs/CONTENT.md の確定文言を使用） ----
@@ -32,14 +31,6 @@ const CATCH_COPY = "海もアクティビティも観光も、遊びのベース
 /** キャッチコピー直下のサブコピー */
 const SUB_COPY =
   "1棟貸しの「TATEYAMA BASE 北条」。屋上テラスや1階ウッドデッキ、卓球・麻雀などの室内アクティビティも揃い、家族や仲間との滞在をアクティブに楽しめます。";
-
-/** ページ内ショートカットリンク */
-const SHORTCUTS = [
-  { label: "特徴",     href: anchorHref("features") },
-  { label: "料金",     href: anchorHref("pricing") },
-  { label: "アクセス", href: anchorHref("access") },
-  { label: "予約",     href: anchorHref("booking") },
-] as const;
 
 export function Hero() {
   // NEXT_PUBLIC_BOOKING_URL が未設定の場合は undefined になる
@@ -105,28 +96,6 @@ export function Hero() {
         >
           ご宿泊予約
         </CTAButton>
-
-        {/* ページ内ショートカット: ピル形状バッジで視認性・タップ領域を改善 */}
-        {/*
-         * rounded-full: 角丸にしてバッジ/ピル形状にする
-         * border border-white/40: 薄い白枠で存在感を出す
-         * bg-white/10: 半透明の白背景（glass morphism 風）
-         * backdrop-blur-sm: 背景を少しぼかしてグラスエフェクトを演出
-         */}
-        <nav aria-label="ページ内ショートカット">
-          <ul className="flex flex-wrap gap-2">
-            {SHORTCUTS.map(({ label, href }) => (
-              <li key={href}>
-                <a
-                  href={href}
-                  className="rounded-full border border-white/40 bg-white/10 px-4 py-1.5 text-sm text-white backdrop-blur-sm transition-colors hover:bg-white/20"
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
       </div>
     </section>
   );
