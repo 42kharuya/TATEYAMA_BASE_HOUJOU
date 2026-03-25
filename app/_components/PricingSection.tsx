@@ -5,12 +5,14 @@
  *
  * 構成:
  *   1. 料金サマリー（最安値・前提を一目で把握）＋「料金を見る」アンカー導線
- *   2. シーズン定義カード（料金表前に期間を先出し）
- *   3. 詳細料金表（シーズン × 宿泊人数）
- *   4. キャンセルポリシー
- *   5. レンタル料金
+ *   2. 料金シミュレーター（日付＋人数 → シーズン自動判定 → 料金表示）
+ *   3. シーズン定義カード（料金表前に期間を先出し）
+ *   4. 詳細料金表（シーズン × 宿泊人数）
+ *   5. キャンセルポリシー
+ *   6. レンタル料金
  *
  * データの根拠: docs/FACTS.md（確定情報のみ）
+ * 料金データ: app/_lib/pricingData.ts（PriceSimulator と共有）
  */
 
 import Image, { StaticImageData } from "next/image";
@@ -19,100 +21,12 @@ import sapImg from "../../imgs/sap.jpg";
 import wetSuitImg from "../../imgs/wet-suit.jpg";
 import lifeJacketImg from "../../imgs/life-jacket.jpg";
 import { ANCHOR_IDS } from "../_lib/anchors";
+import { PRICING_ROWS, SEASONS, yen } from "../_lib/pricingData";
+import { PriceSimulator } from "./PriceSimulator";
 import { Section } from "./Section";
 
-// ---- 料金データ（docs/FACTS.md の確定値をそのまま使用） ----
-// ※ 計算式（base + extra × count）だと端数が合わないため、絶対値で管理する
-
-/** 1 行分の宿泊人数データ */
-type PriceRow = {
-  /** 宿泊人数 */
-  guests: number;
-  /** 使用フロアの補足 */
-  note: string;
-  /**
-   * シーズン別の料金（円）
-   * offseason: オフシーズン
-   * regular:   レギュラーシーズン
-   * high:      ハイシーズン
-   * top:       トップシーズン
-   */
-  prices: {
-    offseason: number;
-    regular: number;
-    high: number;
-    top: number;
-  };
-};
-
-/** 宿泊料金テーブル（清掃費込み） */
-const PRICING_ROWS: PriceRow[] = [
-  {
-    guests: 4,
-    note: "1階のみ",
-    prices: { offseason: 46000, regular: 53000, high: 58000, top: 63000 },
-  },
-  {
-    guests: 5,
-    note: "1・2階",
-    prices: { offseason: 48500, regular: 56500, high: 61500, top: 66500 },
-  },
-  {
-    guests: 6,
-    note: "1・2階",
-    prices: { offseason: 51000, regular: 60000, high: 65000, top: 70000 },
-  },
-  {
-    guests: 7,
-    note: "1・2階",
-    prices: { offseason: 53500, regular: 63500, high: 68500, top: 73500 },
-  },
-  {
-    guests: 8,
-    note: "1・2階",
-    prices: { offseason: 56000, regular: 67000, high: 72000, top: 77000 },
-  },
-];
-
-/**
- * シーズン定義（列ヘッダー・期間説明・カラー）
- * badgeColor: シーズンカードのバッジ色（Tailwindクラス）
- * labelColor: テーブルヘッダーのテキスト色
- */
-const SEASONS = [
-  {
-    key: "offseason" as const,
-    label: "オフシーズン",
-    description: "左記以外",
-    badgeColor:
-      "bg-stone-100 text-stone-600 border-stone-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700",
-    labelColor: "text-stone-600 dark:text-zinc-400",
-  },
-  {
-    key: "regular" as const,
-    label: "レギュラー",
-    description: "日祝・春休み（土曜・祝前日・3連休2日目・7〜9月除く）",
-    badgeColor:
-      "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950 dark:text-sky-400 dark:border-sky-800",
-    labelColor: "text-sky-700 dark:text-sky-400",
-  },
-  {
-    key: "high" as const,
-    label: "ハイ",
-    description: "土曜・祝前日・3連休2日目・7/10〜9/10（お盆除く）",
-    badgeColor:
-      "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-800",
-    labelColor: "text-amber-700 dark:text-amber-400",
-  },
-  {
-    key: "top" as const,
-    label: "トップ",
-    description: "GW・お盆・シルバーウィーク・年末年始（12/28〜1/7）は都度設定",
-    badgeColor:
-      "bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-800",
-    labelColor: "text-red-700 dark:text-red-400",
-  },
-];
+// PRICING_ROWS, SEASONS は app/_lib/pricingData.ts で一元管理
+// PriceSimulator（クライアントコンポーネント）が共有するため lib 側に移動済み
 
 /** キャンセルポリシー */
 const CANCELLATION_RULES = [
@@ -124,6 +38,7 @@ const CANCELLATION_RULES = [
 /**
  * レンタル料金（写真付き）
  * image: next/image で読み込む静的画像（StaticImageData）
+ *        ← 画像 import が必要なためこのファイルで管理（pricingData.ts には入れない）
  * alt:   スクリーンリーダー向けの代替テキスト
  */
 type RentalItem = {
@@ -162,10 +77,7 @@ const RENTAL_ITEMS: RentalItem[] = [
   },
 ];
 
-/** 数値を円表示にフォーマットする（例: 46000 → "¥46,000"） */
-function yen(amount: number): string {
-  return `¥${amount.toLocaleString("ja-JP")}`;
-}
+// yen 関数は app/_lib/pricingData.ts からインポート済み
 
 export function PricingSection() {
   return (
@@ -215,7 +127,14 @@ export function PricingSection() {
         </p>
       </div>
 
-      {/* ---- 2. シーズン定義カード ---- */}
+      {/* ---- 2. 料金シミュレーター ---- */}
+      {/*
+       * PriceSimulator は「use client」のクライアントコンポーネント。
+       * ユーザーが日付と人数を選ぶとシーズン判定 → 料金をその場で表示する。
+       */}
+      <PriceSimulator />
+
+      {/* ---- 3. シーズン定義カード ---- */}
       {/*
        * テーブルより先にシーズン期間を見せることで「自分はいつ泊まるのか」を
        * 確認してから料金表を読む自然な流れを作る。
@@ -241,7 +160,7 @@ export function PricingSection() {
         ))}
       </div>
 
-      {/* ---- 3. 詳細料金表 ---- */}
+      {/* ---- 4. 詳細料金表 ---- */}
       {/* overflow-x-auto: スマホでも横スクロールで表全体を確認できる */}
       <div className="overflow-x-auto">
         <table className="w-full min-w-[520px] border-collapse text-sm">
@@ -291,7 +210,7 @@ export function PricingSection() {
         </table>
       </div>
 
-      {/* ---- 4. キャンセルポリシー ---- */}
+      {/* ---- 5. キャンセルポリシー ---- */}
       <div>
         {/* headingLevel=3: Section の h2 "料金" の下に位置する小見出し */}
         <h3 className="text-xl font-semibold tracking-tight text-stone-900 dark:text-zinc-50">
@@ -328,7 +247,7 @@ export function PricingSection() {
         </div>
       </div>
 
-      {/* ---- 5. レンタル料金 ---- */}
+      {/* ---- 6. レンタル料金 ---- */}
       <div>
         <h3 className="text-xl font-semibold tracking-tight text-stone-900 dark:text-zinc-50">
           レンタル料金
