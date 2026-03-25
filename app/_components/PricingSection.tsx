@@ -4,12 +4,11 @@
  * 役割: シーズン別・人数別の宿泊料金、キャンセルポリシー、レンタル料金を表示する。
  *
  * 構成:
- *   1. 料金サマリー（最安値・前提を一目で把握）＋「料金を見る」アンカー導線
- *   2. 料金シミュレーター（日付＋人数 → シーズン自動判定 → 料金表示）
- *   3. シーズン定義カード（料金表前に期間を先出し）
- *   4. 詳細料金表（シーズン × 宿泊人数）
- *   5. キャンセルポリシー
- *   6. レンタル料金
+ *   1. 料金シミュレーター（日付＋人数 → シーズン自動判定 → 料金表示）
+ *   2. シーズン定義カード（料金表前に期間を先出し）
+ *   3. 詳細料金表（シーズン × 宿泊人数）
+ *   4. キャンセルポリシー
+ *   5. レンタル料金
  *
  * データの根拠: docs/FACTS.md（確定情報のみ）
  * 料金データ: app/_lib/pricingData.ts（PriceSimulator と共有）
@@ -87,54 +86,14 @@ export function PricingSection() {
       title="料金"
       lead="清掃費込み。宿泊人数とシーズンによって料金が変わります。"
     >
-      {/* ---- 1. 料金サマリー ---- */}
-      {/* ページ上部から「料金を見る → #pricing」で到達した際に最短で要点を把握できるようにする */}
-      <div className="rounded-xl border border-stone-200 bg-stone-100 p-5 dark:border-zinc-800 dark:bg-zinc-900/50">
-        <p className="text-sm font-semibold uppercase tracking-wider text-stone-500 dark:text-zinc-400">
-          料金はじめに
-        </p>
-
-        {/*
-         * Issue #26: アンカー価格（最安値）を大きく打ち出す
-         * text-4xl font-bold tabular-nums: 数値を大きく・桁揃えで表示
-         * text-sky-700: ブランドカラーで視線を誘導する
-         */}
-        <div className="mt-3 flex flex-wrap items-baseline gap-2">
-          <span className="text-4xl font-bold tabular-nums text-sky-700 dark:text-sky-400">
-            ¥46,000〜
-          </span>
-          <span className="text-sm text-stone-500 dark:text-zinc-400">清掃費込み</span>
-        </div>
-
-        <ul className="mt-3 space-y-2 text-sm leading-6 text-stone-700 dark:text-zinc-300">
-          <li>
-            <span className="font-medium">最安：オフシーズン 4名まで</span>
-          </li>
-          <li>
-            <span className="font-medium">宿泊人数：</span>4〜8名
-          </li>
-          <li>
-            <span className="font-medium">シーズン区分：</span>
-            オフ / レギュラー / ハイ / トップ（4段階）
-          </li>
-          <li>
-            <span className="font-medium">トップシーズン：</span>
-            GW・お盆・シルバーウィーク・年末年始は都度設定
-          </li>
-        </ul>
-        <p className="mt-3 text-xs text-stone-500 dark:text-zinc-400">
-          ※ 詳細は下記の料金表をご確認ください。
-        </p>
-      </div>
-
-      {/* ---- 2. 料金シミュレーター ---- */}
+      {/* ---- 1. 料金シミュレーター ---- */}
       {/*
        * PriceSimulator は「use client」のクライアントコンポーネント。
        * ユーザーが日付と人数を選ぶとシーズン判定 → 料金をその場で表示する。
        */}
       <PriceSimulator />
 
-      {/* ---- 3. シーズン定義カード ---- */}
+      {/* ---- 2. シーズン定義カード ---- */}
       {/*
        * テーブルより先にシーズン期間を見せることで「自分はいつ泊まるのか」を
        * 確認してから料金表を読む自然な流れを作る。
@@ -160,7 +119,7 @@ export function PricingSection() {
         ))}
       </div>
 
-      {/* ---- 4. 詳細料金表 ---- */}
+      {/* ---- 3. 詳細料金表 ---- */}
       {/* overflow-x-auto: スマホでも横スクロールで表全体を確認できる */}
       <div className="overflow-x-auto">
         <table className="w-full min-w-[520px] border-collapse text-sm">
@@ -210,7 +169,7 @@ export function PricingSection() {
         </table>
       </div>
 
-      {/* ---- 5. キャンセルポリシー ---- */}
+      {/* ---- 4. キャンセルポリシー ---- */}
       <div>
         {/* headingLevel=3: Section の h2 "料金" の下に位置する小見出し */}
         <h3 className="text-xl font-semibold tracking-tight text-stone-900 dark:text-zinc-50">
@@ -247,7 +206,7 @@ export function PricingSection() {
         </div>
       </div>
 
-      {/* ---- 6. レンタル料金 ---- */}
+      {/* ---- 5. レンタル料金 ---- */}
       <div>
         <h3 className="text-xl font-semibold tracking-tight text-stone-900 dark:text-zinc-50">
           レンタル料金
