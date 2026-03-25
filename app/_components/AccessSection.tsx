@@ -37,7 +37,7 @@ export function AccessSection() {
     <Section
       id={ANCHOR_IDS.access}
       title="アクセス"
-      lead="館山駅から徒歩圈内。海まで徐歩絀30秒の好立地です。"
+      lead="館山駅から徒歩圈内。海まで徒歩約30秒の好立地です。"
       variant="tinted"
     >
       {/* ---- 住所 + 地図 CTA ---- */}
