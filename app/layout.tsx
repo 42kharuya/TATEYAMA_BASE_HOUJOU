@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
-// M PLUS Rounded 1c: 丸みのある字体でリゾート・宿泊系サイトに向くフォント
-// 参考: https://fonts.google.com/specimen/M+PLUS+Rounded+1c
-import { M_PLUS_Rounded_1c } from "next/font/google";
+// Shippori Mincho: 繊細な明朝体。和の上品さ・高級リゾート感を演出するセリフ体
+// 参考: https://fonts.google.com/specimen/Shippori+Mincho
+import { Shippori_Mincho } from "next/font/google";
 import "./globals.css";
 import { Footer } from "./_components/Footer";
 import { Header } from "./_components/Header";
 
 // display: "swap" → フォント未読込み中は代替フォントを表示し、読み込み完了後に切り替える（表示の安定性向上）
 // preload: false  → 日本語フォントはファイルサイズが大きいため、先読みせず必要な文字だけ遅延ロードする
-const mPlusRounded = M_PLUS_Rounded_1c({
-  variable: "--font-mplus-rounded",
+const shipporiMincho = Shippori_Mincho({
+  variable: "--font-shippori-mincho",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
+  weight: ["400", "600", "700"],
   display: "swap",
   preload: false,
 });
@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className={`${mPlusRounded.variable} h-full antialiased`}>
+    <html lang="ja" className={`${shipporiMincho.variable} h-full antialiased`}>
       {/* bg-stone-50: 砂浜のオフホワイト（Issue #23 ブランドカラー導入）
            text-stone-900: 読みやすい濃いテキスト */}
       <body className="flex min-h-full flex-col bg-stone-50 font-sans text-stone-900 dark:bg-black dark:text-zinc-50">
