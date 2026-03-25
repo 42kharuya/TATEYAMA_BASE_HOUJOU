@@ -1,7 +1,8 @@
 /**
- * FacilitiesSection — 設備セクション（フロア別一覧）
+ * FacilitiesSection — 設備セクション（フロア別写真付きレイアウト）
  *
- * 目的: 宿泊前に「何があるか」を場所（フロア）別に整理して伝える。
+ * 目的: 宿泊前に「何があるか」を場所（フロア）別に視覚的に伝える。
+ *       Issue #36: アイコン箇条書き → 写真＋設備リストのフロアカードに刷新。
  *
  * 掲載情報（docs/FACTS.md の確定情報のみ使用）:
  *   - 屋外：駐車スペース1台、屋外シャワー、EVコンセント（EV車2台まで）
@@ -13,152 +14,57 @@
  *
  * 除外情報: アメニティ（未確定のため掲載しない、docs/REQUIREMENTS.md 準拠）
  *
- * デザイン準拠: docs/DESIGN.md（余白・フォント・カラールール）
+ * レイアウト:
+ *   - スマホ: 写真上 + 設備リスト下（flex-col）
+ *   - PC (sm〜): 写真左 + 設備リスト右（flex-row、2カラム）
+ *   - 写真なしフロア（その他）: リストのみのシンプルカード
+ *
+ * 写真 (imgs/):
+ *   - 屋外  → outdoor-shower.jpg
+ *   - 1階   → first-floor.jpg
+ *   - 2階   → second-floor.jpg
+ *   - 屋上  → rooftop-terrace.jpg
+ *   - その他 → 写真なし（設備のみ）
+ *
+ * デザイン準拠: docs/DESIGN.md（余白・フォント・stone カラールール）
  * セマンティック: <section> > <h2> > フロアカード内 <h3> で見出し階層を維持
  * IA.md: セクション順 5番目（特徴の後・アクセスの前）
  */
+
+import Image, { type StaticImageData } from "next/image";
+
+// ────────────────────────────────────────────────────────
+// 写真のインポート（imgs/ 以下。next/image が自動で WebP 変換・最適化する）
+// StaticImageData を使うと width / height が自動取得→ CLS（レイアウトズレ）防止
+// ────────────────────────────────────────────────────────
+import outdoorShowerImg from "../../imgs/outdoor-shower.jpg";
+import firstFloorImg from "../../imgs/first-floor.jpg";
+import secondFloorImg from "../../imgs/second-floor.jpg";
+import rooftopTerraceImg from "../../imgs/rooftop-terrace.jpg";
 
 import { ANCHOR_IDS } from "../_lib/anchors";
 import { Section } from "./Section";
 
 // ────────────────────────────────────────────────────────
-// フロア別設備データ（docs/FACTS.md の確定情報のみ）
-// アメニティは未確定のため含めない（docs/REQUIREMENTS.md 準拠）
+// フロア別設備データ型
 // ────────────────────────────────────────────────────────
 
 type FloorFacility = {
-  /** フロア名（h3 の見出しに使用） */
+  /** フロア名（h3 見出し） */
   floor: string;
-  /** 設備一覧（確定情報のみ） */
+  /**
+   * 代表写真（next/image の StaticImageData）
+   * undefined のフロアは写真エリアを非表示にする
+   */
+  image?: StaticImageData;
+  /**
+   * 画像の alt テキスト（アクセシビリティ必須）
+   * 写真の内容を具体的に記述する（docs/DESIGN.md §3）
+   */
+  alt?: string;
+  /** 設備一覧（docs/FACTS.md 確定情報のみ） */
   items: string[];
-  /** アイコンコンポーネント（装飾・aria-hidden） */
-  Icon: () => React.JSX.Element;
 };
-
-// ────────────────────────────────────────────────────────
-// アイコン（インライン SVG）
-// aria-hidden="true" で装飾扱いとし、テキストで意味を伝える
-// ────────────────────────────────────────────────────────
-
-/** 木・屋外アイコン（屋外エリア） */
-function OutdoorIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      {/* 木の幹 */}
-      <line x1="12" y1="22" x2="12" y2="10" />
-      {/* 木の枝（三角形を重ねて木の形） */}
-      <path d="M12 10 L6 17 L18 17 Z" />
-      <path d="M12 6 L7 12 L17 12 Z" />
-    </svg>
-  );
-}
-
-/** 家・1階アイコン */
-function FirstFloorIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      {/* 屋根 */}
-      <path d="M3 9.5 12 3l9 6.5" />
-      {/* 建物外壁 */}
-      <path d="M19 10v11H5V10" />
-      {/* ドア */}
-      <rect x="9" y="14" width="6" height="7" rx="0.5" />
-    </svg>
-  );
-}
-
-/** 2階アイコン（積み重ねた四角） */
-function SecondFloorIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      {/* 下の階 */}
-      <rect x="3" y="13" width="18" height="8" rx="1" />
-      {/* 上の階 */}
-      <rect x="5" y="5" width="14" height="8" rx="1" />
-    </svg>
-  );
-}
-
-/** 屋上テラスアイコン（太陽） */
-function RooftopIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      {/* 太陽の円 */}
-      <circle cx="12" cy="12" r="4" />
-      {/* 放射線 8本 */}
-      <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-    </svg>
-  );
-}
-
-/** その他アイコン（スター） */
-function OtherIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      {/* Wifi波形 */}
-      <path d="M5 12.55a11 11 0 0 1 14.08 0" />
-      <path d="M1.42 9a16 16 0 0 1 21.16 0" />
-      <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
-      {/* 中心ドット */}
-      <circle cx="12" cy="20" r="1" fill="currentColor" />
-    </svg>
-  );
-}
 
 // ────────────────────────────────────────────────────────
 // フロア別設備データ（docs/FACTS.md に基づく）
@@ -167,7 +73,8 @@ function OtherIcon() {
 const FLOOR_FACILITIES: FloorFacility[] = [
   {
     floor: "屋外",
-    Icon: OutdoorIcon,
+    image: outdoorShowerImg,
+    alt: "屋外シャワーの様子。砂浜帰りにそのまま使える屋外設備",
     // 根拠: docs/FACTS.md「駐車場・屋外設備」
     items: [
       "駐車スペース（1台）",
@@ -177,7 +84,8 @@ const FLOOR_FACILITIES: FloorFacility[] = [
   },
   {
     floor: "1階",
-    Icon: FirstFloorIcon,
+    image: firstFloorImg,
+    alt: "1階の室内。リビングスペースとウッドデッキが隣接している",
     // 根拠: docs/FACTS.md「1階（ウッドデッキ付き）」
     items: [
       "大型テレビ",
@@ -192,27 +100,30 @@ const FLOOR_FACILITIES: FloorFacility[] = [
   },
   {
     floor: "2階",
-    Icon: SecondFloorIcon,
+    image: secondFloorImg,
+    alt: "2階の室内。卓球台・麻雀台が設置されたアクティビティフロア",
     // 根拠: docs/FACTS.md「2階」
     items: ["卓球台", "麻雀台", "ベッド（4台）", "トイレ"],
   },
   {
     floor: "屋上",
-    Icon: RooftopIcon,
+    image: rooftopTerraceImg,
+    alt: "屋上テラスの様子。海と空を見渡せる開放的なスペース",
     // 根拠: docs/FACTS.md「屋上」
     items: ["屋上テラス"],
   },
   {
     floor: "その他",
-    Icon: OtherIcon,
+    // 写真なし（該当する代表写真がないため。設備のみ表示）
     // 根拠: docs/FACTS.md「その他」
     items: ["無料Wi-Fi", "エアコン"],
   },
 ];
 
 // ────────────────────────────────────────────────────────
-// フロアカードコンポーネント
-// h3 で各フロア名を示す（h2 > h3 の見出し階層を維持）
+// FloorCard コンポーネント
+// 1フロア分の「写真＋設備リスト」をカード形式で表示する。
+// h3 を使うことで Section（h2）→ FloorCard（h3）の見出し階層を維持。
 // ────────────────────────────────────────────────────────
 
 type FloorCardProps = {
@@ -220,41 +131,77 @@ type FloorCardProps = {
 };
 
 /**
- * フロアカード
- * 1フロア分の設備を箇条書きで表示する。
- * h3 を使うことで、Section（h2）→ FloorCard（h3）の見出し階層を維持。
+ * FloorCard — フロア別写真付きカード
+ *
+ * 写真ありフロア:
+ *   - スマホ: 写真上（aspect-[4/3]）＋ リスト下（flex-col）
+ *   - PC:     写真左（sm:w-2/5）＋ リスト右（flex-row）
+ *
+ * 写真なしフロア（その他）:
+ *   - スマホ・PC 共通: リストのみのシンプルカード
  */
 function FloorCard({ facility }: FloorCardProps) {
-  const { floor, Icon, items } = facility;
+  const { floor, image, alt, items } = facility;
+  const hasImage = image !== undefined && alt !== undefined;
 
   return (
-    <div className="rounded-xl border border-stone-200 bg-white p-5 dark:border-zinc-700 dark:bg-zinc-800/60">
-      {/* フロア見出し（h3）：アイコン + フロア名をセットで表示 */}
-      <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-stone-900 dark:text-zinc-50">
-        {/* アイコンは装飾扱い（aria-hidden はアイコン側で設定済み）
-         * テキストのフロア名でスクリーンリーダーに意味を伝える
-         */}
-        <span className="text-sky-600 dark:text-sky-400">
-          <Icon />
-        </span>
-        {floor}
-      </h3>
+    <div className="overflow-hidden rounded-xl border border-stone-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/60">
+      {/*
+       * 写真ありの場合: flex-col（モバイル）→ flex-row（PC）の2カラムレイアウト
+       * 写真なしの場合: パディングあり・リストのみ表示
+       */}
+      <div className={hasImage ? "flex flex-col sm:flex-row" : "p-5"}>
+        {/* ── 写真エリア ── */}
+        {hasImage && (
+          /*
+           * モバイル: aspect-[4/3] でアスペクト比を固定（レイアウトズレ防止）
+           * PC:       sm:aspect-auto + sm:w-2/5 + relative + Image fill で
+           *           リストの高さに合わせて写真が伸縮する
+           */
+          <div className="relative aspect-[4/3] shrink-0 sm:aspect-auto sm:w-2/5">
+            <Image
+              src={image!}
+              alt={alt!}
+              fill
+              className="object-cover"
+              /*
+               * sizes: ビューポート幅ごとの画像表示サイズを伝えることで
+               * ブラウザが適切な解像度の画像を選択し、通信量を削減する
+               * - スマホ（< sm = 640px）: 横幅 100vw（1カラム全幅）
+               * - PC（>= sm）: コンテナの 2/5 ≒ 40vw
+               */
+              sizes="(min-width: 640px) 40vw, 100vw"
+            />
+          </div>
+        )}
 
-      {/* 設備一覧：箇条書きで漏れなく表示 */}
-      <ul className="space-y-1.5">
-        {items.map((item) => (
-          <li
-            key={item}
-            className="flex items-start gap-2 text-sm text-stone-700 dark:text-zinc-300"
-          >
-            {/* チェックマーク（装飾）— aria-hidden で読み上げをスキップ */}
-            <span aria-hidden="true" className="mt-0.5 shrink-0 text-sky-500">
-              ✓
-            </span>
-            {item}
-          </li>
-        ))}
-      </ul>
+        {/* ── 設備リストエリア ── */}
+        <div className={hasImage ? "flex flex-1 flex-col justify-center p-5" : ""}>
+          {/* フロア見出し（h3）: Section の h2 の下に位置する第3レベル見出し */}
+          <h3 className="mb-3 text-base font-semibold text-stone-900 dark:text-zinc-50">
+            {floor}
+          </h3>
+
+          {/* 設備一覧: チェックマーク付き箇条書き */}
+          <ul className="space-y-1.5">
+            {items.map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-2 text-sm text-stone-700 dark:text-zinc-300"
+              >
+                {/* チェックマーク（装飾）— aria-hidden でスクリーンリーダーをスキップ */}
+                <span
+                  aria-hidden="true"
+                  className="mt-0.5 shrink-0 text-sky-500"
+                >
+                  ✓
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
@@ -265,14 +212,18 @@ function FloorCard({ facility }: FloorCardProps) {
 
 /**
  * FacilitiesSection
- * フロア別（屋外・1階・2階・屋上・その他）に設備を一覧表示する。
+ * フロア別（屋外・1階・2階・屋上・その他）に写真＋設備リストを表示する。
  *
- * レイアウト: レスポンシブグリッド（スマホ1列 → タブレット2列 → PC3列）
+ * レイアウト:
+ *   - スマホ（< sm）: 1列（縦積み）
+ *   - PC（>= sm）:   2列グリッド
+ *   - 「その他」はグリッド内の最後に配置（写真なしカード）
+ *
  * アクセシビリティ: id={ANCHOR_IDS.facilities} でヘッダーナビとページ内リンクに対応
  */
 export function FacilitiesSection() {
   return (
-    // Section コンポーネントが <section id="..."> + h2 + lead テキスト を担当
+    // Section コンポーネントが <section id="..."> + h2 + lead テキストを担当
     <Section
       id={ANCHOR_IDS.facilities}
       title="施設・設備"
@@ -280,12 +231,11 @@ export function FacilitiesSection() {
     >
       {/*
        * フロア別カードのグリッドレイアウト
-       * - スマホ：1列（縦積み）
-       * - タブレット（sm）：2列
-       * - PC（lg）：3列
-       * DESIGN.md にある「1画面に詰め込みすぎない」を意識してカード間に gap を設定
+       * - スマホ: 1列（縦積み）
+       * - PC（sm〜）: 2列
+       * gap-6 でカード間に適切な余白（DESIGN.md 準拠）
        */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         {FLOOR_FACILITIES.map((facility) => (
           <FloorCard key={facility.floor} facility={facility} />
         ))}
