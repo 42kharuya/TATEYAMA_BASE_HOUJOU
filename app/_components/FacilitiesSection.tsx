@@ -64,6 +64,8 @@ type FloorFacility = {
   alt?: string;
   /** 設備一覧（docs/FACTS.md 確定情報のみ） */
   items: string[];
+  /** フロア補足テキスト（「手ぶらOK」など）— 表示する場合のみ設定 */
+  note?: string;
 };
 
 // ────────────────────────────────────────────────────────
@@ -83,7 +85,8 @@ const FLOOR_FACILITIES: FloorFacility[] = [
     ],
   },
   {
-    floor: "1階",
+    // ウッドデッキはフロアの特徴なので見出しに組み込む（設備リストから除外）
+    floor: "1階 / ウッドデッキ付き",
     image: firstFloorImg,
     alt: "1階の室内。リビングスペースとウッドデッキが隣接している",
     // 根拠: docs/FACTS.md「1階（ウッドデッキ付き）」
@@ -95,15 +98,15 @@ const FLOOR_FACILITIES: FloorFacility[] = [
       "バスルーム",
       "ドライヤー",
       "洗濯機・乾燥機",
-      "ウッドデッキ",
     ],
   },
   {
     floor: "2階",
     image: secondFloorImg,
     alt: "2階の室内。卓球台・麻雀台が設置されたアクティビティフロア",
-    // 根拠: docs/FACTS.md「2階」
-    items: ["卓球台", "麻雀台", "ベッド（4台）", "トイレ"],
+    // 根拠: docs/FACTS.md「2階」（誤記修正済み: 麻雀台=椅子付き、卓球台=ラケット・ボール付き）
+    items: ["卓球台（ラケット・ボール付き）", "麻雀台（椅子付き）", "ベッド（4台）", "トイレ"],
+    note: "道具はすべて揃っているので、手ぶらでお楽しみいただけます。",
   },
   {
     floor: "屋上",
@@ -112,12 +115,8 @@ const FLOOR_FACILITIES: FloorFacility[] = [
     // 根拠: docs/FACTS.md「屋上」
     items: ["屋上テラス"],
   },
-  {
-    floor: "その他",
-    // 写真なし（該当する代表写真がないため。設備のみ表示）
-    // 根拠: docs/FACTS.md「その他」
-    items: ["無料Wi-Fi", "エアコン"],
-  },
+  // 「その他」（Wi-Fi・エアコン）は全フロア共通設備のため、
+  // カードではなくセクション下部のバッジとして表示する（FacilitiesSection 側で実装）
 ];
 
 // ────────────────────────────────────────────────────────
@@ -141,7 +140,7 @@ type FloorCardProps = {
  *   - スマホ・PC 共通: リストのみのシンプルカード
  */
 function FloorCard({ facility }: FloorCardProps) {
-  const { floor, image, alt, items } = facility;
+  const { floor, image, alt, items, note } = facility;
   const hasImage = image !== undefined && alt !== undefined;
 
   return (
@@ -200,6 +199,12 @@ function FloorCard({ facility }: FloorCardProps) {
               </li>
             ))}
           </ul>
+          {/* 補足テキスト（手ぶらOKなど）— note がある場合のみ表示 */}
+          {note && (
+            <p className="mt-3 text-xs italic text-stone-500 dark:text-zinc-400">
+              💡 {note}
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -239,6 +244,20 @@ export function FacilitiesSection() {
         {FLOOR_FACILITIES.map((facility) => (
           <FloorCard key={facility.floor} facility={facility} />
         ))}
+      </div>
+
+      {/*
+       * 全フロア共通設備バッジ
+       * Wi-Fi・エアコンはすべての部屋に完備しているため、
+       * フロアカードとは分けてバッジ形式で常時表示する（誤解防止）
+       */}
+      <div className="mt-6 flex flex-wrap gap-3">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-4 py-2 text-sm font-medium text-sky-700 dark:bg-sky-900/30 dark:text-sky-300">
+          🛜 全室 無料Wi-Fi
+        </span>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-4 py-2 text-sm font-medium text-sky-700 dark:bg-sky-900/30 dark:text-sky-300">
+          ❄️ 全室エアコン完備
+        </span>
       </div>
     </Section>
   );
