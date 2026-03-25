@@ -1,8 +1,8 @@
 /**
- * PriceSimulator — 料金シミュレーター
+ * PriceSimulator — 料金シミュレーター（複数泊対応）
  *
- * 役割: 宿泊日と宿泊人数を選ぶと、シーズンを自動判定して料金を即時表示する
- *       インタラクティブなウィジェット。
+ * 役割: チェックイン日・チェックアウト日・宿泊人数を入力すると、
+ *       各泊のシーズンを自動判定して合計料金を即時表示する。
  *
  * 技術:
  *   - "use client": ユーザー操作（日付選択・人数選択）に useState で反応するため
@@ -10,69 +10,174 @@
  *   - detectSeason: app/_lib/seasonDetector.ts の判定ロジックを使用
  *   - PRICING_ROWS / SEASONS: app/_lib/pricingData.ts の共有データを使用
  *
+ * 計算の仕組み:
+ *   チェックイン日〜チェックアウト前日まで1日ずつループし、
+ *   各日のシーズンを判定して料金を積算する。
+ *   例: 3泊（ハイ2泊＋オフ1泊）→ 各シーズンの料金を合計して表示する。
+ *
  * 注意:
- *   - トップシーズン（GW・お盆等）は「都度設定」のため、参考料金として表示する
+ *   - トップシーズン（GW・お盆等）が含まれる場合は参考料金として注意書きを出す
  *   - 祝日データは 2025〜2027 年分のみ精度が保証される
+ *   - 最大連泊数: 14泊（極端な入力を防ぐ上限）
  */
 
 "use client";
 
 import { useState } from "react";
 
+import type { SeasonKey } from "../_lib/seasonDetector";
 import { PRICING_ROWS, SEASONS, yen } from "../_lib/pricingData";
 import { detectSeason } from "../_lib/seasonDetector";
 
 /** シミュレーターが保持する状態 */
 type SimulatorState = {
-  /** 選択した宿泊日（"YYYY-MM-DD" 形式 or 空文字） */
-  dateStr: string;
-  /** 選択した宿泊人数（null = 未選択） */
+  /** チェックイン日（"YYYY-MM-DD" 形式 or 空文字） */
+  checkInStr: string;
+  /** チェックアウト日（"YYYY-MM-DD" 形式 or 空文字） */
+  checkOutStr: string;
+  /** 宿泊人数（null = 未選択） */
   guests: number | null;
 };
+
+/** シーズン別の内訳（泊数と小計） */
+type SeasonBreakdown = {
+  key: SeasonKey;
+  nights: number;
+  subtotal: number;
+};
+
+/** 計算結果 */
+type SimulatorResult = {
+  /** 合計泊数 */
+  nights: number;
+  /** 合計料金（円） */
+  total: number;
+  /** シーズン別の内訳リスト（泊数が多いシーズン順） */
+  breakdown: SeasonBreakdown[];
+  /** トップシーズンが1泊でも含まれるか */
+  hasTop: boolean;
+};
+
+/** 最大連泊数の上限 */
+const MAX_NIGHTS = 14;
+
+// ─────────────────────────────────────────────
+// 計算ロジック（コンポーネント外で定義して再利用可能にする）
+// ─────────────────────────────────────────────
+
+/**
+ * "YYYY-MM-DD" 文字列をローカル日付の Date に変換する
+ * ※ new Date("YYYY-MM-DD") は UTC 解釈になるためタイムゾーンのずれが生じる。
+ *    年・月・日に分解して new Date(y, m-1, d) とすることで正確なローカル日付になる。
+ */
+function parseLocalDate(dateStr: string): Date {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+/**
+ * チェックイン日・チェックアウト日・人数から合計料金を計算する
+ *
+ * @returns 計算結果（SimulatorResult）または null（入力不足の場合）
+ */
+function calcResult(
+  checkInStr: string,
+  checkOutStr: string,
+  guests: number,
+  priceRow: (typeof PRICING_ROWS)[number]
+): SimulatorResult | null {
+  const checkIn = parseLocalDate(checkInStr);
+  const checkOut = parseLocalDate(checkOutStr);
+
+  // 泊数を計算する（ミリ秒差 → 日数）
+  const msPerDay = 1000 * 60 * 60 * 24;
+  const nights = Math.round((checkOut.getTime() - checkIn.getTime()) / msPerDay);
+
+  if (nights <= 0 || nights > MAX_NIGHTS) return null;
+
+  // シーズン別の集計マップ（初期値は全シーズン 0泊・0円）
+  const map: Record<SeasonKey, SeasonBreakdown> = {
+    offseason: { key: "offseason", nights: 0, subtotal: 0 },
+    regular: { key: "regular", nights: 0, subtotal: 0 },
+    high: { key: "high", nights: 0, subtotal: 0 },
+    top: { key: "top", nights: 0, subtotal: 0 },
+  };
+
+  // チェックイン日〜チェックアウト前日まで1日ずつループして各泊のシーズンを判定する
+  for (let i = 0; i < nights; i++) {
+    const night = new Date(checkIn);
+    night.setDate(night.getDate() + i); // i日目の宿泊日
+    const key = detectSeason(night);
+    map[key].nights += 1;
+    map[key].subtotal += priceRow.prices[key];
+  }
+
+  // 泊数が0のシーズンを除いて、泊数降順で並べる
+  const breakdown = Object.values(map)
+    .filter((b) => b.nights > 0)
+    .sort((a, b) => b.nights - a.nights);
+
+  const total = breakdown.reduce((sum, b) => sum + b.subtotal, 0);
+  const hasTop = map.top.nights > 0;
+
+  return { nights, total, breakdown, hasTop };
+}
+
+// ─────────────────────────────────────────────
+// コンポーネント
+// ─────────────────────────────────────────────
 
 export function PriceSimulator() {
   // ── 状態管理 ──────────────────────────────────────
   const [state, setState] = useState<SimulatorState>({
-    dateStr: "",
+    checkInStr: "",
+    checkOutStr: "",
     guests: null,
   });
 
-  // ── 計算ロジック ───────────────────────────────────
+  // ── 計算 ──────────────────────────────────────────
 
   /**
-   * 選択状態から結果を導く
-   * dateStr と guests が両方入力されたときだけ計算する
+   * 入力エラーメッセージを返す（なければ null）
+   * 計算の前にバリデーションして UI にフィードバックする
+   */
+  const inputError = (() => {
+    if (!state.checkInStr || !state.checkOutStr) return null; // 未入力は無視
+    const checkIn = parseLocalDate(state.checkInStr);
+    const checkOut = parseLocalDate(state.checkOutStr);
+    const msPerDay = 1000 * 60 * 60 * 24;
+    const nights = Math.round(
+      (checkOut.getTime() - checkIn.getTime()) / msPerDay
+    );
+    if (nights <= 0)
+      return "チェックアウト日はチェックイン日より後の日付を選んでください。";
+    if (nights > MAX_NIGHTS)
+      return `最大 ${MAX_NIGHTS} 泊まで計算できます。`;
+    return null;
+  })();
+
+  /**
+   * 全項目が入力済みかつエラーなしの場合のみ計算する
    */
   const result = (() => {
-    if (!state.dateStr || state.guests === null) return null;
-
-    // "YYYY-MM-DD" → Date に変換
-    // ※ new Date("YYYY-MM-DD") は UTC 解釈になるため、
-    //    タイムゾーンずれを防ぐために分割してローカル日付として構築する
-    const [y, m, d] = state.dateStr.split("-").map(Number);
-    const date = new Date(y, m - 1, d); // 月は 0 始まり
-
-    const seasonKey = detectSeason(date);
+    if (!state.checkInStr || !state.checkOutStr || state.guests === null)
+      return null;
+    if (inputError) return null;
     const row = PRICING_ROWS.find((r) => r.guests === state.guests);
-    const seasonConfig = SEASONS.find((s) => s.key === seasonKey)!;
-
     if (!row) return null;
-
-    return {
-      seasonConfig,
-      price: row.prices[seasonKey],
-      isTop: seasonKey === "top",
-    };
+    return calcResult(state.checkInStr, state.checkOutStr, state.guests, row);
   })();
 
   // ── イベントハンドラー ─────────────────────────────
 
-  /** 日付が変更されたときに状態を更新する */
-  function handleDateChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setState((prev) => ({ ...prev, dateStr: e.target.value }));
+  function handleCheckInChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setState((prev) => ({ ...prev, checkInStr: e.target.value }));
   }
 
-  /** 人数ボタンが押されたときに状態を更新する */
+  function handleCheckOutChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setState((prev) => ({ ...prev, checkOutStr: e.target.value }));
+  }
+
   function handleGuestsSelect(guests: number) {
     setState((prev) => ({ ...prev, guests }));
   }
@@ -80,50 +185,64 @@ export function PriceSimulator() {
   // ── レンダリング ───────────────────────────────────
 
   return (
-    /*
-     * シミュレーターカード全体
-     * rounded-2xl border: 料金テーブルと視覚的に区別できるよう外枠を強調
-     * bg-stone-50: 通常の白背景より少し落ち着いたトーンで「入力エリア感」を出す
-     */
     <div className="rounded-2xl border border-stone-200 bg-stone-50 p-5 dark:border-zinc-700 dark:bg-zinc-900/60">
       {/* カードヘッダー */}
       <p className="text-sm font-semibold uppercase tracking-wider text-stone-500 dark:text-zinc-400">
         料金シミュレーター
       </p>
       <p className="mt-1 text-xs text-stone-500 dark:text-zinc-400">
-        宿泊日と人数を選ぶと、概算料金をその場で確認できます。
+        チェックイン・アウト日と人数を選ぶと、概算合計料金をその場で確認できます。
       </p>
 
       {/* ── 入力エリア ── */}
       <div className="mt-4 space-y-4">
-        {/* 日付ピッカー */}
-        <div>
-          <label
-            htmlFor="sim-date"
-            className="block text-sm font-medium text-stone-700 dark:text-zinc-300"
-          >
-            宿泊日
-          </label>
-          {/*
-           * input[type="date"]: ブラウザネイティブのカレンダーを使う
-           * min/max: 祝日データの対応年（2025〜2027年）に絞る
-           */}
-          <input
-            id="sim-date"
-            type="date"
-            min="2025-01-01"
-            max="2027-12-31"
-            value={state.dateStr}
-            onChange={handleDateChange}
-            className="
-              mt-1 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2
-              text-sm text-stone-900
-              focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500
-              dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50
-              dark:focus:border-sky-400 dark:focus:ring-sky-400
-            "
-          />
+        {/* チェックイン日・チェックアウト日（横並び） */}
+        {/*
+         * sm:grid-cols-2: PC では横並び、モバイルでは縦積みにする
+         */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div>
+            <label
+              htmlFor="sim-checkin"
+              className="block text-sm font-medium text-stone-700 dark:text-zinc-300"
+            >
+              チェックイン日
+            </label>
+            <input
+              id="sim-checkin"
+              type="date"
+              min="2025-01-01"
+              max="2027-12-31"
+              value={state.checkInStr}
+              onChange={handleCheckInChange}
+              className="mt-1 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50 dark:focus:border-sky-400 dark:focus:ring-sky-400"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="sim-checkout"
+              className="block text-sm font-medium text-stone-700 dark:text-zinc-300"
+            >
+              チェックアウト日
+            </label>
+            <input
+              id="sim-checkout"
+              type="date"
+              min="2025-01-02"
+              max="2027-12-31"
+              value={state.checkOutStr}
+              onChange={handleCheckOutChange}
+              className="mt-1 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50 dark:focus:border-sky-400 dark:focus:ring-sky-400"
+            />
+          </div>
         </div>
+
+        {/* 入力エラーメッセージ */}
+        {inputError && (
+          <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700 dark:bg-red-950 dark:text-red-300">
+            {inputError}
+          </p>
+        )}
 
         {/* 宿泊人数ボタン */}
         <div>
@@ -132,7 +251,7 @@ export function PriceSimulator() {
           </p>
           {/*
            * 4〜8名を横並びボタンで選択する
-           * 選択中ボタンは bg-sky-700 で強調表示
+           * aria-pressed: 現在選択中のボタンをスクリーンリーダーに伝える
            */}
           <div className="mt-1 flex gap-2">
             {PRICING_ROWS.map((row) => {
@@ -143,14 +262,11 @@ export function PriceSimulator() {
                   type="button"
                   onClick={() => handleGuestsSelect(row.guests)}
                   aria-pressed={isSelected}
-                  className={`
-                    flex-1 rounded-lg border py-2 text-sm font-medium transition-colors
-                    ${
-                      isSelected
-                        ? "border-sky-600 bg-sky-700 text-white dark:border-sky-500 dark:bg-sky-600"
-                        : "border-stone-200 bg-white text-stone-700 hover:border-sky-300 hover:bg-sky-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-sky-500 dark:hover:bg-sky-950"
-                    }
-                  `}
+                  className={`flex-1 rounded-lg border py-2 text-sm font-medium transition-colors ${
+                    isSelected
+                      ? "border-sky-600 bg-sky-700 text-white dark:border-sky-500 dark:bg-sky-600"
+                      : "border-stone-200 bg-white text-stone-700 hover:border-sky-300 hover:bg-sky-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-sky-500 dark:hover:bg-sky-950"
+                  }`}
                 >
                   {row.guests}名
                 </button>
@@ -163,40 +279,66 @@ export function PriceSimulator() {
       {/* ── 結果エリア ── */}
       <div className="mt-5 rounded-xl border border-stone-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
         {result === null ? (
-          /* 未選択状態のプレースホルダー */
+          /* 未入力・エラー時のプレースホルダー */
           <p className="text-center text-sm text-stone-400 dark:text-zinc-500">
-            宿泊日と人数を選ぶと料金が表示されます
+            日付と人数を選ぶと合計料金が表示されます
           </p>
         ) : (
-          /* 結果表示 */
-          <div className="space-y-2">
-            {/* シーズンバッジ: 判定されたシーズンを色付きで表示 */}
-            <span
-              className={`inline-block rounded-full border px-3 py-0.5 text-xs font-semibold ${result.seasonConfig.badgeColor}`}
-            >
-              {result.seasonConfig.label}シーズン
-            </span>
+          <div className="space-y-3">
+            {/* 泊数バッジ */}
+            <p className="text-xs font-medium text-stone-500 dark:text-zinc-400">
+              {result.nights}泊 /{" "}
+              {PRICING_ROWS.find((r) => r.guests === state.guests)?.note}
+            </p>
 
-            {/* 料金（大きく表示） */}
+            {/* 合計料金（大きく表示） */}
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-bold tabular-nums text-stone-900 dark:text-zinc-50">
-                {yen(result.price)}
+                {yen(result.total)}
               </span>
               <span className="text-sm text-stone-500 dark:text-zinc-400">
-                清掃費込み / 1泊
+                合計（清掃費込み）
               </span>
             </div>
 
-            {/* 人数・シーズン期間の補足 */}
-            <p className="text-xs text-stone-500 dark:text-zinc-400">
-              {state.guests}名（
-              {PRICING_ROWS.find((r) => r.guests === state.guests)?.note}
-              ）・{result.seasonConfig.description}
-            </p>
+            {/* シーズン別内訳
+             * 複数シーズンにまたがる場合に各泊の明細を表示する
+             */}
+            <div className="space-y-1 border-t border-stone-100 pt-2 dark:border-zinc-700">
+              <p className="text-xs font-medium text-stone-500 dark:text-zinc-400">
+                内訳
+              </p>
+              {result.breakdown.map((b) => {
+                // シーズン定義（ラベル・バッジカラー）を取得する
+                const config = SEASONS.find((s) => s.key === b.key)!;
+                return (
+                  <div
+                    key={b.key}
+                    className="flex items-center justify-between text-sm"
+                  >
+                    <div className="flex items-center gap-2">
+                      {/* シーズンバッジ */}
+                      <span
+                        className={`inline-block rounded-full border px-2 py-0.5 text-xs font-semibold ${config.badgeColor}`}
+                      >
+                        {config.label}
+                      </span>
+                      <span className="text-stone-600 dark:text-zinc-400">
+                        {b.nights}泊
+                      </span>
+                    </div>
+                    {/* 小計 */}
+                    <span className="tabular-nums text-stone-700 dark:text-zinc-300">
+                      {yen(b.subtotal)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
 
-            {/* トップシーズンの注意書き */}
-            {result.isTop && (
-              <p className="mt-1 rounded-lg bg-red-50 px-3 py-2 text-xs leading-5 text-red-700 dark:bg-red-950 dark:text-red-300">
+            {/* トップシーズンが含まれる場合の注意書き */}
+            {result.hasTop && (
+              <p className="rounded-lg bg-red-50 px-3 py-2 text-xs leading-5 text-red-700 dark:bg-red-950 dark:text-red-300">
                 ※ GW・お盆・シルバーウィーク・年末年始は都度設定になる場合があります。
                 上記は参考料金です。詳細はお問い合わせください。
               </p>
