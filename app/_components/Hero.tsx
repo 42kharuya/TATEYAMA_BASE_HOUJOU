@@ -8,6 +8,7 @@
  *   2. 黒の半透明オーバーレイ（文字視認性を担保）
  *   3. キャッチコピー / サブコピー（docs/CONTENT.md 確定文言）
  *   4. 主要 CTA（ご宿泊予約 / 準備中フォールバック）
+ *   5. スクロール促進矢印（バウンスアニメーション付き。スクロールでフェードアウト）
  *   ※ ページ内ナビは Header（スクロール追従）に委ねる
  *
  * 画像最適化:
@@ -16,8 +17,15 @@
  *
  * 環境変数:
  *   - NEXT_PUBLIC_BOOKING_URL: 未設定時は「準備中」で CTA を無効化する
+ *
+ * "use client" の理由:
+ *   - scroll イベントリスナーを使うためブラウザ専用の処理が必要。
+ *   - NEXT_PUBLIC_ 環境変数はクライアントコンポーネントでも参照可能。
  */
 
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 import heroImage from "../../imgs/hero-exterior.jpg";
@@ -36,6 +44,22 @@ export function Hero() {
   // NEXT_PUBLIC_BOOKING_URL が未設定の場合は undefined になる
   // → CTAButton に渡すと「準備中」フォールバックが動く
   const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL;
+
+  // ---- スクロール矢印の表示制御 ----
+  // スクロール量が 50px を超えたら矢印を非表示にする
+  // useState の初期値 true = ページ読み込み時は表示
+  const [arrowVisible, setArrowVisible] = useState(true);
+
+  useEffect(() => {
+    // scroll イベントで矢印の表示/非表示を切り替える
+    // { passive: true }: ブラウザのスクロール最適化を妨げないオプション
+    const handleScroll = () => {
+      setArrowVisible(window.scrollY < 50);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    // クリーンアップ: コンポーネントが消えた時にリスナーを解除してメモリリークを防ぐ
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []); // [] = マウント時に 1 回だけ登録
 
   return (
     <section
@@ -110,6 +134,37 @@ export function Hero() {
         >
           ご宿泊予約
         </CTAButton>
+      </div>
+
+      {/* ----- スクロール促進矢印 ----- */}
+      {/*
+       * absolute bottom-6: セクション下端から 24px 上に配置
+       * left-1/2 -translate-x-1/2: 水平方向に中央揃え
+       * animate-bounce: Tailwind 組み込みのバウンスアニメーション（上下に揺れる）
+       * transition-opacity duration-500: opacity 変化を 500ms でなめらかに切り替える
+       * aria-hidden="true": 装飾要素なのでスクリーンリーダーには読ませない
+       */}
+      <div
+        aria-hidden="true"
+        className={`absolute bottom-6 left-1/2 -translate-x-1/2 transition-opacity duration-500 ${
+          arrowVisible ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        {/* シェブロン（∨）アイコン: SVG でシンプルに描画 */}
+        <svg
+          className="h-8 w-8 animate-bounce text-white drop-shadow-md"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
       </div>
     </section>
   );
