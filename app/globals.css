@@ -50,3 +50,59 @@ body {
   color: var(--foreground);
   /* フォントは layout.tsx で設定した Shippori Mincho を font-sans 経由で適用するため、ここでは指定しない */
 }
+
+/* ============================================================
+ * スクロール連動フェードインアニメーション（Issue #76）
+ * ============================================================
+ *
+ * FadeIn コンポーネントと組み合わせて使う 2 クラス構成:
+ *
+ *   .fade-in-ready   — 初期状態（非表示・少し下にずらす）
+ *   .fade-in-visible — 表示域に入った後（フェードイン実行）
+ *
+ * CSS で実装している理由:
+ *   - framer-motion などの外部ライブラリを追加せずに済む
+ *   - GPU コンポジット対象プロパティ（opacity + transform）のみ使用するため
+ *     レイアウトの再計算（Reflow）が発生せず、パフォーマンスへの影響が最小限
+ * ============================================================ */
+
+/* @keyframes: アニメーションの「開始→終了」の形を定義する
+   translateY(20px) → translateY(0) で「下から上へ」スライドアップ */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 初期状態: useInView が false の間は非表示かつ 20px 下にオフセット */
+.fade-in-ready {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* 表示域に入った後: アニメーション実行して visible に */
+/* forwards: アニメーション終了後も終端状態（opacity:1）を維持する */
+.fade-in-visible {
+  animation: fade-in-up 0.55s ease-out forwards;
+}
+
+/* ============================================================
+ * prefers-reduced-motion: アニメーション無効化（アクセシビリティ対応）
+ * ============================================================
+ * macOS / iOS の「視差効果を減らす」設定や、
+ * Windows の「アニメーションを無効にする」設定がオンの場合に適用される。
+ * 即座に表示状態にしてアニメーションをスキップする。
+ * ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-ready,
+  .fade-in-visible {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}

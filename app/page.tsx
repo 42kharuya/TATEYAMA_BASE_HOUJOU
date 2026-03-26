@@ -1,6 +1,7 @@
 import { AccessSection } from "./_components/AccessSection";
 import { CTAButton } from "./_components/CTAButton";
 import { FacilitiesSection } from "./_components/FacilitiesSection";
+import { FadeIn } from "./_components/FadeIn";
 import { FeaturesSection } from "./_components/FeaturesSection";
 import { Hero } from "./_components/Hero";
 import { PricingSection } from "./_components/PricingSection";
@@ -27,68 +28,79 @@ export default function Home() {
       {/* Features: 特徴（選ばれる理由）
        * 1棟貸し・屋上テラス・室内アクティビティ・レンタル・立地
        * IA.md セクション順 3番め（Summary の後・設備の前）
+       * FadeIn: スクロールで表示域に入ったタイミングでフェードイン（Issue #76）
        */}
-      <FeaturesSection />
+      <FadeIn>
+        <FeaturesSection />
+      </FadeIn>
 
       {/* Facilities: 設備セクション（フロア別一覧）
        * 屋外・1階・2階・屋上・その他の設備を一覧表示
        * IA.md セクション順 4番め（特徴の後・料金の前）
        */}
-      <FacilitiesSection />
+      <FadeIn>
+        <FacilitiesSection />
+      </FadeIn>
 
       {/* Pricing: 宿泊料金・キャンセルポリシー・レンタル料金
        * IA.md セクション順 5番め（設備の後・アクセスの前）
        */}
-      <PricingSection />
+      <FadeIn>
+        <PricingSection />
+      </FadeIn>
 
       {/* Access: 住所・地図 CTA・最寄り・交通手段 */}
-      <AccessSection />
+      <FadeIn>
+        <AccessSection />
+      </FadeIn>
 
       {/* Booking: 予約・問い合わせ CTA（ページ下部で再掲） */}
       {/*
        * variant="accent-dark": bg-sky-700 の濃いブルー帯で予約 CTA を際立たせる（Issue #25）
        * 隣の AccessSection（tinted）とコントラストをつけ、「状態が変わった」ことを視覚的に伝える
        */}
-      <Section
-        id={ANCHOR_IDS.booking}
-        title="予約・問い合わせ"
-        lead="ご予約は外部サービス（STORES）から承ります。ご不明な点はお気軽に LINE でお問い合わせください。"
-        variant="accent-dark"
-      >
-        <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-          {/*
-           * 予約 CTA（最重要）
-           * variant="outlined-white": accent-dark 帯の上で白枠で際立たせる（Issue #25）
-           * NEXT_PUBLIC_BOOKING_URL 未設定時は「準備中」で自動的に無効化される
-           */}
-          <CTAButton
-            variant="outlined-white"
-            href={bookingUrl}
-            external
-            description={
-              !bookingUrl ? "予約（STORES）は準備中です。" : undefined
-            }
-          >
-            ご宿泊予約
-          </CTAButton>
+      <FadeIn>
+        <Section
+          id={ANCHOR_IDS.booking}
+          title="予約・問い合わせ"
+          lead="ご予約は外部サービス（STORES）から承ります。ご不明な点はお気軽に LINE でお問い合わせください。"
+          variant="accent-dark"
+        >
+          <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+            {/*
+             * 予約 CTA（最重要）
+             * variant="outlined-white": accent-dark 帯の上で白枠で際立たせる（Issue #25）
+             * NEXT_PUBLIC_BOOKING_URL 未設定時は「準備中」で自動的に無効化される
+             */}
+            <CTAButton
+              variant="outlined-white"
+              href={bookingUrl}
+              external
+              description={
+                !bookingUrl ? "予約（STORES）は準備中です。" : undefined
+              }
+            >
+              ご宿泊予約
+            </CTAButton>
 
-          {/*
-           * LINE 問い合わせ CTA（補助）
-           * variant="outlined-white": accent-dark 帯の上で白枠、予約ボタンとスタイルを揃える（Issue #25）
-           * NEXT_PUBLIC_LINE_URL 未設定時は「準備中」で自動的に無効化される
-           */}
-          <CTAButton
-            variant="outlined-white"
-            href={SITE.lineUrl}
-            external
-            description={
-              !SITE.lineUrl ? "LINE は準備中です。" : undefined
-            }
-          >
-            LINEで問い合わせ
-          </CTAButton>
-        </div>
-      </Section>
+            {/*
+             * LINE 問い合わせ CTA（補助）
+             * variant="outlined-white": accent-dark 帯の上で白枠、予約ボタンとスタイルを揃える（Issue #25）
+             * NEXT_PUBLIC_LINE_URL 未設定時は「準備中」で自動的に無効化される
+             */}
+            <CTAButton
+              variant="outlined-white"
+              href={SITE.lineUrl}
+              external
+              description={
+                !SITE.lineUrl ? "LINE は準備中です。" : undefined
+              }
+            >
+              LINEで問い合わせ
+            </CTAButton>
+          </div>
+        </Section>
+      </FadeIn>
     </div>
   );
 }
