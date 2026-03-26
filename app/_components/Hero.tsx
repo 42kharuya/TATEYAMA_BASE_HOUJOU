@@ -8,7 +8,7 @@
  *   2. 黒の半透明オーバーレイ（文字視認性を担保）
  *   3. キャッチコピー / サブコピー（docs/CONTENT.md 確定文言）
  *   4. 主要 CTA（ご宿泊予約 / 準備中フォールバック）
- *   ※ ページ内ナビは Header（スクロール追従）に委ねる
+ *   5. ページ内ショートカット（料金・アクセス・予約）
  *
  * 画像最適化:
  *   - next/image の priority prop でファーストビューの LCP を改善する
@@ -21,16 +21,24 @@
 import Image from "next/image";
 
 import heroImage from "../../imgs/hero-exterior.jpg";
+import { anchorHref } from "../_lib/anchors";
 import { CTAButton } from "./CTAButton";
 
 // ---- コンテンツ定数（docs/CONTENT.md の確定文言を使用） ----
 
 /** h1 に載せるキャッチコピー */
-const CATCH_COPY = "海も観光も\nアクティビティも\n遊びのベースキャンプ";
+const CATCH_COPY = "海もアクティビティも観光も、遊びのベースキャンプ。";
 
 /** キャッチコピー直下のサブコピー */
 const SUB_COPY =
   "1棟貸しの「TATEYAMA BASE 北条」。屋上テラスや1階ウッドデッキ、卓球・麻雀などの室内アクティビティも揃い、家族や仲間との滞在をアクティブに楽しめます。";
+
+/** ページ内ショートカットリンク */
+const SHORTCUTS = [
+  { label: "料金", href: anchorHref("pricing") },
+  { label: "アクセス", href: anchorHref("access") },
+  { label: "予約", href: anchorHref("booking") },
+] as const;
 
 export function Hero() {
   // NEXT_PUBLIC_BOOKING_URL が未設定の場合は undefined になる
@@ -40,9 +48,7 @@ export function Hero() {
   return (
     <section
       aria-label="ファーストビュー"
-      // items-end: コンテンツを画面下部に寄せ、上の空・海・景色をたっぷり見せるリゾート構図
-      //   （映画ポスター的なレイアウト。items-center はコーポレート LP 寄り）
-      className="relative flex min-h-[90vh] items-end sm:min-h-screen"
+      className="relative flex min-h-[90vh] items-center sm:min-h-screen"
     >
       {/* ----- 背景画像 ----- */}
       {/*
@@ -63,41 +69,26 @@ export function Hero() {
       {/* ----- グラデーションオーバーレイ ----- */}
       {/*
        * bg-gradient-to-t: 下から上へグラデーション
-       * from-black/40: 下端は 40% の黒でテキストを読みやすくする
-       *   （旧: 65% → 50% → 40% と段階的に下げて背景写真の開放感を活かす。WCAG AA 達成済み）
-       * via-black/15: 中間は 15% に抑えて写真を活かす
+       * from-black/65: 下端は 65% の黒でテキストを読みやすくする
+       * via-black/25: 中間は 25% に抑えて写真を活かす
        * to-transparent: 上端は透明にして空の青さを生かす
        * aria-hidden: スクリーンリーダーには意味のない装飾要素なので隠す
        */}
       <div
-        className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/15 to-transparent"
+        className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent"
         aria-hidden="true"
       />
 
       {/* ----- コンテンツ（画像・オーバーレイより手前に表示） ----- */}
-      {/*
-       * pb-16 sm:pb-20: 下余白でコンテンツが画面下端に近すぎないよう確保
-       * pt-0: items-end で下寄せのため上パディングは不要
-       */}
-      <div className="relative mx-auto w-full max-w-6xl space-y-6 px-4 pb-16 pt-0 sm:px-6 sm:pb-20">
+      <div className="relative mx-auto w-full max-w-6xl space-y-6 px-4 py-12 sm:px-6 sm:py-16">
         {/* キャッチコピー: h1 はページに 1 つ（docs/DESIGN.md 2.2 より） */}
-        {/*
-         * leading-snug（行間 1.375）: leading-tight（1.25）より開放的で、宿泊サイトの「ゆったり感」に合わせる
-         * tracking-normal（字間 0）: tracking-tight の「詰め詰め感」をなくしてリゾート感を演出する
-         */}
-        <h1 className="max-w-2xl text-4xl font-bold leading-snug tracking-normal text-white sm:text-5xl lg:text-6xlv whitespace-pre-wrap">
+        {/* font-bold + text-6xl でインパクトを最大化。leading-tight で行間を詰める */}
+        <h1 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
           {CATCH_COPY}
         </h1>
 
         {/* サブコピー: text-lg に拡大して読みやすさを向上 */}
-        {/*
-         * text-white: 不透明度を 90% → 100% に戻してオーバーレイが薄い状態でも視認性を確保
-         * [text-shadow:...]: Tailwind の任意値記法でテキストシャドウを付与
-         *   写真背景サイトの定番手法。オーバーレイに頼らずにコントラストを補強できる
-         */}
-        <p className="max-w-xl text-lg leading-7 text-white [text-shadow:0_1px_4px_rgba(0,0,0,0.70)]">
-          {SUB_COPY}
-        </p>
+        <p className="max-w-xl text-lg leading-7 text-white/90">{SUB_COPY}</p>
 
         {/* 主要 CTA: ご宿泊予約（URL 未設定時は「準備中」） */}
         <CTAButton
@@ -110,6 +101,28 @@ export function Hero() {
         >
           ご宿泊予約
         </CTAButton>
+
+        {/* ページ内ショートカット: ピル形状バッジで視認性・タップ領域を改善 */}
+        {/*
+         * rounded-full: 角丸にしてバッジ/ピル形状にする
+         * border border-white/40: 薄い白枠で存在感を出す
+         * bg-white/10: 半透明の白背景（glass morphism 風）
+         * backdrop-blur-sm: 背景を少しぼかしてグラスエフェクトを演出
+         */}
+        <nav aria-label="ページ内ショートカット">
+          <ul className="flex flex-wrap gap-2">
+            {SHORTCUTS.map(({ label, href }) => (
+              <li key={href}>
+                <a
+                  href={href}
+                  className="rounded-full border border-white/40 bg-white/10 px-4 py-1.5 text-sm text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
     </section>
   );
