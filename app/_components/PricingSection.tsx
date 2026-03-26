@@ -20,8 +20,9 @@ import sapImg from "../../imgs/sap.jpg";
 import wetSuitImg from "../../imgs/wet-suit.jpg";
 import lifeJacketImg from "../../imgs/life-jacket.jpg";
 import { ANCHOR_IDS } from "../_lib/anchors";
-import { PRICING_ROWS, SEASONS, yen } from "../_lib/pricingData";
+import { SEASONS, yen } from "../_lib/pricingData";
 import { PriceSimulator } from "./PriceSimulator";
+import { PricingTableToggle } from "./PricingTableToggle";
 import { Section } from "./Section";
 
 // PRICING_ROWS, SEASONS は app/_lib/pricingData.ts で一元管理
@@ -120,118 +121,11 @@ export function PricingSection() {
       </div>
 
       {/* ---- 3. 詳細料金表 ---- */}
-
       {/*
-       * ── モバイル専用カードビュー（sm 未満で表示） ──
-       *
-       * sm:hidden: スマホでのみ表示し、タブレット以上では非表示にする
-       * 人数ごとにカードを作り、1枚のカード内に全シーズンの料金を縦に並べる。
-       * 横スクロールなしで一覧できるため、スマホでの視認性が大幅に向上する。
+       * PricingTableToggle: 「料金表を見る」ボタンで開閉できるクライアントコンポーネント
+       * useState を使うため別ファイルに分離し、このファイルをサーバーコンポーネントのまま維持する
        */}
-      <div className="grid grid-cols-1 gap-3 sm:hidden">
-        {PRICING_ROWS.map((row) => (
-          /*
-           * 人数カード 1枚
-           * rounded-xl + border: 既存のシーズン定義カードと同じ見た目に揃える
-           */
-          <div
-            key={row.guests}
-            className="rounded-xl border border-stone-200 p-4 dark:border-zinc-700"
-          >
-            {/* カードヘッダー: 人数と使用フロア */}
-            <div className="mb-3 flex items-baseline gap-2">
-              <span className="text-base font-semibold text-stone-900 dark:text-zinc-50">
-                {row.guests}名
-              </span>
-              <span className="text-xs text-stone-500 dark:text-zinc-400">
-                ({row.note})
-              </span>
-            </div>
-
-            {/* シーズン別料金を縦列表示 */}
-            <div className="space-y-2">
-              {SEASONS.map((s) => (
-                /*
-                 * 1行 = 1シーズン
-                 * シーズンバッジと料金を横並びにして左右に振り分ける
-                 * justify-between: バッジを左端・料金を右端に配置
-                 */
-                <div
-                  key={s.key}
-                  className="flex items-center justify-between gap-2"
-                >
-                  {/* シーズンバッジ: SEASONS の badgeColor をそのまま流用 */}
-                  <span
-                    className={`inline-block rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.badgeColor}`}
-                  >
-                    {s.label}
-                  </span>
-                  {/* 料金: tabular-nums で数字幅を揃えて縦に整列させる */}
-                  <span className="tabular-nums text-sm font-medium text-stone-900 dark:text-zinc-50">
-                    {yen(row.prices[s.key])}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/*
-       * ── PC・タブレット向けテーブルビュー（sm 以上で表示） ──
-       *
-       * hidden sm:block: sm 未満では非表示にし、sm 以上でのみ表示する
-       * overflow-x-auto: 万が一の横はみ出しをスクロールで吸収する
-       */}
-      <div className="hidden sm:block">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[520px] border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-stone-200 dark:border-zinc-700">
-                {/* 人数列 */}
-                <th className="py-3 pr-4 text-left font-semibold text-stone-900 dark:text-zinc-50">
-                  人数
-                </th>
-                {/* シーズン列（4列） */}
-                {SEASONS.map((s) => (
-                  <th
-                    key={s.key}
-                    className="px-3 py-3 text-right font-semibold"
-                  >
-                    {/* テーブルヘッダーにもシーズンの色を付けてカードと対応させる */}
-                    <span className={s.labelColor}>{s.label}</span>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {PRICING_ROWS.map((row) => (
-                <tr
-                  key={row.guests}
-                  className="border-b border-stone-100 last:border-0 dark:border-zinc-800"
-                >
-                  {/* 人数 + 使用フロア注記 */}
-                  <td className="py-3 pr-4 text-stone-900 dark:text-zinc-50">
-                    <span className="font-medium">{row.guests}名</span>
-                    <span className="ml-1.5 text-xs text-stone-500 dark:text-zinc-400">
-                      ({row.note})
-                    </span>
-                  </td>
-                  {/* シーズン別料金 */}
-                  {SEASONS.map((s) => (
-                    <td
-                      key={s.key}
-                      className="px-3 py-3 text-right tabular-nums text-stone-700 dark:text-zinc-300"
-                    >
-                      {yen(row.prices[s.key])}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <PricingTableToggle />
 
       {/* ---- 4. キャンセルポリシー ---- */}
       <div>
