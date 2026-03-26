@@ -58,10 +58,27 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-stone-200 bg-white/90 backdrop-blur dark:border-zinc-800 dark:bg-black/80">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        {/* サイト名ロゴ：左端固定 */}
+        {/* ─── サイト名テキストロゴ ───────────────────────────────────────
+             将来 SVG ロゴに差し替える場合はこの <Link> の中身を
+             <SiteLogo /> コンポーネントに置き換えるだけで済むよう
+             ロゴ要素をここ 1 か所に集約している。
+        ─────────────────────────────────────────────────────────── */}
         <Link
           href="/"
-          className="shrink-0 text-sm font-semibold tracking-tight text-stone-900 dark:text-zinc-50"
+          aria-label={`${SITE.name} トップページへ`}
+          className={[
+            "shrink-0",
+            // Shippori Mincho（明朝体）: layout.tsx で --font-shippori-mincho として定義済みの CSS 変数を
+            // Tailwind の任意値構文で参照する。next/font が生成したクラス名に依存しないため型安全。
+            "font-[family-name:var(--font-shippori-mincho)]",
+            // font-semibold (weight:600): 明朝体は細すぎると背景に溶けやすいので midweight で可読性を確保
+            "font-semibold",
+            // tracking-widest: 字間を最大に広げてロゴタイプらしい佇まいにする
+            "tracking-widest",
+            // text-sm / sm:text-base: スマホは小さめ、PC 以上は少し大きくしてロゴ感を強調
+            "text-sm sm:text-base",
+            "text-stone-900 dark:text-zinc-50",
+          ].join(" ")}
         >
           {SITE.name}
         </Link>
