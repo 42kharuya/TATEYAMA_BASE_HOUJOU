@@ -23,6 +23,7 @@ import { ANCHOR_IDS } from "../_lib/anchors";
 import { SEASONS, yen } from "../_lib/pricingData";
 import { PriceSimulator } from "./PriceSimulator";
 import { PricingTableToggle } from "./PricingTableToggle";
+import { SeasonCalendar } from "./SeasonCalendar";
 import { Section } from "./Section";
 
 // PRICING_ROWS, SEASONS は app/_lib/pricingData.ts で一元管理
@@ -119,6 +120,13 @@ export function PricingSection() {
           </div>
         ))}
       </div>
+
+      {/*
+       * 月カレンダービジュアル: 1〜12月をシーズン色で色分け表示する。
+       * SeasonCalendar は "use client" のクライアントコンポーネント。
+       * 現在月の強調表示を行うためのみ分離している。
+       */}
+      <SeasonCalendar />
 
       {/* ---- 3. 詳細料金表 ---- */}
       {/*

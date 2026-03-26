@@ -85,6 +85,24 @@ export type SeasonConfig = {
    * バッジと同じシーズンカラーを共有する
    */
   labelColor: string;
+  /**
+   * 月カレンダーカレンダービジュアルに使うセルの Tailwind クラス
+   * bg/text で light と dark 両対応で指定する
+   */
+  calendarColor: string;
+  /**
+   * このシーズンが「代表的」な月の番号配列（1〜12）
+   *
+   * 判定基準（ゲスト視点で最も目立つシーズン）:
+   *   offseason: 1・2・6・10・11・12（閑散期の平日が主体）
+   *   regular:   3・4（春休み・祝日が多い春）
+   *   high:      7・9（海水浴シーズン序盤と後半）
+   *   top:       5・8（GW・お盆のピーク）
+   *
+   * ※ 月単位では季節が重なるため「月の支配的な性格」で割り当てている。
+   *   詳細な日別判定は seasonDetector.ts を参照。
+   */
+  months: number[];
 };
 
 /**
@@ -99,6 +117,8 @@ export const SEASONS: SeasonConfig[] = [
     badgeColor:
       "bg-stone-100 text-stone-600 border-stone-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700",
     labelColor: "text-stone-600 dark:text-zinc-400",
+    calendarColor: "bg-stone-100 text-stone-500 dark:bg-zinc-800 dark:text-zinc-400",
+    months: [1, 2, 6, 10, 11, 12],
   },
   {
     key: "regular",
@@ -107,6 +127,8 @@ export const SEASONS: SeasonConfig[] = [
     badgeColor:
       "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950 dark:text-sky-400 dark:border-sky-800",
     labelColor: "text-sky-700 dark:text-sky-400",
+    calendarColor: "bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300",
+    months: [3, 4],
   },
   {
     key: "high",
@@ -115,6 +137,8 @@ export const SEASONS: SeasonConfig[] = [
     badgeColor:
       "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-800",
     labelColor: "text-amber-700 dark:text-amber-400",
+    calendarColor: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
+    months: [7, 9],
   },
   {
     key: "top",
@@ -123,6 +147,8 @@ export const SEASONS: SeasonConfig[] = [
     badgeColor:
       "bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-800",
     labelColor: "text-red-700 dark:text-red-400",
+    calendarColor: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300",
+    months: [5, 8],
   },
 ];
 
