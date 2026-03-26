@@ -367,6 +367,35 @@ export function FacilitiesSection() {
   // onClose を useCallback でメモ化（Lightbox 内 useEffect の安定化）
   const handleLightboxClose = useCallback(() => setLightboxIndex(null), []);
 
+  // ────────────────────────────────────────────────────────
+  // タブスクロールヒント（Issue #80）
+  // スマホでタブが横スクロールできることをフェードで視覚的に伝える
+  // ────────────────────────────────────────────────────────
+
+  // タブリスト要素への参照（scrollLeft / clientWidth / scrollWidth を読み取る）
+  const tablistRef = useRef<HTMLDivElement>(null);
+
+  // タブが末端までスクロールされたか。true のときフェードオーバーレイを非表示にする。
+  const [isTabEnd, setIsTabEnd] = useState<boolean>(false);
+
+  // スクロール位置を確認してフェードの表示状態を更新するコールバック
+  // scrollLeft + clientWidth が scrollWidth に限りなく近い = 末端到達とみなす（余白 4px）
+  const updateTabFade = useCallback(() => {
+    const el = tablistRef.current;
+    if (!el) return;
+    setIsTabEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 4);
+  }, []);
+
+  // マウント直後に初期状態を確認し、scroll イベントを登録する
+  // passive: true でスクロール処理を妨げずパフォーマンスを維持
+  useEffect(() => {
+    const el = tablistRef.current;
+    if (!el) return;
+    updateTabFade(); // 初期チェック（PCなどタブが全て収まる場合は最初からフェード不要）
+    el.addEventListener("scroll", updateTabFade, { passive: true });
+    return () => el.removeEventListener("scroll", updateTabFade);
+  }, [updateTabFade]);
+
   // 現在表示中の写真（メイン表示用）
   const activePhoto = activeFacility.photos[activePhotoIndex];
 
@@ -383,39 +412,58 @@ export function FacilitiesSection() {
        * role="tablist": スクリーンリーダーに「タブの集まり」と伝える ARIA ロール
        * ────────────────────────────────────────────────
        */}
-      <div
-        role="tablist"
-        aria-label="フロアを選択"
-        className="flex overflow-x-auto border-b border-stone-200 dark:border-zinc-700"
-      >
-        {FLOOR_FACILITIES.map((facility) => {
-          const isActive = facility.id === activeId;
-          return (
-            <button
-              key={facility.id}
-              role="tab"
-              id={`tab-${facility.id}`}
-              aria-selected={isActive}
-              aria-controls={`panel-${facility.id}`}
-              tabIndex={0}
-              onClick={() => handleTabChange(facility.id)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleTabChange(facility.id);
-                }
-              }}
-              className={[
-                "shrink-0 px-5 py-3 text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-sky-500 focus-visible:outline-offset-2",
-                isActive
-                  ? "border-b-2 border-sky-500 text-sky-600 dark:text-sky-400"
-                  : "text-stone-500 hover:text-stone-700 dark:text-zinc-400 dark:hover:text-zinc-200",
-              ].join(" ")}
-            >
-              {facility.floor}
-            </button>
-          );
-        })}
+      {/* スクロールヒント用のラッパー（relative で内部の absolute フェードを保持） */}
+      <div className="relative">
+        <div
+          ref={tablistRef}
+          role="tablist"
+          aria-label="フロアを選択"
+          className="flex overflow-x-auto border-b border-stone-200 dark:border-zinc-700"
+        >
+          {FLOOR_FACILITIES.map((facility) => {
+            const isActive = facility.id === activeId;
+            return (
+              <button
+                key={facility.id}
+                role="tab"
+                id={`tab-${facility.id}`}
+                aria-selected={isActive}
+                aria-controls={`panel-${facility.id}`}
+                tabIndex={0}
+                onClick={() => handleTabChange(facility.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleTabChange(facility.id);
+                  }
+                }}
+                className={[
+                  "shrink-0 px-5 py-3 text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-sky-500 focus-visible:outline-offset-2",
+                  isActive
+                    ? "border-b-2 border-sky-500 text-sky-600 dark:text-sky-400"
+                    : "text-stone-500 hover:text-stone-700 dark:text-zinc-400 dark:hover:text-zinc-200",
+                ].join(" ")}
+              >
+                {facility.floor}
+              </button>
+            );
+          })}
+        </div>
+
+        {/*
+         * スクロールヒントフェード（右端グラデーション）
+         * - pointer-events-none: 下のタブボタンのクリックを妨げない
+         * - md:hidden: PC ではタブが全て表示されるため不要（スマホ専用）
+         * - isTabEnd が true（末端到達）になると opacity-0 で透明化
+         * - 常時 DOM に存在させ opacity トグルで滑らかにフェードアウト
+         */}
+        <div
+          aria-hidden="true"
+          className={[
+            "pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-white to-transparent transition-opacity duration-200 dark:from-zinc-900 md:hidden",
+            isTabEnd ? "opacity-0" : "opacity-100",
+          ].join(" ")}
+        />
       </div>
 
       {/*
