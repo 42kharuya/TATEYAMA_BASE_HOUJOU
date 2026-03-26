@@ -8,7 +8,8 @@
  *   - 宿泊可能人数: 4〜8名
  *   - 海まで: 徒歩約30秒
  *   - 館山駅から: 徒歩約9分
- *   - 住所: 〒294-0045 千葉県館山市北条2278-3
+ *
+ * ※住所は AccessSection に掲載（Issue #77 / docs/DECISIONS.md 参照）
  *
  * デザイン準拠: docs/DESIGN.md（余白・フォント・カラールール）
  * セマンティック: <section> + <h2> + <ul> で見出し階層を維持
@@ -95,29 +96,6 @@ function WalkIcon() {
   );
 }
 
-/** マップピン（住所） */
-function MapPinIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      {/* ピンの本体 */}
-      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-      {/* ピン中心の円 */}
-      <circle cx="12" cy="9" r="2.5" />
-    </svg>
-  );
-}
-
 // ────────────────────────────────────────────────────────
 // サマリーアイテムの型定義
 // ────────────────────────────────────────────────────────
@@ -136,6 +114,7 @@ type SummaryItem = {
 // 距離・時間の数値は「約」付き（docs/DECISIONS.md 準拠）
 // ────────────────────────────────────────────────────────
 
+// 住所は AccessSection に掲載するため、ここでは3項目のみ表示する（Issue #77）
 const SUMMARY_ITEMS: SummaryItem[] = [
   {
     label: "宿泊人数",
@@ -154,12 +133,6 @@ const SUMMARY_ITEMS: SummaryItem[] = [
     label: "館山駅から徒歩",
     value: "約9分",
     icon: <WalkIcon />,
-  },
-  {
-    label: "住所",
-    // 住所は数値ではないため、value は小さめのままにする
-    value: "〒294-0045 千葉県館山市北条2278-3",
-    icon: <MapPinIcon />,
   },
 ];
 
@@ -198,11 +171,12 @@ export function SummarySection() {
 
         {/*
          * <ul role="list">: 箇条書きリストとして意味を持たせる
-         * grid: モバイル 2列 → sm 以上で 4列（コンパクトレイアウト）
+         * grid: モバイル 2列 → sm 以上で 3列（人数・海まで・駅まで）
+         * 住所は AccessSection に委ねて統一感を保つ（Issue #77）
          */}
         <ul
           role="list"
-          className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-4"
+          className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3"
         >
           {SUMMARY_ITEMS.map((item) => (
             <li key={item.label} className="flex flex-col gap-2">
@@ -224,17 +198,10 @@ export function SummarySection() {
 
               {/*
                * 値（メインの数値・キーワード）: Issue #26 タイポグラフィ強弱
-               * - 住所: 数値ではないため text-sm font-semibold に留める
-               * - それ以外: text-3xl font-bold tabular-nums（桁揃え）で大きく打ち出す
+               * 3項目すべて数値・人数なので text-3xl font-bold tabular-nums で統一する
                * tabular-nums: 数字幅を均等にそろえ、数値の視認性を高める
                */}
-              <span
-                className={
-                  item.label === "住所"
-                    ? "text-sm font-semibold leading-snug text-white"
-                    : "text-3xl font-bold tabular-nums text-white"
-                }
-              >
+              <span className="text-3xl font-bold tabular-nums text-white">
                 {item.value}
               </span>
             </li>
