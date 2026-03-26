@@ -152,9 +152,10 @@ export function SummarySection() {
       aria-labelledby="summary-heading"
       /**
        * bg-sky-600: Hero 直後に海ブルーの accent 帯を置き、施設スペックを目立たせる（Issue #25）
-       * py-10 sm:py-14: 余白を少し広げて帯の存在感を強調
+       * relative overflow-hidden: 下端の波形SVGを絶対配置するためのコンテナ（Issue #78）
+       * pt-10 pb-20 sm:pt-14 sm:pb-24: 下端に波形（高さ ~64px）のぶんだけ余分な padding を確保する
        */
-      className="bg-sky-600 py-10 sm:py-14"
+      className="relative overflow-hidden bg-sky-600 pt-10 pb-20 sm:pt-14 sm:pb-24"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         {/*
@@ -208,6 +209,31 @@ export function SummarySection() {
           ))}
         </ul>
       </div>
+
+      {/*
+       * ── 波形ディバイダー（Issue #78） ──────────────────────────
+       * 役割: sky-600 → 白背景（FeaturesSection）への視覚的遷移を滑らかにする
+       * 実装: SVG の絶対配置。viewBox の高さ 64px に合わせた波形パスを使用
+       *   - `preserveAspectRatio="none"`: 横幅にストレッチして隙間ゼロで敷き詰める
+       *   - `fill="white"`: FeaturesSection の背景色（white）に合わせる
+       *   - `aria-hidden="true"`: 装飾用なのでスクリーンリーダーからは隠す
+       * 波形パス: 2周期のサイン波（なだらかで海岸らしいカーブ）
+       *   M0,32 → 左端を中間高さからスタート
+       *   C ... → ベジェ曲線で山・谷を2回くりかえす
+       *   L1440,64 L0,64 Z → 下辺を閉じて塗りつぶし領域を作る
+       */}
+      <svg
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 w-full"
+        viewBox="0 0 1440 64"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M0,32 C240,0 480,64 720,32 C960,0 1200,64 1440,32 L1440,64 L0,64 Z"
+          fill="white"
+        />
+      </svg>
     </section>
   );
 }
