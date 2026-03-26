@@ -30,9 +30,11 @@
 
 "use client";
 
-// useState: React が提供するフック。コンポーネント内に「状態（State）」を持たせる機能。
-// ここでは「どのタブが選択中か」と「どのサムネイルが選択中か」を記憶するために使う。
-import { useState } from "react";
+// useState: コンポーネント内に「状態（State）」を持たせる機能。
+// useRef: DOM要素への参照を保持するフック（dialog.showModal() の呼び出しに使用）。
+// useEffect: マウント/アンマウントなど副作用を実行するフック（dialogのopen/closeイベント管理に使用）。
+// useCallback: 関数をメモ化して不要な再生成を防ぐフック（onCloseの安定化に使用）。
+import { useState, useRef, useEffect, useCallback } from "react";
 import Image, { type StaticImageData } from "next/image";
 
 // ────────────────────────────────────────────────────────
@@ -158,6 +160,175 @@ const FLOOR_FACILITIES: FloorFacility[] = [
 ];
 
 // ────────────────────────────────────────────────────────
+// Lightbox コンポーネント（HTML <dialog> ネイティブAPI使用）
+// ────────────────────────────────────────────────────────
+
+/** ライトボックスの Props */
+type LightboxProps = {
+  /** 表示する写真一覧（現在フロアの全写真） */
+  photos: FloorPhoto[];
+  /** 最初に表示する写真インデックス */
+  initialIndex: number;
+  /** モーダルを閉じるときに呼ぶコールバック（親 State をリセット） */
+  onClose: () => void;
+};
+
+/**
+ * Lightbox
+ * 写真を全画面モーダルで拡大表示する。
+ *
+ * 実装方針:
+ *   - HTML <dialog> の showModal() でブラウザネイティブのフォーカストラップを利用
+ *   - Escape キーはブラウザが自動処理（dialog の "close" イベントをリッスン）
+ *   - 背景（dialog 要素自体）クリックで閉じる
+ *   - ← / → キーで前後の写真に移動する
+ *
+ * アクセシビリティ:
+ *   - role="dialog" + aria-modal="true" でスクリーンリーダーに「モーダル」と伝える
+ *   - aria-label で現在の写真番号と説明を通知する
+ */
+function Lightbox({ photos, initialIndex, onClose }: LightboxProps) {
+  // 現在表示している写真インデックスを管理する State
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+
+  // <dialog> 要素への参照（showModal / close を直接呼ぶために必要）
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  // onClose を ref に持ち、useEffect の依存配列を安定させる
+  // これにより、親コンポーネントの再レンダリングでも useEffect が再実行されない
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  // マウント時に showModal() でモーダルを開く
+  // アンマウント時は React が DOM を削除するため、明示的な close() は不要
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    // showModal(): フォーカストラップ + ::backdrop 付きでモーダルを開く
+    if (!dialog.open) dialog.showModal();
+
+    // Escape キーや dialog 自身が close したときに onClose を呼ぶ
+    const handleClose = () => onCloseRef.current();
+    dialog.addEventListener("close", handleClose);
+    return () => dialog.removeEventListener("close", handleClose);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ← → キーで写真を切り替える（キーボードナビゲーション）
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        // 先頭写真の「前」は末尾写真に循環する
+        setCurrentIndex((i) => (i - 1 + photos.length) % photos.length);
+      } else if (e.key === "ArrowRight") {
+        // 末尾写真の「次」は先頭写真に循環する
+        setCurrentIndex((i) => (i + 1) % photos.length);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [photos.length]);
+
+  // 背景（dialog 要素自体）をクリックしたとき閉じる
+  // e.target が dialog 要素本体（コンテンツより外側）のとき = 背景クリック
+  const handleDialogClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+    if (e.target === dialogRef.current) {
+      dialogRef.current.close();
+    }
+  };
+
+  const currentPhoto = photos[currentIndex];
+
+  return (
+    // dialog: ブラウザネイティブのモーダル要素
+    // - role="dialog" + aria-modal="true": スクリーンリーダーに「モーダルダイアログ」と伝える
+    // - aria-label: 現在の写真番号と内容を AT（支援技術）に通知する
+    // - backdrop:bg-black/70: Tailwind の ::backdrop スタイリング
+    <dialog
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`写真の拡大表示 ${currentIndex + 1}/${photos.length}: ${currentPhoto.alt}`}
+      onClick={handleDialogClick}
+      className="m-0 h-screen max-h-screen w-screen max-w-none border-0 bg-black/90 p-0 backdrop:bg-black/70"
+    >
+      {/*
+       * コンテンツラッパー
+       * onClick での stopPropagation は使わず、dialog 側で e.target 判定する方式のため不要。
+       * ただし背景クリック検出が dialog 要素レベルで完結しているため、
+       * 内部要素のクリックは自然にバブリングしても問題ない（e.target が変わるため閉じない）。
+       */}
+      <div className="relative flex h-full w-full flex-col items-center justify-center">
+
+        {/* 閉じるボタン（×） */}
+        <button
+          onClick={() => dialogRef.current?.close()}
+          aria-label="閉じる"
+          className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/25 focus-visible:outline-2 focus-visible:outline-white"
+        >
+          {/* aria-hidden: 「×」記号はボタンの aria-label で読み上げ済みのため除外 */}
+          <span aria-hidden="true" className="text-xl leading-none">✕</span>
+        </button>
+
+        {/* 写真カウンター（複数枚のときのみ表示） */}
+        {photos.length > 1 && (
+          <p
+            aria-live="polite"
+            className="absolute top-4 left-1/2 -translate-x-1/2 text-sm text-white/70 tabular-nums"
+          >
+            {currentIndex + 1} / {photos.length}
+          </p>
+        )}
+
+        {/* メイン画像（最大80vh × 全幅。object-contain で縦横比を維持） */}
+        <div className="relative h-[80vh] w-full max-w-5xl px-14">
+          <Image
+            src={currentPhoto.src}
+            alt={currentPhoto.alt}
+            fill
+            className="object-contain"
+            sizes="(min-width: 1280px) 1024px, 100vw"
+          />
+        </div>
+
+        {/* キャプション（写真の alt テキストを再利用） */}
+        <p className="absolute bottom-6 left-0 right-0 px-4 text-center text-sm text-white/60">
+          {currentPhoto.alt}
+        </p>
+
+        {/* 前の写真ボタン（写真が2枚以上のときのみ表示） */}
+        {photos.length > 1 && (
+          <button
+            onClick={() =>
+              setCurrentIndex((i) => (i - 1 + photos.length) % photos.length)
+            }
+            aria-label="前の写真"
+            className="absolute left-2 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-2xl text-white transition-colors hover:bg-white/25 focus-visible:outline-2 focus-visible:outline-white"
+          >
+            <span aria-hidden="true">‹</span>
+          </button>
+        )}
+
+        {/* 次の写真ボタン（写真が2枚以上のときのみ表示） */}
+        {photos.length > 1 && (
+          <button
+            onClick={() => setCurrentIndex((i) => (i + 1) % photos.length)}
+            aria-label="次の写真"
+            className="absolute right-2 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-2xl text-white transition-colors hover:bg-white/25 focus-visible:outline-2 focus-visible:outline-white"
+          >
+            <span aria-hidden="true">›</span>
+          </button>
+        )}
+
+      </div>
+    </dialog>
+  );
+}
+
+// ────────────────────────────────────────────────────────
 // FacilitiesSection（エクスポートするメインコンポーネント）
 // ────────────────────────────────────────────────────────
 
@@ -179,14 +350,22 @@ export function FacilitiesSection() {
   // number 型: 0, 1, 2... と写真配列の添字を保持する
   const [activePhotoIndex, setActivePhotoIndex] = useState<number>(0);
 
+  // ライトボックスの開閉状態を管理する State
+  // null = 閉じている / number = その添字の写真を拡大表示中
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
   // 現在アクティブなフロアのデータを配列から検索する
   const activeFacility = FLOOR_FACILITIES.find((f) => f.id === activeId)!;
 
-  // タブを切り替えるときに写真インデックスも 0 にリセットする
+  // タブを切り替えるときに写真インデックスも 0 にリセットし、ライトボックスも閉じる
   const handleTabChange = (id: string) => {
     setActiveId(id);
     setActivePhotoIndex(0);
+    setLightboxIndex(null);
   };
+
+  // onClose を useCallback でメモ化（Lightbox 内 useEffect の安定化）
+  const handleLightboxClose = useCallback(() => setLightboxIndex(null), []);
 
   // 現在表示中の写真（メイン表示用）
   const activePhoto = activeFacility.photos[activePhotoIndex];
@@ -264,11 +443,17 @@ export function FacilitiesSection() {
           <div className="shrink-0 md:w-1/2">
 
             {/*
-             * メイン写真
+             * メイン写真（クリックでライトボックスを開く）
+             * button 要素にすることでキーボードフォーカスと Enter/Space での起動に対応
+             * cursor-zoom-in: 「拡大できる」とユーザーに視覚的に伝える
              * aspect-[4/3]: 幅:高さ = 4:3 の比率（16:9 より縦に余裕があり設備リストと並べやすい）
-             * relative + fill: 親の aspect-ratio に合わせて Image を引き伸ばす
              */}
-            <div className="relative aspect-[4/3] w-full overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setLightboxIndex(activePhotoIndex)}
+              aria-label={`写真を拡大表示: ${activePhoto.alt}`}
+              className="relative aspect-[4/3] w-full overflow-hidden cursor-zoom-in focus-visible:outline-2 focus-visible:outline-sky-500 focus-visible:outline-offset-0"
+            >
               <Image
                 src={activePhoto.src}
                 alt={activePhoto.alt}
@@ -283,7 +468,7 @@ export function FacilitiesSection() {
                 // 初期表示タブ・初期写真は優先ロード（LCP 改善）
                 priority={activeFacility.id === FLOOR_FACILITIES[0].id && activePhotoIndex === 0}
               />
-            </div>
+            </button>
 
             {/*
              * サムネイル行
@@ -358,6 +543,19 @@ export function FacilitiesSection() {
 
         </div>
       </div>
+
+      {/*
+       * ライトボックスモーダル
+       * lightboxIndex が null のとき非表示（コンポーネント自体をアンマウント）
+       * key を使わず initialIndex を渡す方式のため、同フロア内での切り替えはコンポーネント内 State で管理
+       */}
+      {lightboxIndex !== null && (
+        <Lightbox
+          photos={activeFacility.photos}
+          initialIndex={lightboxIndex}
+          onClose={handleLightboxClose}
+        />
+      )}
 
       {/*
        * 全フロア共通設備バッジ（タブエリア外・常時表示）
