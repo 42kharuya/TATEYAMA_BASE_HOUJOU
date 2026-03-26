@@ -20,8 +20,9 @@ import sapImg from "../../imgs/sap.jpg";
 import wetSuitImg from "../../imgs/wet-suit.jpg";
 import lifeJacketImg from "../../imgs/life-jacket.jpg";
 import { ANCHOR_IDS } from "../_lib/anchors";
-import { PRICING_ROWS, SEASONS, yen } from "../_lib/pricingData";
+import { SEASONS, yen } from "../_lib/pricingData";
 import { PriceSimulator } from "./PriceSimulator";
+import { PricingTableToggle } from "./PricingTableToggle";
 import { Section } from "./Section";
 
 // PRICING_ROWS, SEASONS は app/_lib/pricingData.ts で一元管理
@@ -120,54 +121,11 @@ export function PricingSection() {
       </div>
 
       {/* ---- 3. 詳細料金表 ---- */}
-      {/* overflow-x-auto: スマホでも横スクロールで表全体を確認できる */}
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[520px] border-collapse text-sm">
-          <thead>
-            <tr className="border-b border-stone-200 dark:border-zinc-700">
-              {/* 人数列 */}
-              <th className="py-3 pr-4 text-left font-semibold text-stone-900 dark:text-zinc-50">
-                人数
-              </th>
-              {/* シーズン列（4列） */}
-              {SEASONS.map((s) => (
-                <th
-                  key={s.key}
-                  className="px-3 py-3 text-right font-semibold"
-                >
-                  {/* テーブルヘッダーにもシーズンの色を付けてカードと対応させる */}
-                  <span className={s.labelColor}>{s.label}</span>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {PRICING_ROWS.map((row) => (
-              <tr
-                key={row.guests}
-                className="border-b border-stone-100 last:border-0 dark:border-zinc-800"
-              >
-                {/* 人数 + 使用フロア注記 */}
-                <td className="py-3 pr-4 text-stone-900 dark:text-zinc-50">
-                  <span className="font-medium">{row.guests}名</span>
-                  <span className="ml-1.5 text-xs text-stone-500 dark:text-zinc-400">
-                    ({row.note})
-                  </span>
-                </td>
-                {/* シーズン別料金 */}
-                {SEASONS.map((s) => (
-                  <td
-                    key={s.key}
-                    className="px-3 py-3 text-right tabular-nums text-stone-700 dark:text-zinc-300"
-                  >
-                    {yen(row.prices[s.key])}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {/*
+       * PricingTableToggle: 「料金表を見る」ボタンで開閉できるクライアントコンポーネント
+       * useState を使うため別ファイルに分離し、このファイルをサーバーコンポーネントのまま維持する
+       */}
+      <PricingTableToggle />
 
       {/* ---- 4. キャンセルポリシー ---- */}
       <div>
