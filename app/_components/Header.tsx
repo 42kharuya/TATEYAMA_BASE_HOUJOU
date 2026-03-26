@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getHeaderNavItems } from "../_lib/navigation";
 import { SITE } from "../_lib/site";
+import { CTAButton } from "./CTAButton";
 
 function HeaderLink({
   href,
@@ -40,14 +41,16 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-stone-200 bg-white/90 backdrop-blur dark:border-zinc-800 dark:bg-black/80">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+        {/* サイト名ロゴ：左端固定 */}
         <Link
           href="/"
-          className="text-sm font-semibold tracking-tight text-stone-900 dark:text-zinc-50"
+          className="shrink-0 text-sm font-semibold tracking-tight text-stone-900 dark:text-zinc-50"
         >
           {SITE.name}
         </Link>
 
-        <nav aria-label="主要ナビゲーション">
+        {/* ナビゲーション：スマホでは非表示、sm 以上で表示 */}
+        <nav aria-label="主要ナビゲーション" className="hidden sm:block">
           <ul className="flex items-center gap-4">
             {items.map((item) => (
               <li key={item.key}>
@@ -60,6 +63,23 @@ export function Header() {
             ))}
           </ul>
         </nav>
+
+        {/*
+         * 予約 CTA ボタン：右端固定
+         * - NEXT_PUBLIC_BOOKING_URL 未設定時は「準備中」として無効化される
+         * - shrink-0 でロゴ・ナビが溢れてもボタンが潰れないようにする
+         * - external=true で別タブ（予約サイト）として開く
+         */}
+        <div className="shrink-0">
+          <CTAButton
+            variant="primary"
+            size="sm"
+            href={SITE.bookingUrl}
+            external
+          >
+            ご予約
+          </CTAButton>
+        </div>
       </div>
     </header>
   );

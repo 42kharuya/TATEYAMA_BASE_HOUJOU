@@ -27,6 +27,12 @@ type CTAButtonProps = {
   /** ボタンの重要度（デフォルト: "primary"） */
   variant?: Variant;
   /**
+   * ボタンサイズ（デフォルト: "md"）。
+   * - "sm": ヘッダーなど高さ制限のある箇所に使用（h-9 px-4）
+   * - "md": 通常のCTA（h-11 px-5）
+   */
+  size?: "sm" | "md";
+  /**
    * リンク先 URL。
    * undefined または空文字の場合、ボタンは「準備中」として無効化される。
    */
@@ -48,7 +54,15 @@ type CTAButtonProps = {
 // shadow-sm: DESIGN.md §8.4 準拠（ボタンに軽い影を付けて立体感を出す）
 // transition-colors: opacity だけでなく背景色・枠線色も滑らかに変化させる
 const BASE =
-  "inline-flex h-11 items-center justify-center rounded-lg px-5 text-sm font-medium shadow-sm transition-colors";
+  "inline-flex items-center justify-center rounded-lg text-sm font-medium shadow-sm transition-colors";
+
+/** サイズ別のクラス（height / padding） */
+const SIZE_CLASSES: Record<"sm" | "md", string> = {
+  /** sm: ヘッダーなど縦幅を抑えたい箇所で使用 */
+  sm: "h-9 px-4",
+  /** md: 標準サイズ（セクション内 CTA 等） */
+  md: "h-11 px-5",
+};
 
 /** 有効時の variant 別スタイル */
 const VARIANT_STYLES: Record<Variant, string> = {
@@ -99,6 +113,7 @@ function disabledClass(variant: Variant): string {
 
 export function CTAButton({
   variant = "primary",
+  size = "md",
   href,
   children,
   description,
@@ -106,7 +121,8 @@ export function CTAButton({
 }: CTAButtonProps) {
   // href が undefined / 空文字の場合は「準備中」として無効化
   const isDisabled = !href;
-  const className = `${BASE} ${isDisabled ? disabledClass(variant) : VARIANT_STYLES[variant]}`;
+  // BASE + サイズクラス + variant スタイルを結合
+  const className = `${BASE} ${SIZE_CLASSES[size]} ${isDisabled ? disabledClass(variant) : VARIANT_STYLES[variant]}`;
 
   return (
     <div className="flex flex-col gap-1">
