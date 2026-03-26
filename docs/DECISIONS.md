@@ -115,6 +115,13 @@
 	- 影響：掲載文章（[docs/CONTENT.md](CONTENT.md)）／必要なら公開後に差し替え
 	- 代替案：未確定事項はサイト上に一切出さず、掲載しない
 
+### 2026-03-26
+
+- 決定：SummarySection の4列グリッドから住所を外し、3列（宿泊人数・海まで・駅まで）に絞る（Issue #77 案B）
+- 理由：住所だけテキストが長く `text-sm font-semibold` となっており、他3項目の `text-3xl font-bold` 数値と視覚的な統一感が崩れていたため。住所は AccessSection で既に表示・地図付きで掲載されており重複する。
+- 影響：`app/_components/SummarySection.tsx`（`SUMMARY_ITEMS` 配列・グリッド列数・`MapPinIcon`を削除）
+- 代替案：案A（住所を4列目から外し別行で小さく表示）／現状維持で住所をサイズ統一だけ行う
+
 ### YYYY-MM-DD
 
 - 決定：
