@@ -4,6 +4,7 @@ import { CTAButton } from "./_components/CTAButton";
 import { FacilitiesSection } from "./_components/FacilitiesSection";
 import { FadeIn } from "./_components/FadeIn";
 import { FeaturesSection } from "./_components/FeaturesSection";
+import { GallerySection } from "./_components/GallerySection";
 import { Hero } from "./_components/Hero";
 import { PricingSection } from "./_components/PricingSection";
 import { Section } from "./_components/Section";
@@ -55,6 +56,15 @@ export default function Home() {
        */}
       <FadeIn>
         <FeaturesSection />
+      </FadeIn>
+
+      {/* Gallery: 体験ギャラリー（Issue #105）
+       * 実際の宿泊者がSUP・海水浴・釣りなどを楽しんでいる様子をマソンリーグリッドで表示。
+       * FeaturesSection（設備の機能説明）に続いて「実際の体験者で共感」させるソーシャルプルーフ。
+       * IA.md セクション順: FeaturesSection の後・FacilitiesSection の前
+       */}
+      <FadeIn>
+        <GallerySection />
       </FadeIn>
 
       {/* Facilities: 設備セクション（フロア別一覧）
