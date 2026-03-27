@@ -27,7 +27,7 @@ import Image, { type StaticImageData } from "next/image";
 // 写真のインポート（imgs/ 以下。next/image が最適化する）
 // StaticImport を使うと width / height が自動で取得され、CLS（レイアウトズレ）を防げる
 // ────────────────────────────────────────────────────────
-import livingImg from "../../imgs/first-floor-living.jpg";
+import exteriorImg from "../../imgs/hero-exterior.jpg";
 import rooftopImg from "../../imgs/rooftop-terrace.jpg";
 import woodTerraceImg from "../../imgs/wood-terrace.jpg";
 import tableTennisImg from "../../imgs/facility-table-tennis.jpg";
@@ -59,7 +59,7 @@ type Feature = {
 
 // ────────────────────────────────────────────────────────
 // 特徴リスト（docs/FACTS.md の確定情報のみ）
-// 注: 立地情報（海まで徒歩約30秒等）は AccessSection でカバーするため除外
+// 注: 立地情報（海まで徒歩約2分等）は AccessSection でカバーするため除外
 // ────────────────────────────────────────────────────────
 
 /**
@@ -72,7 +72,7 @@ const FEATURES: Feature[] = [
     title: "1棟貸し（4〜8名）",
     description:
       "グループや家族で全館を独占できる貸別荘です。人数に合わせて1階のみ、または1・2階の両フロアを使えます。",
-    image: livingImg,
+    image: exteriorImg,
     alt: "リビングの様子。ソファや広い室内が見える",
   },
   {
@@ -85,7 +85,7 @@ const FEATURES: Feature[] = [
   {
     title: "1階ウッドデッキ",
     description:
-      "1階の屋外にウッドデッキを設置。アウトドアシャワーと合わせて、砂浜からそのままくつろげる動線です。",
+      "1階の屋外にウッドデッキを設置。アウトドアシャワーも備えているため、砂浜からそのままくつろげる環境が確保されています。",
     image: woodTerraceImg,
     alt: "1階ウッドデッキの様子",
   },

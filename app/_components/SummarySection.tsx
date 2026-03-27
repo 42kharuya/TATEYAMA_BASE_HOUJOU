@@ -6,7 +6,7 @@
  *
  * 表示する情報（docs/FACTS.md の確定値）:
  *   - 宿泊可能人数: 4〜8名
- *   - 海まで: 徒歩約30秒
+ *   - 海まで: 徒歩約2分
  *   - 館山駅から: 徒歩約9分
  *
  * ※住所は AccessSection に掲載（Issue #77 / docs/DECISIONS.md 参照）
@@ -125,7 +125,7 @@ const SUMMARY_ITEMS: SummaryItem[] = [
   {
     // ラベルに「海まで徒歩」、数値（秒）だけを大きく打ち出す
     label: "海まで徒歩",
-    value: "約30秒",
+    value: "約2分",
     icon: <WavesIcon />,
   },
   {
