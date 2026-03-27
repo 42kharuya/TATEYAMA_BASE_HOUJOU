@@ -102,12 +102,12 @@ MVP（1ページLP）
 | `hero-exterior.jpg` | Hero（現状維持） |
 | `rooftop-terrace.jpg` | 特徴：屋上テラス / 設備：屋上 |
 | `wood-terrace.jpg` | 特徴：ウッドデッキ / 設備：屋外 |
-| `first-floor.jpg` / `living.jpg` | 特徴：1棟貸し / 設備：1階 |
-| `bed.jpg` / `bath-room.jpg` / `first-floor-toilet.jpg` | 設備：1階 |
-| `table-tennis.jpg` / `mah-jongg.jpg` | 特徴：室内アクティビティ / 設備：2階 |
+| `first-floor.jpg` / `first-floor-living.jpg` | 特徴：1棟貸し / 設備：1階 |
+| `bed.jpg` / `first-floor-bath-room.jpg` / `first-floor-toilet.jpg` | 設備：1階 |
+| `facility-table-tennis.jpg` / `facility-jongg.jpg` | 特徴：室内アクティビティ / 設備：2階 |
 | `second-floor.jpg` / `second-floor-toilet.jpg` | 設備：2階 |
 | `outdoor-shower.jpg` | 設備：屋外 |
-| `sap.jpg` / `wet-suit.jpg` / `life-jacket.jpg` | 特徴：レンタル / 料金：レンタル料金 |
+| `rental-sup.jpg` / `rental-wet-suit.jpg` / `rental-life-jacket.jpg` | 特徴：レンタル / 料金：レンタル料金 |
 
 ---
 
@@ -125,23 +125,23 @@ MVP（1ページLP）
    - ※数値は「約」を付ける（方針は [docs/DECISIONS.md](DECISIONS.md)）
 
 3. **特徴（選ばれる理由）** ♻️ 写真付きビジュアルカードに刷新
-   - 1棟貸し → `first-floor.jpg` or `living.jpg`
+   - 1棟貸し → `first-floor.jpg` or `first-floor-living.jpg`
    - 屋上テラス → `rooftop-terrace.jpg`
    - ウッドデッキ → `wood-terrace.jpg`
-   - 室内アクティビティ（卓球・麻雀） → `table-tennis.jpg` + `mah-jongg.jpg`
-   - レンタル（SUP等） → `sap.jpg`
+   - 室内アクティビティ（卓球・麻雀） → `facility-table-tennis.jpg` + `facility-mah-jongg.jpg`
+   - レンタル（SUP等） → `rental-sup.jpg`
 
 4. **設備** ♻️ フロア別写真付きレイアウトに刷新
    - 屋外 → `outdoor-shower.jpg`
-   - 1階 → `first-floor.jpg`, `living.jpg`, `bed.jpg`, `bath-room.jpg`
-   - 2階 → `second-floor.jpg`, `table-tennis.jpg`, `mah-jongg.jpg`
+   - 1階 → `first-floor.jpg`, `first-floor-living.jpg`, `bed.jpg`, `first-floor-bath-room.jpg`
+   - 2階 → `second-floor.jpg`, `facility-table-tennis.jpg`, `facility-mah-jongg.jpg`
    - 屋上 → `rooftop-terrace.jpg`, `wood-terrace.jpg`
    - アメニティは未確定のため、断定して一覧を出さない（方針は [docs/REQUIREMENTS.md](REQUIREMENTS.md)）
 
 5. **料金（宿泊）** ♻️ レンタル料金欄に写真を追加
    - 詳細料金表は `#pricing` に集約し、内容は [docs/FACTS.md](FACTS.md) と一致させる
    - キャンセルポリシーはテキスト（現状維持）
-   - レンタル料金 → `sap.jpg`, `wet-suit.jpg`, `life-jacket.jpg` を添える
+   - レンタル料金 → `rental-sup.jpg`, `rental-wet-suit.jpg`, `rental-life-jacket.jpg` を添える
 
 6. **アクセス** ✅
    - 住所（確定）

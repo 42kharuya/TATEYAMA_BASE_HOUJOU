@@ -46,14 +46,14 @@ import woodTerraceImg from "../../imgs/wood-terrace.jpg";
 import outdoorShowerImg from "../../imgs/outdoor-shower.jpg";
 // 1階
 import firstFloorImg from "../../imgs/first-floor.jpg";
-import livingImg from "../../imgs/living.jpg";
+import livingImg from "../../imgs/first-floor-living.jpg";
 import bedImg from "../../imgs/bed.jpg";
-import bathRoomImg from "../../imgs/bath-room.jpg";
+import bathRoomImg from "../../imgs/first-floor-bath-room.jpg";
 import firstFloorToiletImg from "../../imgs/first-floor-toilet.jpg";
 // 2階
 import secondFloorImg from "../../imgs/second-floor.jpg";
-import tableTennisImg from "../../imgs/table-tennis.jpg";
-import mahJonggImg from "../../imgs/mah-jongg.jpg";
+import tableTennisImg from "../../imgs/facility-table-tennis.jpg";
+import mahJonggImg from "../../imgs/facility-mah-jongg.jpg";
 import secondFloorToiletImg from "../../imgs/second-floor-toilet.jpg";
 // 屋上
 import rooftopTerraceImg from "../../imgs/rooftop-terrace.jpg";

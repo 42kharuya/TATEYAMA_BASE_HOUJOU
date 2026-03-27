@@ -43,8 +43,8 @@ import swimmingImg from "../../imgs/gallery/houjou-coast-swimming.jpg";
 import livingMealImg from "../../imgs/gallery/living-meal.png";
 import mahjongImg from "../../imgs/gallery/mah-jongg-activities.jpg";
 import rooftopImg from "../../imgs/gallery/rooftop-scenery.png";
-import sapImg from "../../imgs/gallery/sap-activities.jpg";
-import sap2Img from "../../imgs/gallery/sap-activities2.jpg";
+import sapImg from "../../imgs/gallery/sup-activities.jpg";
+import sap2Img from "../../imgs/gallery/sup-activities2.jpg";
 import tableTennisImg from "../../imgs/gallery/table-tennis-activities.jpg";
 import walkingImg from "../../imgs/gallery/walking-to-the-sea.png";
 import wetSuitImg from "../../imgs/gallery/wet-suit-wearing.jpg";
@@ -160,7 +160,7 @@ export function GallerySection() {
     // variant="tinted": 前後の白背景セクション（FeaturesSection/FacilitiesSection）と
     // 背景色でコントラストをつけ、「ギャラリーエリアに入った」ことを視覚的に伝える
     <Section
-      title="TATEYAMA BASEでの過ごし方"
+      title="当別荘での過ごし方"
       lead="海・SUP・釣り—館山の自然をまるごと楽しむ"
       variant="tinted"
     >
@@ -219,7 +219,7 @@ export function GallerySection() {
           >
             {isExpanded
               ? "折りたたむ"
-              : `もっと見る（あと ${remainingCount} 枚）`}
+              : `もっと見る`}
           </button>
         </div>
       )}

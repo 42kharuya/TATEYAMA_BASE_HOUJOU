@@ -28,7 +28,7 @@
 | imgs/outdoor-shower.jpg | 設備（屋外）/特徴 | 屋外シャワーの様子 | 許諾済み |
 | imgs/facility-table-tennis.jpg | 特徴（室内アクティビティ） | 卓球台の様子 | 許諾済み |
 | imgs/facility-mah-jongg.jpg | 特徴（室内アクティビティ） | 麻雀台の様子 | 許諾済み |
-| imgs/rental-sap.jpg | レンタル（サップ） | サップ（レンタル用品）の様子 | 許諾済み |
+| imgs/rental-sup.jpg | レンタル（サップ） | サップ（レンタル用品）の様子 | 許諾済み |
 | imgs/rental-wet-suit.jpg | レンタル（ウェットスーツ） | ウェットスーツ（レンタル用品）の様子 | 許諾済み |
 | imgs/rental-life-jacket.jpg | レンタル（ライフジャケット） | ライフジャケット（レンタル用品）の様子 | 許諾済み |
 
@@ -40,8 +40,8 @@ Issue #105: GallerySection（体験ギャラリー）で使用する宿泊者の
 
 | ファイル名 | 想定用途 | alt案 | 権利確認状況 |
 | --- | --- | --- | --- |
-| imgs/gallery/sap-activities.jpg | GallerySection（SUP） | 北条海岸でSUPを楽しむ宿泊者の様子 | 要確認（人物写り込みあり） |
-| imgs/gallery/sap-activities2.jpg | GallerySection（SUP） | 海上でSUPを漕ぐ宿泊者たちの様子 | 要確認（人物写り込みあり） |
+| imgs/gallery/sup-activities.jpg | GallerySection（SUP） | 北条海岸でSUPを楽しむ宿泊者の様子 | 要確認（人物写り込みあり） |
+| imgs/gallery/sup-activities2.jpg | GallerySection（SUP） | 海上でSUPを漕ぐ宿泊者たちの様子 | 要確認（人物写り込みあり） |
 | imgs/gallery/houjou-coast-swimming.jpg | GallerySection（海水浴） | 北条海岸で海水浴を楽しむ宿泊者たちの様子 | 要確認（人物写り込みあり） |
 | imgs/gallery/fishing-activities.jpg | GallerySection（釣り） | 北条海岸で釣りを楽しむ宿泊者の様子 | 要確認（人物写り込みあり） |
 | imgs/gallery/fishing-activities2.jpg | GallerySection（釣り） | 釣りを楽しむ宿泊者たちの様子 | 要確認（人物写り込みあり） |
