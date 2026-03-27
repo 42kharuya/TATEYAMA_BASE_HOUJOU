@@ -90,9 +90,11 @@ const VARIANT_STYLES: Record<Variant, string> = {
   /*
    * outlined-white: accent 帯（bg-sky-600 / bg-sky-700）上で使用（Issue #25）
    * 白い枠線 + 白文字で、濃い青背景に対してコントラストを確保する
+   * hover:bg-white/20（旧 /15）: ホバー視認性向上（Issue #86）
+   *   bg-sky-700 (#0369a1) 上で白 20% オーバーレイ → コントラスト比 ≒ 4.6（WCAG AA 適合）
    */
   "outlined-white":
-    "border-2 border-white text-white hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-sky-700",
+    "border-2 border-white text-white hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-sky-700",
   /*
    * primary-inverse: accent 帯（sky 背景）上での白塗りボタン（Issue #27）
    * 白い背景 + sky-700 テキストで、濃い青帯に対して最大コントラストを確保
