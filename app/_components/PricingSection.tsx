@@ -101,11 +101,11 @@ export function PricingSection() {
        * 確認してから料金表を読む自然な流れを作る。
        * grid-cols-2 sm:grid-cols-4: モバイルは2列、PCは4列で並べる
        */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {SEASONS.map((s) => (
           <div
             key={s.key}
-            className="rounded-xl border border-stone-200 p-3 dark:border-zinc-700"
+            className="rounded-xl border border-stone-200 p-4 dark:border-zinc-700"
           >
             {/* カラーバッジ: シーズンを色で直感的に区別する */}
             <span
@@ -136,33 +136,37 @@ export function PricingSection() {
       <PricingTableToggle />
 
       {/* ---- 4. キャンセルポリシー ---- */}
-      <div>
+      <div className="rounded-xl border border-stone-200 p-5 dark:border-zinc-700">
         {/* headingLevel=3: Section の h2 "料金" の下に位置する小見出し */}
-        <h3 className="text-xl font-semibold tracking-tight text-stone-900 dark:text-zinc-50">
+        <h3 className="mb-4 text-base font-semibold text-stone-900 dark:text-zinc-50">
           キャンセルポリシー
         </h3>
-        <div className="mt-4 overflow-x-auto">
+        {/* overflow-hidden + rounded-lg: テーブルの角を丸く保ちつつヘッダー背景をはみ出させない */}
+        <div className="overflow-hidden rounded-lg border border-stone-100 dark:border-zinc-700">
           <table className="w-full min-w-[280px] border-collapse text-sm">
             <thead>
-              <tr className="border-b border-stone-200 dark:border-zinc-700">
-                <th className="py-2 pr-4 text-left font-semibold text-stone-900 dark:text-zinc-50">
+              {/* ヘッダー行: 背景色を付けてデータ行と区別する */}
+              <tr className="bg-stone-50 dark:bg-zinc-800/80">
+                <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-stone-500 dark:text-zinc-400">
                   キャンセル時期
                 </th>
-                <th className="py-2 text-right font-semibold text-stone-900 dark:text-zinc-50">
+                <th className="px-4 py-2.5 text-right text-xs font-semibold uppercase tracking-wide text-stone-500 dark:text-zinc-400">
                   キャンセル料
                 </th>
               </tr>
             </thead>
-            <tbody>
+            {/* divide-y: tbody の各行の間に区切り線を自動挿入する */}
+            <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
               {CANCELLATION_RULES.map((rule) => (
                 <tr
                   key={rule.timing}
-                  className="border-b border-stone-100 last:border-0 dark:border-zinc-800"
+                  className="transition-colors hover:bg-stone-50 dark:hover:bg-zinc-800/40"
                 >
-                  <td className="py-2 pr-4 text-stone-700 dark:text-zinc-300">
+                  <td className="px-4 py-3 text-stone-700 dark:text-zinc-300">
                     {rule.timing}
                   </td>
-                  <td className="py-2 text-right text-stone-700 dark:text-zinc-300">
+                  {/* キャンセル料はやや強調して右揃えに */}
+                  <td className="px-4 py-3 text-right font-semibold text-stone-900 dark:text-zinc-50">
                     {rule.rate}
                   </td>
                 </tr>
@@ -173,11 +177,11 @@ export function PricingSection() {
       </div>
 
       {/* ---- 5. レンタル料金 ---- */}
-      <div>
-        <h3 className="text-xl font-semibold tracking-tight text-stone-900 dark:text-zinc-50">
+      <div className="rounded-xl border border-stone-200 p-5 dark:border-zinc-700">
+        <h3 className="mb-4 text-base font-semibold text-stone-900 dark:text-zinc-50">
           レンタル料金
         </h3>
-        <div className="mt-4 space-y-4">
+        <div className="space-y-4">
           {RENTAL_ITEMS.map((item) => (
             /*
              * 各レンタル品カード

@@ -1,5 +1,5 @@
 /**
- * AboutSection — 施設概要セクション（Hero 直下）
+ * AboutSection — TATEYAMA BASE 北条セクション（Hero 直下）
  *
  * 目的: 施設「TATEYAMA BASE 北条」の全体像を写真とテキストで伝える。
  *       SummarySection（基本情報）を廃止し、写真付きのエディトリアルスタイルに刷新。

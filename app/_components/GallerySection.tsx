@@ -159,8 +159,7 @@ export function GallerySection() {
   return (
     // variant="tinted": 前後の白背景セクション（FeaturesSection/FacilitiesSection）と
     // 背景色でコントラストをつけ、「ギャラリーエリアに入った」ことを視覚的に伝える
-    <Section
-      title="当別荘での過ごし方"
+    <Section      id="gallery"      title="当別荘での過ごし方"
       lead="海・SUP・釣り—館山の自然をまるごと楽しむ"
       variant="tinted"
     >

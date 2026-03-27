@@ -1,8 +1,10 @@
 export const ANCHOR_IDS = {
+  about: "about",
   summary: "summary",
-  pricing: "pricing",
   features: "features",
+  gallery: "gallery",
   facilities: "facilities",
+  pricing: "pricing",
   access: "access",
   booking: "booking",
 } as const;

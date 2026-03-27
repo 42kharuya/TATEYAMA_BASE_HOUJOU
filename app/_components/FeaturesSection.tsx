@@ -27,7 +27,6 @@ import Image, { type StaticImageData } from "next/image";
 // 写真のインポート（imgs/ 以下。next/image が最適化する）
 // StaticImport を使うと width / height が自動で取得され、CLS（レイアウトズレ）を防げる
 // ────────────────────────────────────────────────────────
-import exteriorImg from "../../imgs/hero-exterior.jpg";
 import rooftopImg from "../../imgs/rooftop-terrace.jpg";
 import woodTerraceImg from "../../imgs/wood-terrace.jpg";
 import tableTennisImg from "../../imgs/facility-table-tennis.jpg";
@@ -69,13 +68,6 @@ type Feature = {
  */
 const FEATURES: Feature[] = [
   {
-    title: "1棟貸し（4〜8名）",
-    description:
-      "グループや家族で全館を独占できる貸別荘です。人数に合わせて1階のみ、または1・2階の両フロアを使えます。",
-    image: exteriorImg,
-    alt: "リビングの様子。ソファや広い室内が見える",
-  },
-  {
     title: "屋上テラス",
     description:
       "屋上に専用テラスを確保。海風を感じながら空を見上げる時間は、室内では得られない開放感があります。",
@@ -85,14 +77,14 @@ const FEATURES: Feature[] = [
   {
     title: "1階ウッドデッキ",
     description:
-      "1階の屋外にウッドデッキを設置。アウトドアシャワーも備えているため、砂浜からそのままくつろげる環境が確保されています。",
+      "1階の屋外にウッドデッキを設置。アウトドアシャワーも備えているため、砂浜からそのままくつろげる設備が充実しています。",
     image: woodTerraceImg,
     alt: "1階ウッドデッキの様子",
   },
   {
     title: "室内アクティビティ（卓球・麻雀）",
     description:
-      "天気に左右されず楽しめる卓球台・麻雀台を2階に完備。滞在中に「やることが尽きない」工夫があります。",
+      "天気に左右されず楽しめる卓球台・麻雀台を2階に完備。滞在中に無料でご利用いただけます。",
     image: tableTennisImg,
     alt: "卓球台の様子",
   },
@@ -223,7 +215,7 @@ export function FeaturesSection() {
     <Section
       id={ANCHOR_IDS.features}
       title="選ばれる理由"
-      lead="TATEYAMA BASE 北条が選ばれる5つのポイントをご紹介します。"
+      lead="TATEYAMA BASE 北条が選ばれる4つのポイントをご紹介します。"
       variant="default"
     >
       {/*

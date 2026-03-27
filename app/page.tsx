@@ -43,7 +43,7 @@ export default function Home() {
       {/* Hero: ファーストビュー（画像・コピー・予約 CTA） */}
       <Hero />
 
-      {/* About: 施設概要（TATEYAMA BASE 北条）
+      {/* About: TATEYAMA BASE 北条
        * 写真 + テキストで施設の全体像を伝えるセクション
        */}
       <AboutSection />
