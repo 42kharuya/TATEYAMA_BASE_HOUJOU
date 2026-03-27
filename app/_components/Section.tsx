@@ -68,10 +68,12 @@ export function Section({
 }: Props) {
   const HeadingTag = headingLevel === 3 ? "h3" : "h2";
   // headingLevel と variant を組み合わせて見出しのクラスを組み立てる
+  // font-mincho: 見出しに Shippori Mincho（明朝体）を適用して和の上品さを演出する（Issue #85）
+  // headingLevel === 3 のサブ見出しも明朝体で統一する
   const headingClassName =
     headingLevel === 3
-      ? `text-xl font-semibold tracking-tight ${HEADING_COLOR[variant]}`
-      : `text-2xl font-semibold tracking-tight ${HEADING_COLOR[variant]}`;
+      ? `font-mincho text-xl font-semibold tracking-tight ${HEADING_COLOR[variant]}`
+      : `font-mincho text-2xl font-semibold tracking-tight ${HEADING_COLOR[variant]}`;  
 
   return (
     // variant に応じた背景色を適用。py は全 variant 共通
