@@ -1,7 +1,7 @@
 import { anchorHref } from "./anchors";
 
 export type NavItem = {
-  key: "booking" | "pricing" | "access";
+  key: "booking" | "about" | "features" | "gallery" | "facilities" | "pricing" | "access";
   label: string;
   href?: string;
   disabled?: boolean;
@@ -12,10 +12,24 @@ export function getHeaderNavItems(): NavItem[] {
 
   return [
     {
-      key: "booking",
-      label: "予約",
-      href: bookingUrl,
-      disabled: !bookingUrl,
+      key: "about",
+      label: "当別荘について",
+      href: anchorHref("about"),
+    },
+    {
+      key: "features",
+      label: "選ばれる理由",
+      href: anchorHref("features"),
+    },
+    {
+      key: "gallery",
+      label: "ギャラリー",
+      href: anchorHref("gallery"),
+    },
+    {
+      key: "facilities",
+      label: "別荘設備",
+      href: anchorHref("facilities"),
     },
     {
       key: "pricing",
@@ -26,6 +40,11 @@ export function getHeaderNavItems(): NavItem[] {
       key: "access",
       label: "アクセス",
       href: anchorHref("access"),
+    },
+    {
+      key: "booking",
+      label: "お問い合わせ",
+      href: anchorHref("booking"),
     },
   ];
 }

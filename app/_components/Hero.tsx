@@ -37,7 +37,7 @@ import { CTAButton } from "./CTAButton";
 const CATCH_COPY = "海も観光も\nアクティビティも\n遊びのベースキャンプ";
 
 /** キャッチコピー直下のサブコピー */
-const SUB_COPY = "館山・北条海岸の1棟貸し。4〜8名で全館を独占できます。";
+const SUB_COPY = "館山・北条海岸の1棟貸しを4〜8名で独占できます。";
 
 export function Hero() {
   // NEXT_PUBLIC_BOOKING_URL が未設定の場合は undefined になる

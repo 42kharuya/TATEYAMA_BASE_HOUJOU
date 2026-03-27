@@ -91,12 +91,12 @@ export function Section({
             {title}
           </HeadingTag>
           {lead ? (
-            <p className={`max-w-3xl text-base leading-7 ${LEAD_COLOR[variant]}`}>
+            <p className={`max-w-3xl whitespace-pre-wrap text-base leading-7 ${LEAD_COLOR[variant]}`}>
               {lead}
             </p>
           ) : null}
         </header>
-        {children ? <div className="space-y-4">{children}</div> : null}
+        {children ? <div className="space-y-8">{children}</div> : null}
       </div>
     </section>
   );
