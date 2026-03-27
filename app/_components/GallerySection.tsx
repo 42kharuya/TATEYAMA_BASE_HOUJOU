@@ -135,10 +135,10 @@ const GALLERY_PHOTOS: GalleryPhoto[] = [
 
 /**
  * 初期表示枚数
- * SP 2列 × 3行 = 6枚 がちょうど画面に収まりスッキリ見える基準。
- * PC 3列でも 6 ÷ 3 = 2行で綺麗に揃う。
+ * SP 2列 × 2行 = 4枚 でコンパクトに収める。
+ * PC 3列では 1行目に3枚 + 2行目に1枚の計4枚。
  */
-const INITIAL_COUNT = 6;
+const INITIAL_COUNT = 4;
 
 export function GallerySection() {
   /**
