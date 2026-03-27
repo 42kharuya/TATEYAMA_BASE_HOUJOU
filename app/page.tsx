@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AboutSection } from "./_components/AboutSection";
 import { AccessSection } from "./_components/AccessSection";
 import { CTAButton } from "./_components/CTAButton";
 import { FacilitiesSection } from "./_components/FacilitiesSection";
@@ -8,7 +9,6 @@ import { GallerySection } from "./_components/GallerySection";
 import { Hero } from "./_components/Hero";
 import { PricingSection } from "./_components/PricingSection";
 import { Section } from "./_components/Section";
-import { SummarySection } from "./_components/SummarySection";
 import { ANCHOR_IDS } from "./_lib/anchors";
 import { SITE } from "./_lib/site";
 
@@ -43,11 +43,10 @@ export default function Home() {
       {/* Hero: ファーストビュー（画像・コピー・予約 CTA） */}
       <Hero />
 
-      {/* Summary: 要点サマリー（Hero 直後）
-       * 宿泊人数・海まで・館山駅から・住所をひと目で伝えるセクション
-       * IA.md セクション順 2番め（Hero の直後）
+      {/* About: 施設概要（TATEYAMA BASE 北条）
+       * 写真 + テキストで施設の全体像を伝えるセクション
        */}
-      <SummarySection />
+      <AboutSection />
 
       {/* Features: 特徴（選ばれる理由）
        * 1棟貸し・屋上テラス・室内アクティビティ・レンタル・立地

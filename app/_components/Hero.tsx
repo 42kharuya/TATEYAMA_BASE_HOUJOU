@@ -37,8 +37,7 @@ import { CTAButton } from "./CTAButton";
 const CATCH_COPY = "海も観光も\nアクティビティも\n遊びのベースキャンプ";
 
 /** キャッチコピー直下のサブコピー */
-const SUB_COPY =
-  "1棟貸しの「TATEYAMA BASE 北条」。屋上テラスや1階ウッドデッキ、卓球・麻雀などの室内アクティビティも揃い、家族や仲間との滞在をアクティブに楽しめます。";
+const SUB_COPY = "館山・北条海岸の1棟貸し。4〜8名で全館を独占できます。";
 
 export function Hero() {
   // NEXT_PUBLIC_BOOKING_URL が未設定の場合は undefined になる
@@ -123,7 +122,7 @@ export function Hero() {
          * [text-shadow:...]: Tailwind の任意値記法でテキストシャドウを付与
          *   写真背景サイトの定番手法。オーバーレイに頼らずにコントラストを補強できる
          */}
-        <p className="max-w-xl text-lg leading-7 text-white [text-shadow:0_1px_4px_rgba(0,0,0,0.70)]">
+        <p className="max-w-xl text-lg leading-7 text-white whitespace-pre-wrap [text-shadow:0_1px_4px_rgba(0,0,0,0.70)]">
           {SUB_COPY}
         </p>
 
