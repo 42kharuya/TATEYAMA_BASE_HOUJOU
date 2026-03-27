@@ -17,9 +17,24 @@ const shipporiMincho = Shippori_Mincho({
 });
 
 export const metadata: Metadata = {
-  title: "TATEYAMA BASE 北条 | 館山・北条海岸の1棟貸し貸別荘",
-  description:
-    "千葉県館山市の貸別荘「TATEYAMA BASE 北条」。海まで徒歩約30秒、館山駅から徒歩約9分。4〜8名で泊まれる1棟貸し。屋上テラス・ウッドデッキ・室内アクティビティ充実。",
+  // metadataBase: OGP画像など相対URLを絶対URLに変換するベースURL
+  // NEXT_PUBLIC_SITE_URL が未設定/空文字の場合は開発用の localhost:3000 にフォールバック
+  // 注意: ?? ではなく || を使う（空文字列も falsy として扱うため）
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+  ),
+  title: {
+    // default: 各ページで title が未定義の場合に使われるタイトル（フォールバック）
+    default: "TATEYAMA BASE 北条",
+    // template: 各ページで title を定義すると「{ページ title} | TATEYAMA BASE 北条」 の形になる
+    template: "%s | TATEYAMA BASE 北条",
+  },
+  // openGraph: SNS シェア時に使われるサイト共通情報（ページ固有値は各 page.tsx で上書き）
+  openGraph: {
+    type: "website",
+    locale: "ja_JP",
+    siteName: "TATEYAMA BASE 北条",
+  },
 };
 
 export default function RootLayout({

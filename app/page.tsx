@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { AccessSection } from "./_components/AccessSection";
 import { CTAButton } from "./_components/CTAButton";
 import { FacilitiesSection } from "./_components/FacilitiesSection";
@@ -9,6 +10,28 @@ import { Section } from "./_components/Section";
 import { SummarySection } from "./_components/SummarySection";
 import { ANCHOR_IDS } from "./_lib/anchors";
 import { SITE } from "./_lib/site";
+
+// トップページ固有の metadata を定義する。
+// layout.tsx の title.template ("%s | TATEYAMA BASE 北条") を上書きし、
+// absolute を使うことでサイト名が二重にならないようにする。
+export const metadata: Metadata = {
+  title: {
+    // absolute: テンプレートを無視してこのタイトルをそのまま使う
+    absolute: "TATEYAMA BASE 北条 | 館山・北条海岸の1棟貸し貸別荘",
+  },
+  description:
+    "千葉県館山市の貸別荘「TATEYAMA BASE 北条」。海まで徒歩約30秒、館山駅から徒歩約9分。4〜8名で泊まれる1棟貸し。屋上テラス・ウッドデッキ・室内アクティビティ充実。",
+  // openGraph: SNS（X・Facebook等）でシェアされたときに表示される情報
+  // images は OGP 用画像が確定したら追加する（現時点はプレースホルダー）
+  openGraph: {
+    title: "TATEYAMA BASE 北条 | 館山・北条海岸の1棟貸し貸別荘",
+    description:
+      "千葉県館山市の貸別荘「TATEYAMA BASE 北条」。海まで徒歩約30秒、館山駅から徒歩約9分。4〜8名で泊まれる1棟貸し。屋上テラス・ウッドデッキ・室内アクティビティ充実。",
+    url: "/",
+    // OGP画像は公開前に追加予定。追加時は public/ogp.png を配置して下記を有効化:
+    // images: [{ url: "/ogp.png", width: 1200, height: 630, alt: "TATEYAMA BASE 北条" }],
+  },
+};
 
 export default function Home() {
   // 予約 URL が設定されているかを確認する（未設定時は CTAButton が「準備中」を表示）
