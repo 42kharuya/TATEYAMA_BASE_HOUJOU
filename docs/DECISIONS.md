@@ -122,6 +122,16 @@
 - 影響：`app/_components/SummarySection.tsx`（`SUMMARY_ITEMS` 配列・グリッド列数・`MapPinIcon`を削除）
 - 代替案：案A（住所を4列目から外し別行で小さく表示）／現状維持で住所をサイズ統一だけ行う
 
+### 2026-03-27
+
+- 決定：`layout.tsx` の metadata を共通デフォルト値（`metadataBase` / `title.template` / 共通 `openGraph`）に絞り、ページ固有の内容は各 `page.tsx` で定義する構造にした（Issue #87）
+- 理由：ページが増えた際に title・description・OGP を個別設定できるようにするため。Next.js App Router の metadata 継承・上書きの仕組みを活用することで、将来のページ分割（`/access`, `/pricing` 等）に対応しやすくなる。
+- 影響：
+  - `app/layout.tsx`：`metadataBase`（`NEXT_PUBLIC_SITE_URL` 環境変数）/ `title.default`（フォールバック）/ `title.template`（`%s | TATEYAMA BASE 北条`）/ `openGraph.siteName` を残す。ページ固有の `description` は削除。
+  - `app/page.tsx`：`title.absolute`（テンプレートを使わず完全タイトルを指定）/ `description` / `openGraph` を定義。OGP 画像は確定後に追加。
+  - 新規ページを追加する場合：各 `page.tsx` に `export const metadata` を定義し、`title`（string か `title.absolute`）/ `description` / `openGraph` を設定する。
+- 代替案：すべての metadata を `layout.tsx` に集約する（ページ固有設定が困難）／`generateMetadata()` 関数を使う（現時点では静的定義で十分）
+
 ### YYYY-MM-DD
 
 - 決定：
