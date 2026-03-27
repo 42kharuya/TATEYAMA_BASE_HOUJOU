@@ -7,9 +7,13 @@
  *
  * レイアウト: マソンリーグリッド（CSS columns）
  *   - columns（CSS段組み）：写真の高さがバラバラでも隙間なく詰まるPinterest風のレイアウト。
- *     JavaScriptなしでCSSだけで実現できるシンプルな手法。
  *   - SP（スマホ）: 2列 / PC（lg以上）: 3列
  *   - break-inside-avoid: 写真が列をまたいで分割されないようにする
+ *
+ * 折りたたみ: 初期表示は INITIAL_COUNT 枚。「もっと見る」ボタンで全枚数を展開。
+ *   - "use client": useState を使うため Client Component として宣言する必要がある。
+ *     Next.js App Router では、インタラクション（ボタン操作・状態管理）を持つ
+ *     コンポーネントには必ずこのディレクティブが必要。
  *
  * 画像: imgs/gallery/ 以下（権利確認状況は docs/ASSETS.md 参照）
  * デザイン準拠: docs/DESIGN.md（余白・フォント・カラールール）
@@ -17,6 +21,12 @@
  * IA.md: FeaturesSection の直後（FacilitiesSection の前）に配置
  */
 
+// "use client": このコンポーネントはブラウザ側で動く「クライアントコンポーネント」として宣言する。
+// useState（ボタンの押下状態管理）を使うために必須。
+// Server Component（デフォルト）では useState などのReact フックは使えない。
+"use client";
+
+import { useState } from "react";
 import Image, { type StaticImageData } from "next/image";
 
 // ────────────────────────────────────────────────────────
@@ -122,7 +132,30 @@ const GALLERY_PHOTOS: GalleryPhoto[] = [
 // ────────────────────────────────────────────────────────
 // GallerySection コンポーネント
 // ────────────────────────────────────────────────────────
+
+/**
+ * 初期表示枚数
+ * SP 2列 × 3行 = 6枚 がちょうど画面に収まりスッキリ見える基準。
+ * PC 3列でも 6 ÷ 3 = 2行で綺麗に揃う。
+ */
+const INITIAL_COUNT = 6;
+
 export function GallerySection() {
+  /**
+   * isExpanded: ギャラリーが展開済みかどうかを管理する状態（State）
+   * useState(false) → 最初は折りたたまれた状態（false = 全表示ではない）
+   * ボタンを押すと true/false が切り替わり、表示枚数が変わる
+   */
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // isExpanded が false なら最初の INITIAL_COUNT 枚だけ、true なら全枚数を表示
+  const visiblePhotos = isExpanded
+    ? GALLERY_PHOTOS
+    : GALLERY_PHOTOS.slice(0, INITIAL_COUNT);
+
+  // 残りの枚数（「あと○枚」の表示に使う）
+  const remainingCount = GALLERY_PHOTOS.length - INITIAL_COUNT;
+
   return (
     // variant="tinted": 前後の白背景セクション（FeaturesSection/FacilitiesSection）と
     // 背景色でコントラストをつけ、「ギャラリーエリアに入った」ことを視覚的に伝える
@@ -134,18 +167,11 @@ export function GallerySection() {
       {/*
        * マソンリーグリッド（CSS columns = CSS段組み方式）
        *
-       * columns-2: SP（スマホ）では2列に分割
-       * lg:columns-3: PC（lg = 1024px以上）では3列に分割
+       * columns-2: SP では2列 / lg:columns-3: PC では3列
        * gap-3 / lg:gap-4: 列間の隙間
-       *
-       * なぜ CSS columns を使うのか?
-       * → Tailwind の grid は「行×列」で格子状に並べる方式のため、
-       *   縦長・横長混在のときに隙間が生まれる。
-       *   CSS columns は新聞の段組みと同じ原理で、写真を上から順に
-       *   各列に詰めていくため、高さ違いでも隙間なく並ぶ（マソンリー効果）。
        */}
       <ul className="columns-2 gap-3 lg:columns-3 lg:gap-4">
-        {GALLERY_PHOTOS.map((photo, index) => (
+        {visiblePhotos.map((photo, index) => (
           /*
            * break-inside-avoid: 1枚の写真が列の境界をまたいで
            * 上下に分割されないようにするCSS。columns 使用時は必須。
@@ -158,20 +184,45 @@ export function GallerySection() {
              *   - 自動で WebP 形式に変換（ファイルサイズ削減）
              *   - 遅延読み込み（Lazy Loading）: 画面外の画像は後から読む
              *   - sizes: 実際の表示幅のヒントをブラウザに伝えて最適なサイズを配信
-             *
-             * SP 2列 → 各列 ≒ 画面幅の50%（50vw）
-             * PC 3列 → 各列 ≒ 最大幅の33%（コンテナ幅の1/3）
              */}
             <Image
               src={photo.src}
               alt={photo.alt}
-              // width / height は StaticImageData から自動取得（aspect ratio を維持したまま表示）
               className="w-full rounded-lg object-cover"
               sizes="(max-width: 1024px) 50vw, 33vw"
             />
           </li>
         ))}
       </ul>
+
+      {/*
+       * 展開・折りたたみボタン
+       * 全枚数が INITIAL_COUNT 以下なら不要なので表示しない
+       */}
+      {GALLERY_PHOTOS.length > INITIAL_COUNT && (
+        <div className="mt-6 flex justify-center">
+          <button
+            type="button"
+            onClick={() => setIsExpanded((prev) => !prev)}
+            /*
+             * onClick: ボタンを押すたびに isExpanded を反転させる
+             * (prev) => !prev: 現在の値（prev）を受け取って逆にする関数
+             *
+             * スタイル解説:
+             *   rounded-full: 角を完全に丸くしてピル型ボタンにする
+             *   border border-sky-500: ブランドカラー（空色）の枠線
+             *   text-sky-700: ブランドカラーの濃い青テキスト
+             *   hover:bg-sky-50: ホバー時に薄い青背景で押せることを伝える
+             *   transition: 背景色変化をなめらかにする
+             */
+            className="rounded-full border border-sky-500 px-6 py-2 text-sm font-medium text-sky-700 transition hover:bg-sky-50 dark:border-sky-400 dark:text-sky-300 dark:hover:bg-sky-950"
+          >
+            {isExpanded
+              ? "折りたたむ"
+              : `もっと見る（あと ${remainingCount} 枚）`}
+          </button>
+        </div>
+      )}
     </Section>
   );
 }
