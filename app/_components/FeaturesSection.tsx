@@ -27,11 +27,11 @@ import Image, { type StaticImageData } from "next/image";
 // 写真のインポート（imgs/ 以下。next/image が最適化する）
 // StaticImport を使うと width / height が自動で取得され、CLS（レイアウトズレ）を防げる
 // ────────────────────────────────────────────────────────
-import livingImg from "../../imgs/living.jpg";
+import livingImg from "../../imgs/first-floor-living.jpg";
 import rooftopImg from "../../imgs/rooftop-terrace.jpg";
 import woodTerraceImg from "../../imgs/wood-terrace.jpg";
-import tableTennisImg from "../../imgs/table-tennis.jpg";
-import sapImg from "../../imgs/sap.jpg";
+import tableTennisImg from "../../imgs/facility-table-tennis.jpg";
+import sapImg from "../../imgs/rental-sup.jpg";
 
 import { ANCHOR_IDS } from "../_lib/anchors";
 import { Section } from "./Section";

@@ -16,9 +16,9 @@
 
 import Image, { StaticImageData } from "next/image";
 
-import sapImg from "../../imgs/sap.jpg";
-import wetSuitImg from "../../imgs/wet-suit.jpg";
-import lifeJacketImg from "../../imgs/life-jacket.jpg";
+import sapImg from "../../imgs/rental-sup.jpg";
+import wetSuitImg from "../../imgs/rental-wet-suit.jpg";
+import lifeJacketImg from "../../imgs/rental-life-jacket.jpg";
 import { ANCHOR_IDS } from "../_lib/anchors";
 import { SEASONS, yen } from "../_lib/pricingData";
 import { PriceSimulator } from "./PriceSimulator";
