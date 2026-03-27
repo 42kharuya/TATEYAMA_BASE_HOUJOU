@@ -109,7 +109,11 @@ export function Hero() {
          * leading-snug（行間 1.375）: leading-tight（1.25）より開放的で、宿泊サイトの「ゆったり感」に合わせる
          * tracking-normal（字間 0）: tracking-tight の「詰め詰め感」をなくしてリゾート感を演出する
          */}
-        <h1 className="max-w-2xl text-4xl font-bold leading-snug tracking-normal text-white sm:text-5xl lg:text-6xlv whitespace-pre-wrap">
+        {/*
+         * font-mincho: Shippori Mincho（明朝体）を適用（Issue #85）
+         * 和の上品さ・リゾート感を演出する。英数字への影響は最小限（latin subsets 込みで読み込み済み）
+         */}
+        <h1 className="font-mincho max-w-2xl text-4xl font-bold leading-snug tracking-normal text-white sm:text-5xl lg:text-6xlv whitespace-pre-wrap">
           {CATCH_COPY}
         </h1>
 

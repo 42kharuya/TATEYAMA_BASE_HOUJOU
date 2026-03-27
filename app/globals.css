@@ -34,8 +34,22 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* --font-shippori-mincho は layout.tsx で CSS 変数として注入される */
-  --font-sans: var(--font-shippori-mincho);
+  /*
+   * --font-sans はシステムサンセリフを維持する。
+   * 段落（p）など本文の読みやすさを確保するためゴシック体（sans）を使用。
+   * 見出し（h1/h2）は .font-mincho クラスで明示的に明朝体を適用する（Issue #85）。
+   */
+}
+
+/*
+ * .font-mincho — 明朝体ユーティリティクラス（Issue #85）
+ * ---------------------------------------------------
+ * Shippori Mincho（layout.tsx で注入された CSS 変数）を直接指定する。
+ * h1・h2 など見出しにのみ使用し、和の上品さ・リゾート感を演出する。
+ * 段落（p）は font-sans（ゴシック体）のまま維持し、本文の読みやすさを守る。
+ */
+.font-mincho {
+  font-family: var(--font-shippori-mincho), serif;
 }
 
 @media (prefers-color-scheme: dark) {
