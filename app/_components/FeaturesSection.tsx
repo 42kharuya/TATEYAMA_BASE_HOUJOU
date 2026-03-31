@@ -1,7 +1,7 @@
 /**
- * FeaturesSection — 特徴セクション（選ばれる理由）
+ * FeaturesSection — 特徴セクション（魅力）
  *
- * 目的: 施設の「選ばれる理由」を写真付きで訴求し、予約への動機づけを強化する。
+ * 目的: 施設の「魅力」を写真付きで訴求し、予約への動機づけを強化する。
  *
  * 掲載情報（docs/FACTS.md の確定情報のみ使用）:
  *   - 1棟貸し（4〜8名）
@@ -62,7 +62,7 @@ type Feature = {
 // ────────────────────────────────────────────────────────
 
 /**
- * 「選ばれる理由」5項目
+ * 「魅力」5項目
  * すべて docs/FACTS.md の確定情報に基づく。
  * 「最高」「No.1」などの根拠なき断定は含まない。
  */
@@ -204,7 +204,7 @@ function FeatureCard({
 // ────────────────────────────────────────────────────────
 
 /**
- * FeaturesSection — 特徴セクション（選ばれる理由）
+ * FeaturesSection — 特徴セクション（魅力）
  *
  * IA.md セクション順 4番目（料金の後・設備の前）。
  * Section コンポーネントを使うことでセクション間の余白・見出しスタイルを統一する。
@@ -214,7 +214,7 @@ export function FeaturesSection() {
     // variant="default"（白背景）: 写真の色が際立つようにする（Issue #46）
     <Section
       id={ANCHOR_IDS.features}
-      title="選ばれる理由"
+      title="魅力"
       lead="TATEYAMA BASE 北条が選ばれる4つのポイントをご紹介します。"
       variant="default"
     >
@@ -232,7 +232,7 @@ export function FeaturesSection() {
           <FeatureCard
             key={feature.title}
             {...feature}
-            reversed={index % 2 !== 0}
+            reversed={index % 2 === 0}
           />
         ))}
       </div>

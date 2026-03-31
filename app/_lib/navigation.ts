@@ -16,7 +16,7 @@ export function getHeaderNavItems(): NavItem[] {
     },
     {
       key: "features",
-      label: "選ばれる理由",
+      label: "魅力",
       href: anchorHref("features"),
     },
     {

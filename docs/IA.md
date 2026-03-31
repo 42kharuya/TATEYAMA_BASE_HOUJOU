@@ -124,7 +124,7 @@ MVP（1ページLP）
    - 住所（確定）
    - ※数値は「約」を付ける（方針は [docs/DECISIONS.md](DECISIONS.md)）
 
-3. **特徴（選ばれる理由）** ♻️ 写真付きビジュアルカードに刷新
+3. **特徴（魅力）** ♻️ 写真付きビジュアルカードに刷新
    - 1棟貸し → `first-floor.jpg` or `first-floor-living.jpg`
    - 屋上テラス → `rooftop-terrace.jpg`
    - ウッドデッキ → `wood-terrace.jpg`

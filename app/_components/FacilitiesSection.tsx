@@ -52,6 +52,7 @@ import bathRoomImg from "../../imgs/first-floor-bath-room.jpg";
 import firstFloorToiletImg from "../../imgs/first-floor-toilet.jpg";
 // 2階
 import secondFloorImg from "../../imgs/second-floor.jpg";
+import secondFloor2Img from "../../imgs/second-floor2.jpg";
 import tableTennisImg from "../../imgs/facility-table-tennis.jpg";
 import mahJonggImg from "../../imgs/facility-mah-jongg.jpg";
 import secondFloorToiletImg from "../../imgs/second-floor-toilet.jpg";
@@ -105,7 +106,7 @@ const FLOOR_FACILITIES: FloorFacility[] = [
       { src: outdoorShowerImg,  alt: "屋外シャワーの様子。砂浜帰りにそのまま使える設備" },
     ],
     items: [
-      "駐車スペース（1台）",
+      "駐車スペース（2台）",
       "屋外シャワー",
       "EVコンセント（EV車2台まで）",
     ],
@@ -137,6 +138,7 @@ const FLOOR_FACILITIES: FloorFacility[] = [
     // 根拠: docs/FACTS.md「2階」（誤記修正済み: 麻雀台=椅子付き、卓球台=ラケット・ボール付き）
     photos: [
       { src: secondFloorImg,        alt: "2階の室内全景。アクティビティを楽しめるフロア" },
+      { src: secondFloor2Img,       alt: "2階の室内。ロフトベッドと個別スペースのある居住エリア" },
       { src: tableTennisImg,        alt: "卓球台。ラケット・ボール付きで手ぶらで楽しめる" },
       { src: mahJonggImg,           alt: "麻雀台。椅子付きで本格的な対局ができる" },
       { src: bedImg,                alt: "2階ベッドルーム。ベッド4台を完備" },
