@@ -18,7 +18,7 @@
  *   - Section variant を default（白背景）に変更し写真の色が際立つようにする
  * デザイン準拠: docs/DESIGN.md（余白・フォント・カラールール）
  * セマンティック: <section> > <h2> > カード内 <h3> で見出し階層を維持
- * IA.md: セクション順 4番目（料金の後・設備の前）
+ * IA.md: セクション順 3番目（Aboutの後・ Galleryの前）
  */
 
 import Image, { type StaticImageData } from "next/image";
@@ -206,7 +206,7 @@ function FeatureCard({
 /**
  * FeaturesSection — 特徴セクション（魅力）
  *
- * IA.md セクション順 4番目（料金の後・設備の前）。
+ * IA.md セクション順 3番目（Aboutの後・ Galleryの前）。
  * Section コンポーネントを使うことでセクション間の余白・見出しスタイルを統一する。
  */
 export function FeaturesSection() {
@@ -223,7 +223,7 @@ export function FeaturesSection() {
        * - 各アイテムが1行を占める縦積み
        * - gap は不要（各 article の py-10/py-14 パディングで間隔を確保）
        * - PC では各アイテム内部が左右2カラムになる（FeatureItem 内の flex-row）
-       * - 奇数番目のアイテム（index が奇数）は写真を右側に反転（reversed=true）
+       * - 偶数番目のアイテム（index が偶数）は写真を右側に反転（reversed=true）
        *   → 交互配置により単調さを避け、視線の流れを作る
        * - border-b で仕切り線を表示し、最終アイテムは last:border-b-0 で非表示
        */}
