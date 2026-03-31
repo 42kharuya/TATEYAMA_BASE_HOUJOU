@@ -48,6 +48,7 @@ import sap2Img from "../../imgs/gallery/sup-activities2.jpg";
 import tableTennisImg from "../../imgs/gallery/table-tennis-activities.jpg";
 import walkingImg from "../../imgs/gallery/walking-to-the-sea.png";
 import wetSuitImg from "../../imgs/gallery/wet-suit-wearing.jpg";
+import fireWorks from "../../imgs/gallery/fire-works.png";
 
 import { Section } from "./Section";
 
@@ -127,6 +128,10 @@ const GALLERY_PHOTOS: GalleryPhoto[] = [
     src: tableTennisImg,
     alt: "2階卓球台で卓球を楽しむ宿泊者たちの様子",
   },
+  {
+    src: fireWorks,
+    alt: "北条海岸の花火の様子",
+  },
 ];
 
 // ────────────────────────────────────────────────────────
@@ -152,9 +157,6 @@ export function GallerySection() {
   const visiblePhotos = isExpanded
     ? GALLERY_PHOTOS
     : GALLERY_PHOTOS.slice(0, INITIAL_COUNT);
-
-  // 残りの枚数（「あと○枚」の表示に使う）
-  const remainingCount = GALLERY_PHOTOS.length - INITIAL_COUNT;
 
   return (
     // variant="tinted": 前後の白背景セクション（FeaturesSection/FacilitiesSection）と

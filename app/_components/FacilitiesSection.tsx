@@ -213,7 +213,6 @@ function Lightbox({ photos, initialIndex, onClose }: LightboxProps) {
     const handleClose = () => onCloseRef.current();
     dialog.addEventListener("close", handleClose);
     return () => dialog.removeEventListener("close", handleClose);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ← → キーで写真を切り替える（キーボードナビゲーション）
