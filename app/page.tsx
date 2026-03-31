@@ -48,7 +48,7 @@ export default function Home() {
        */}
       <AboutSection />
 
-      {/* Features: 特徴（選ばれる理由）
+      {/* Features: 特徴（魅力）
        * 1棟貸し・屋上テラス・室内アクティビティ・レンタル・立地
        * IA.md セクション順 3番め（Summary の後・設備の前）
        * FadeIn: スクロールで表示域に入ったタイミングでフェードイン（Issue #76）
