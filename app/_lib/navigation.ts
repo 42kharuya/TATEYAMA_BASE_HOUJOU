@@ -8,8 +8,6 @@ export type NavItem = {
 };
 
 export function getHeaderNavItems(): NavItem[] {
-  const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL;
-
   return [
     {
       key: "about",
