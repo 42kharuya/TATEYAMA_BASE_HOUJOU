@@ -24,7 +24,7 @@
  *
  * デザイン準拠: docs/DESIGN.md（余白・フォント・stone カラールール）
  * セマンティック: <section> > <h2> > role="tablist" / role="tabpanel" で構造化
- * IA.md: セクション順 5番目（特徴の後・アクセスの前）
+ * IA.md: セクション順 5番目（Galleryの後・料金の前）
  * ARIA: role="tablist" + role="tab" + aria-selected + aria-controls / role="tabpanel"
  */
 

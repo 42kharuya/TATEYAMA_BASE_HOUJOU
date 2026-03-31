@@ -92,8 +92,7 @@ MVP（1ページLP）
 
 凡例：✅ 実装済み　🔲 未実装（今後の Issue）　♻️ 刷新予定（写真分散配置対応）
 
-**写真分散配置方針：** 専用のギャラリーセクションは廃止し、各セクションで関連写真を添える。
-「読む → 見る」がセクション内で完結することで、テキストだけの読みにくさを解消する。
+**写真方針：** 各セクションで関連写真を添える。加えてギャラリーセクション（GallerySection）で体験写真をまとめて掲載する（Issue #105）。
 
 写真と配置先の対応：
 
@@ -104,8 +103,9 @@ MVP（1ページLP）
 | `wood-terrace.jpg` | 特徴：ウッドデッキ / 設備：屋外 |
 | `first-floor.jpg` / `first-floor-living.jpg` | 特徴：1棟貸し / 設備：1階 |
 | `bed.jpg` / `first-floor-bath-room.jpg` / `first-floor-toilet.jpg` | 設備：1階 |
-| `facility-table-tennis.jpg` / `facility-jongg.jpg` | 特徴：室内アクティビティ / 設備：2階 |
-| `second-floor.jpg` / `second-floor-toilet.jpg` | 設備：2階 |
+| `facility-table-tennis.jpg` / `facility-mah-jongg.jpg` | 特徴：室内アクティビティ / 設備：2階 |
+| `second-floor.jpg` / `second-floor2.jpg` / `second-floor-toilet.jpg` | 設備：2階 |
+| `gallery/*.jpg` / `gallery/*.png` | ギャラリー（体験写真、Issue #105） |
 | `outdoor-shower.jpg` | 設備：屋外 |
 | `rental-sup.jpg` / `rental-wet-suit.jpg` / `rental-life-jacket.jpg` | 特徴：レンタル / 料金：レンタル料金 |
 
@@ -114,8 +114,7 @@ MVP（1ページLP）
 1. **Hero（ファーストビュー）** ✅
    - 施設名＋短い価値訴求
    - 主要CTA：予約（外部）
-   - ページ内ショートカット：特徴 / 料金 / アクセス / 予約（アンカー）
-   - ※ `gallery` ショートカットは廃止（ギャラリーセクション廃止に伴う）
+   - ページ内ナビ：ヘッダーに常設（当別荘について / 魅力 / ギャラリー / 別荘設備 / 料金 / アクセス / お問い合わせ）
 
 2. **要点サマリー（最短で判断できる情報）** ✅
    - 宿泊人数：4〜8名（確定）
@@ -124,41 +123,46 @@ MVP（1ページLP）
    - 住所（確定）
    - ※数値は「約」を付ける（方針は [docs/DECISIONS.md](DECISIONS.md)）
 
-3. **特徴（魅力）** ♻️ 写真付きビジュアルカードに刷新
-   - 1棟貸し → `first-floor.jpg` or `first-floor-living.jpg`
+3. **特徴（魅力）** ✅ 写真付きエディトリアルレイアウト（Issue #46）
    - 屋上テラス → `rooftop-terrace.jpg`
    - ウッドデッキ → `wood-terrace.jpg`
-   - 室内アクティビティ（卓球・麻雀） → `facility-table-tennis.jpg` + `facility-mah-jongg.jpg`
+   - 室内アクティビティ（卓球・麻雀） → `facility-table-tennis.jpg`
    - レンタル（SUP等） → `rental-sup.jpg`
 
-4. **設備** ♻️ フロア別写真付きレイアウトに刷新
-   - 屋外 → `outdoor-shower.jpg`
-   - 1階 → `first-floor.jpg`, `first-floor-living.jpg`, `bed.jpg`, `first-floor-bath-room.jpg`
-   - 2階 → `second-floor.jpg`, `facility-table-tennis.jpg`, `facility-mah-jongg.jpg`
-   - 屋上 → `rooftop-terrace.jpg`, `wood-terrace.jpg`
+4. **ギャラリー（体験写真）** ✅ マソンリーグリッド（Issue #105）
+   - 宿泊者の体験写真（SUP・海水浴・釣り・卓球・夕日など）をマソンリーグリッドで表示
+   - 「実際にこう楽しんでいる」というソーシャルプルーフ（共感・イメージ喚起）
+   - 「もっと見る」ボタンで全枚数まで展開可能（初期は INITIAL_COUNT 枚）
+   - 画像: `imgs/gallery/` 以下
+
+5. **設備** ✅ フロア別タブ切り替え＋写真ギャラリー（Issue #47）
+   - 屋外 → `wood-terrace.jpg`, `outdoor-shower.jpg`
+   - 1階 → `first-floor.jpg`, `first-floor-living.jpg`, `bed.jpg`, `first-floor-bath-room.jpg`, `first-floor-toilet.jpg`
+   - 2階 → `second-floor.jpg`, `second-floor2.jpg`, `facility-table-tennis.jpg`, `facility-mah-jongg.jpg`, `bed.jpg`, `second-floor-toilet.jpg`
+   - 屋上 → `rooftop-terrace.jpg`
    - アメニティは未確定のため、断定して一覧を出さない（方針は [docs/REQUIREMENTS.md](REQUIREMENTS.md)）
 
-5. **料金（宿泊）** ♻️ レンタル料金欄に写真を追加
+6. **料金（宿泊）** ♻️ レンタル料金欄に写真を追加
    - 詳細料金表は `#pricing` に集約し、内容は [docs/FACTS.md](FACTS.md) と一致させる
    - キャンセルポリシーはテキスト（現状維持）
    - レンタル料金 → `rental-sup.jpg`, `rental-wet-suit.jpg`, `rental-life-jacket.jpg` を添える
 
-6. **アクセス** ✅
+7. **アクセス** ✅
    - 住所（確定）
    - 地図CTA（外部）
    - 交通手段（確定：車/電車/バス/高速ジェット/フェリー）
 
-7. **予約・問い合わせ（CTA再掲）** ✅
+8. **予約・問い合わせ（CTA再掲）** ✅
    - 予約CTA（外部）を再掲
    - 問い合わせCTA（LINE）を併記
 
-8. **フッター** ✅
+9. **フッター** ✅
    - 施設名、住所、地図、予約/問い合わせ導線の再掲（常設導線のバックアップ）
 
 補足：
-- ギャラリーセクション（GallerySection / Lightbox）は廃止。写真は各セクションに分散配置する。
-- `ANCHOR_IDS.gallery` は削除し、Hero のショートカットから除去する。
-- 写真の拡大表示（Lightbox）は、各セクション内の写真クリックで代替するか、MVPでは省略する。
+- ギャラリーセクション（GallerySection）は `imgs/gallery/` の体験写真を使用（Issue #105）。
+- `ANCHOR_IDS.gallery` はヘッダーナビ（navigation.ts）経由でリンク可能。
+- 写真の拡大表示（Lightbox）は FacilitiesSection 内の写真クリック時に実装済み。
 
 ## 4. CTA（予約ボタン）の配置ルール（どこに、どの文言で）
 
