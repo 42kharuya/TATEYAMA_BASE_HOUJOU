@@ -80,6 +80,24 @@ function parseLocalDate(dateStr: string): Date {
 }
 
 /**
+ * Date をローカル日付の "YYYY-MM-DD" 文字列に変換する
+ *
+ * NG: d.toISOString().slice(0, 10)
+ *     → toISOString() は UTC に変換するため、JST（UTC+9）では
+ *       深夜0時が前日の 15:00 UTC になり、日付が1日ずれる。
+ *       スマホ（iOS Safari）は min 属性でグレーアウト表示するため
+ *       このズレがユーザーに明確に見えてしまう。
+ *
+ * OK: 年・月・日をローカル値で取り出して文字列を組み立てる。
+ */
+function formatLocalDate(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+/**
  * チェックイン日・チェックアウト日・人数から合計料金を計算する
  *
  * @returns 計算結果（SimulatorResult）または null（入力不足の場合）
@@ -187,7 +205,7 @@ export function PriceSimulator() {
     ? (() => {
         const d = parseLocalDate(state.checkInStr);
         d.setDate(d.getDate() + 1); // 翌日を計算する
-        return d.toISOString().slice(0, 10); // "YYYY-MM-DD" 形式に変換
+        return formatLocalDate(d); // ローカル日付で "YYYY-MM-DD" に変換（UTC変換しない）
       })()
     : "2025-01-02"; // チェックイン未入力時のフォールバック
 
@@ -208,7 +226,7 @@ export function PriceSimulator() {
         ? (() => {
             const d = parseLocalDate(newCheckIn);
             d.setDate(d.getDate() + 1);
-            return d.toISOString().slice(0, 10);
+            return formatLocalDate(d); // ローカル日付で "YYYY-MM-DD" に変換（UTC変換しない）
           })()
         : "2025-01-02";
       // チェックアウトが新min以前なら空文字にリセットする
