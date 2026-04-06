@@ -214,26 +214,37 @@ export function PriceSimulator() {
   /**
    * チェックイン日が変更されたときのハンドラー
    *
-   * チェックイン日を更新するとともに、
-   * チェックアウト日が新しい min（= チェックイン翌日）より前になった場合はリセットする。
-   * （チェックアウトが不正な状態のままにならないようUXの一貫性を保つ）
+   * 【iOS Safari 対応の重要な実装ポイント】
+   * iOS Safari の <input type="date"> はスクロールピッカー UIを使っており、
+   * `min` 属性はグレーアウト範囲を決めるだけで、ピッカーの初期スクロール位置は
+   * `value` 属性（設定値）または「今日」になる。
+   * → チェックアウトを空文字にリセットすると、iOS では今日の位置からピッカーが
+   *   開いてしまい、目的の月まで手動スクロールが必要になる。
+   *
+   * 対策: チェックアウトが無効（空 or min より前）になる場合は、
+   *       空文字ではなく min（チェックイン翌日）を初期値としてセットする。
+   *       これにより iOS Safari も正しい日付を value として持ち、
+   *       ピッカーがチェックイン翌日の位置から開く。
    */
   function handleCheckInChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newCheckIn = e.target.value;
     setState((prev) => {
+      if (!newCheckIn) {
+        // チェックインをクリアした場合はチェックアウトも空にする
+        return { ...prev, checkInStr: "", checkOutStr: "" };
+      }
       // 新しいチェックイン日に対する min（翌日）を計算する
-      const newCheckOutMin = newCheckIn
-        ? (() => {
-            const d = parseLocalDate(newCheckIn);
-            d.setDate(d.getDate() + 1);
-            return formatLocalDate(d); // ローカル日付で "YYYY-MM-DD" に変換（UTC変換しない）
-          })()
-        : "2025-01-02";
-      // チェックアウトが新min以前なら空文字にリセットする
+      const d = parseLocalDate(newCheckIn);
+      d.setDate(d.getDate() + 1);
+      const newCheckOutMin = formatLocalDate(d); // ローカル日付で変換（UTC変換しない）
+
+      // チェックアウトが有効（min 以上）なら維持、そうでなければ min を初期値にセット
+      // ※ iOS Safari 対応: 空文字ではなく min をセットすることで
+      //   ピッカーがチェックイン翌日の位置から開くようになる
       const checkOutStr =
-        prev.checkOutStr && prev.checkOutStr < newCheckOutMin
-          ? ""
-          : prev.checkOutStr;
+        prev.checkOutStr && prev.checkOutStr >= newCheckOutMin
+          ? prev.checkOutStr
+          : newCheckOutMin;
       return { ...prev, checkInStr: newCheckIn, checkOutStr };
     });
   }
