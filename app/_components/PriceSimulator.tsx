@@ -278,7 +278,7 @@ export function PriceSimulator() {
          *   <input type="date"> はブラウザ固有の最小幅を持つため、div と input 両方に min-w-0 を付けることで
          *   w-full（width:100%）が正しく機能してカード内に収まる。
          */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 overflow-hidden">
           {/* チェックイン日 */}
           <div className="min-w-0">
             <label
@@ -294,7 +294,7 @@ export function PriceSimulator() {
               max="2027-12-31"
               value={state.checkInStr}
               onChange={handleCheckInChange}
-              className="mt-1 block min-w-0 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50 dark:focus:border-sky-400 dark:focus:ring-sky-400"
+              className="mt-1 block min-w-0 max-w-full w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50 dark:focus:border-sky-400 dark:focus:ring-sky-400"
             />
           </div>
           {/* チェックアウト日 */}
@@ -312,7 +312,7 @@ export function PriceSimulator() {
               max="2027-12-31"
               value={state.checkOutStr}
               onChange={handleCheckOutChange}
-              className="mt-1 block min-w-0 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50 dark:focus:border-sky-400 dark:focus:ring-sky-400"
+              className="mt-1 block min-w-0 max-w-full w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50 dark:focus:border-sky-400 dark:focus:ring-sky-400"
             />
           </div>
         </div>
