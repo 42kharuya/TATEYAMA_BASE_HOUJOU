@@ -168,10 +168,49 @@ export function PriceSimulator() {
     return calcResult(state.checkInStr, state.checkOutStr, state.guests, row);
   })();
 
+  /**
+   * チェックアウト日 input の min 属性値を動的に計算する
+   *
+   * - チェックイン日が入力済みの場合: チェックイン日の翌日（チェックアウトは最低1泊後）
+   * - チェックイン日が未入力の場合: 固定のフォールバック値
+   *
+   * これにより、チェックイン日を選んだあとカレンダーが適切な月から開いてUX改善される。
+   */
+  const checkOutMin = state.checkInStr
+    ? (() => {
+        const d = parseLocalDate(state.checkInStr);
+        d.setDate(d.getDate() + 1); // 翌日を計算する
+        return d.toISOString().slice(0, 10); // "YYYY-MM-DD" 形式に変換
+      })()
+    : "2025-01-02"; // チェックイン未入力時のフォールバック
+
   // ── イベントハンドラー ─────────────────────────────
 
+  /**
+   * チェックイン日が変更されたときのハンドラー
+   *
+   * チェックイン日を更新するとともに、
+   * チェックアウト日が新しい min（= チェックイン翌日）より前になった場合はリセットする。
+   * （チェックアウトが不正な状態のままにならないようUXの一貫性を保つ）
+   */
   function handleCheckInChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setState((prev) => ({ ...prev, checkInStr: e.target.value }));
+    const newCheckIn = e.target.value;
+    setState((prev) => {
+      // 新しいチェックイン日に対する min（翌日）を計算する
+      const newCheckOutMin = newCheckIn
+        ? (() => {
+            const d = parseLocalDate(newCheckIn);
+            d.setDate(d.getDate() + 1);
+            return d.toISOString().slice(0, 10);
+          })()
+        : "2025-01-02";
+      // チェックアウトが新min以前なら空文字にリセットする
+      const checkOutStr =
+        prev.checkOutStr && prev.checkOutStr < newCheckOutMin
+          ? ""
+          : prev.checkOutStr;
+      return { ...prev, checkInStr: newCheckIn, checkOutStr };
+    });
   }
 
   function handleCheckOutChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -228,7 +267,7 @@ export function PriceSimulator() {
             <input
               id="sim-checkout"
               type="date"
-              min="2025-01-02"
+              min={checkOutMin}
               max="2027-12-31"
               value={state.checkOutStr}
               onChange={handleCheckOutChange}
