@@ -32,7 +32,7 @@ export function AboutSection() {
     <section
       id="about"
       aria-labelledby="about-heading"
-      className="bg-white py-16 sm:py-20"
+      className="bg-white py-16 dark:bg-zinc-900 sm:py-20"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
 
@@ -42,7 +42,7 @@ export function AboutSection() {
          */}
         <h2
           id="about-heading"
-          className="font-mincho mb-10 text-center text-3xl font-bold tracking-widest text-stone-900 sm:mb-14 sm:text-4xl"
+          className="font-mincho mb-10 text-center text-3xl font-bold tracking-widest text-stone-900 dark:text-zinc-50 sm:mb-14 sm:text-4xl"
         >
           TATEYAMA BASE 北条
         </h2>
@@ -67,7 +67,7 @@ export function AboutSection() {
           {/* テキスト */}
           <div className="flex flex-col gap-4 sm:w-1/3">
             {PARAGRAPHS.map((text, i) => (
-              <p key={i} className="text-base leading-7 text-stone-600">
+              <p key={i} className="text-base leading-7 text-stone-600 dark:text-zinc-400">
                 {text}
               </p>
             ))}
