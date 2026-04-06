@@ -260,7 +260,7 @@ export function PriceSimulator() {
   // ── レンダリング ───────────────────────────────────
 
   return (
-    <div className="rounded-2xl border border-stone-200 bg-stone-50 p-4 sm:p-5 dark:border-zinc-700 dark:bg-zinc-900/60">
+    <div className="rounded-2xl border border-stone-200 bg-stone-50 p-5 dark:border-zinc-700 dark:bg-zinc-900/60">
       {/* カードヘッダー */}
       <p className="text-sm font-semibold uppercase tracking-wider text-stone-500 dark:text-zinc-400">
         料金シミュレーター
