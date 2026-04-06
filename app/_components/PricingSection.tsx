@@ -247,6 +247,18 @@ export function PricingSection() {
             </div>
           ))}
         </div>
+
+        {/*
+         * 破損・紛失時弁償注釈
+         * role="note": スクリーンリーダーに「補足情報」であることを伝えるセマンティクス
+         * キャンセルポリシーと同様に、目立ちすぎず確実に読める小文字スタイルで配置する
+         */}
+        <p
+          role="note"
+          className="mt-4 text-xs leading-relaxed text-stone-500 dark:text-zinc-400"
+        >
+          ※ SAP・ウェットスーツ・ライフジャケットをご使用の際、破損・紛失等が生じた場合は、有償にて弁償していただきます。
+        </p>
       </div>
     </Section>
   );
