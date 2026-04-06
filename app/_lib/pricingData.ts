@@ -23,7 +23,8 @@ export type PriceRow = {
   /** 使用フロアの補足（例: "1階のみ"） */
   note: string;
   /**
-   * シーズン別の料金（円）・清掃費込み
+   * シーズン別の宿泊料金（円）・清掃費別
+   * ※ 清掃費は連泊しても1回のみ加算されるため、別テーブル（CLEANING_FEES）で管理する
    * offseason: オフシーズン
    * regular:   レギュラーシーズン
    * high:      ハイシーズン
@@ -33,36 +34,57 @@ export type PriceRow = {
 };
 
 /**
- * 宿泊料金テーブル（清掃費込み）
+ * 宿泊料金テーブル（清掃費別・1泊あたり）
+ * ※ 清掃費は CLEANING_FEES で別管理。連泊しても清掃費は1回のみ加算される。
  * ※ 計算式（base + extra × count）だと端数が合わないため絶対値で管理
  */
 export const PRICING_ROWS: PriceRow[] = [
   {
     guests: 4,
     note: "1階のみ",
-    prices: { offseason: 46000, regular: 53000, high: 58000, top: 63000 },
+    prices: { offseason: 38000, regular: 45000, high: 50000, top: 55000 },
   },
   {
     guests: 5,
     note: "1・2階",
-    prices: { offseason: 48500, regular: 56500, high: 61500, top: 66500 },
+    prices: { offseason: 40000, regular: 48000, high: 53000, top: 58000 },
   },
   {
     guests: 6,
     note: "1・2階",
-    prices: { offseason: 51000, regular: 60000, high: 65000, top: 70000 },
+    prices: { offseason: 42000, regular: 51000, high: 56000, top: 61000 },
   },
   {
     guests: 7,
     note: "1・2階",
-    prices: { offseason: 53500, regular: 63500, high: 68500, top: 73500 },
+    prices: { offseason: 44000, regular: 54000, high: 59000, top: 64000 },
   },
   {
     guests: 8,
     note: "1・2階",
-    prices: { offseason: 56000, regular: 67000, high: 72000, top: 77000 },
+    prices: { offseason: 46000, regular: 57000, high: 62000, top: 67000 },
   },
 ];
+
+// ─────────────────────────────────────────────
+// 清掃費テーブル
+// ─────────────────────────────────────────────
+
+/**
+ * 清掃費テーブル（宿泊全体で1回のみ加算）
+ *
+ * キー: 宿泊人数（4〜8）
+ * 値:   清掃費（円）
+ *
+ * ※ 清掃費は連泊数・シーズンに関わらず、1泊でも複数泊でも1回のみ課金される。
+ */
+export const CLEANING_FEES: Record<number, number> = {
+  4: 8000,
+  5: 8500,
+  6: 9000,
+  7: 9500,
+  8: 10000,
+};
 
 // ─────────────────────────────────────────────
 // シーズン定義（ラベル・説明・カラー）
