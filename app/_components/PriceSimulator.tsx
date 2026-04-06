@@ -160,13 +160,6 @@ export function PriceSimulator() {
     guests: null,
   });
 
-  /**
-   * チェックアウト日入力にフォーカスが当たっているか
-   * true のとき「どのチェックイン日を基準にしているか」がわかるよう
-   * チェックイン入力欄を視覚的にハイライトする
-   */
-  const [isCheckoutFocused, setIsCheckoutFocused] = useState(false);
-
   // ── 計算 ──────────────────────────────────────────
 
   /**
@@ -260,17 +253,6 @@ export function PriceSimulator() {
     setState((prev) => ({ ...prev, checkOutStr: e.target.value }));
   }
 
-  /**
-   * チェックアウト日入力のフォーカス/ブラーハンドラー
-   * フォーカス中はチェックイン欄をハイライトして「基準日」を視覚的に示す
-   */
-  function handleCheckoutFocus() {
-    setIsCheckoutFocused(true);
-  }
-  function handleCheckoutBlur() {
-    setIsCheckoutFocused(false);
-  }
-
   function handleGuestsSelect(guests: number) {
     setState((prev) => ({ ...prev, guests }));
   }
@@ -278,7 +260,7 @@ export function PriceSimulator() {
   // ── レンダリング ───────────────────────────────────
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-stone-200 bg-stone-50 p-5 dark:border-zinc-700 dark:bg-zinc-900/60">
+    <div className="rounded-2xl border border-stone-200 bg-stone-50 p-5 dark:border-zinc-700 dark:bg-zinc-900/60">
       {/* カードヘッダー */}
       <p className="text-sm font-semibold uppercase tracking-wider text-stone-500 dark:text-zinc-400">
         料金シミュレーター
@@ -292,25 +274,18 @@ export function PriceSimulator() {
         {/* チェックイン日・チェックアウト日（横並び） */}
         {/*
          * sm:grid-cols-2: PC では横並び、モバイルでは縦積みにする
-         */}
-        {/*
          * min-w-0: CSS Grid の子要素はデフォルトで min-width: auto（コンテンツ幅）になる。
-         * <input type="date"> はブラウザ固有の最小幅を持つため、min-w-0 がないと
-         * カード幅を突き破ってはみ出す。min-w-0 で上書きして w-full を有効にする。
+         *   <input type="date"> はブラウザ固有の最小幅を持つため、div と input 両方に min-w-0 を付けることで
+         *   w-full（width:100%）が正しく機能してカード内に収まる。
          */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {/* チェックイン日 ── チェックアウト入力フォーカス中はハイライト表示 */}
+          {/* チェックイン日 */}
           <div className="min-w-0">
             <label
               htmlFor="sim-checkin"
-              className={`block text-sm font-medium transition-colors ${
-                isCheckoutFocused
-                  ? "text-amber-600 dark:text-amber-400"
-                  : "text-stone-700 dark:text-zinc-300"
-              }`}
+              className="block text-sm font-medium text-stone-700 dark:text-zinc-300"
             >
-              {/* チェックアウト入力中は「基準日」アイコンで強調する */}
-              {isCheckoutFocused ? "📅 チェックイン日（基準）" : "チェックイン日"}
+              チェックイン日
             </label>
             <input
               id="sim-checkin"
@@ -319,11 +294,7 @@ export function PriceSimulator() {
               max="2027-12-31"
               value={state.checkInStr}
               onChange={handleCheckInChange}
-              className={`mt-1 block w-full rounded-lg border px-3 py-2 text-sm text-stone-900 transition-colors focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 dark:text-zinc-50 dark:focus:border-sky-400 dark:focus:ring-sky-400 ${
-                isCheckoutFocused
-                  ? "border-amber-400 bg-amber-50 dark:border-amber-500 dark:bg-amber-950/40"
-                  : "border-stone-300 bg-white dark:border-zinc-600 dark:bg-zinc-800"
-              }`}
+              className="mt-1 block min-w-0 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50 dark:focus:border-sky-400 dark:focus:ring-sky-400"
             />
           </div>
           {/* チェックアウト日 */}
@@ -341,9 +312,7 @@ export function PriceSimulator() {
               max="2027-12-31"
               value={state.checkOutStr}
               onChange={handleCheckOutChange}
-              onFocus={handleCheckoutFocus}
-              onBlur={handleCheckoutBlur}
-              className="mt-1 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 transition-colors focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50 dark:focus:border-sky-400 dark:focus:ring-sky-400"
+              className="mt-1 block min-w-0 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50 dark:focus:border-sky-400 dark:focus:ring-sky-400"
             />
           </div>
         </div>
