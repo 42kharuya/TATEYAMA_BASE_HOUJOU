@@ -112,7 +112,7 @@ export function Hero() {
          * font-mincho: Shippori Mincho（明朝体）を適用（Issue #85）
          * 和の上品さ・リゾート感を演出する。英数字への影響は最小限（latin subsets 込みで読み込み済み）
          */}
-        <h1 className="font-mincho max-w-2xl text-4xl font-bold leading-snug tracking-normal text-white sm:text-5xl lg:text-6xlv whitespace-pre-wrap">
+        <h1 className="font-mincho max-w-2xl text-4xl font-bold leading-snug tracking-normal text-white sm:text-5xl lg:text-6xl whitespace-pre-wrap">
           {CATCH_COPY}
         </h1>
 
