@@ -26,7 +26,7 @@
 import { useState } from "react";
 
 import type { SeasonKey } from "../_lib/seasonDetector";
-import { PRICING_ROWS, SEASONS, yen } from "../_lib/pricingData";
+import { CLEANING_FEES, PRICING_ROWS, SEASONS, yen } from "../_lib/pricingData";
 import { detectSeason } from "../_lib/seasonDetector";
 
 /** シミュレーターが保持する状態 */
@@ -50,7 +50,11 @@ type SeasonBreakdown = {
 type SimulatorResult = {
   /** 合計泊数 */
   nights: number;
-  /** 合計料金（円） */
+  /** 宿泊料金合計（清掃費抜き・全泊分の積算） */
+  accommodationTotal: number;
+  /** 清掃費（宿泊全体で1回のみ） */
+  cleaningFee: number;
+  /** 合計料金（宿泊料金合計 + 清掃費） */
   total: number;
   /** シーズン別の内訳リスト（泊数が多いシーズン順） */
   breakdown: SeasonBreakdown[];
@@ -117,10 +121,13 @@ function calcResult(
     .filter((b) => b.nights > 0)
     .sort((a, b) => b.nights - a.nights);
 
-  const total = breakdown.reduce((sum, b) => sum + b.subtotal, 0);
+  const accommodationTotal = breakdown.reduce((sum, b) => sum + b.subtotal, 0);
+  // 清掃費は連泊数・シーズンに関わらず1回のみ加算する（CLEANING_FEES で人数に応じた金額を取得）
+  const cleaningFee = CLEANING_FEES[guests] ?? 0;
+  const total = accommodationTotal + cleaningFee;
   const hasTop = map.top.nights > 0;
 
-  return { nights, total, breakdown, hasTop };
+  return { nights, accommodationTotal, cleaningFee, total, breakdown, hasTop };
 }
 
 // ─────────────────────────────────────────────
@@ -340,8 +347,10 @@ export function PriceSimulator() {
               </span>
             </div>
 
-            {/* シーズン別内訳
-             * 複数シーズンにまたがる場合に各泊の明細を表示する
+            {/* 内訳（シーズン別 + 清掃費）
+             * シーズン行：各シーズンの泊数と小計
+             * 宿泊料金合計：全シーズンの合算
+             * 清掃費：泊数に関わらず1回のみ
              */}
             <div className="space-y-1 border-t border-stone-100 pt-2 dark:border-zinc-700">
               <p className="text-xs font-medium text-stone-500 dark:text-zinc-400">
@@ -373,6 +382,20 @@ export function PriceSimulator() {
                   </div>
                 );
               })}
+              {/* 宿泊料金合計（全シーズンの合算・清掃費抬き） */}
+              <div className="flex items-center justify-between border-t border-stone-100 pt-1 text-sm dark:border-zinc-700">
+                <span className="text-stone-600 dark:text-zinc-400">宿泊料金合計</span>
+                <span className="tabular-nums text-stone-700 dark:text-zinc-300">
+                  {yen(result.accommodationTotal)}
+                </span>
+              </div>
+              {/* 清掃費（宿泊全体で1回のみ加算される） */}
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-stone-600 dark:text-zinc-400">清掃費（1回）</span>
+                <span className="tabular-nums text-stone-700 dark:text-zinc-300">
+                  {yen(result.cleaningFee)}
+                </span>
+              </div>
             </div>
 
             {/* トップシーズンが含まれる場合の注意書き */}

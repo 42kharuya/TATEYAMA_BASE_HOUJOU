@@ -13,7 +13,7 @@
 
 import { useState } from "react";
 
-import { PRICING_ROWS, SEASONS, yen } from "../_lib/pricingData";
+import { CLEANING_FEES, PRICING_ROWS, SEASONS, yen } from "../_lib/pricingData";
 
 export function PricingTableToggle() {
   /**
@@ -175,6 +175,44 @@ export function PricingTableToggle() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+
+        {/*
+         * ── 清掃費テーブル ──
+         *
+         * 清掃費は連泊数・シーズンに関わらず　1回のみ加算される。
+         * PRICING_ROWS の childrenとして同じ人数列を使い回す。
+         */}
+        <div className="rounded-xl border border-stone-200 p-4 dark:border-zinc-700">
+          {/* テーブルヘッダー */}
+          <p className="mb-1 text-sm font-semibold text-stone-900 dark:text-zinc-50">
+            清掃費
+          </p>
+          {/* 注釈: 清掃費は宿泊全体で1回のみ加算される */}
+          <p className="mb-3 text-xs text-stone-500 dark:text-zinc-400">
+            ※ 清掃費は宿泊日数に関わらず1回のみ加算されます。
+          </p>
+          {/* 人数別清掃費の一覧 */}
+          <div className="space-y-2">
+            {PRICING_ROWS.map((row) => (
+              <div
+                key={row.guests}
+                className="flex items-center justify-between border-b border-stone-100 pb-2 text-sm last:border-0 last:pb-0 dark:border-zinc-800"
+              >
+                {/* 人数ラベル（4名は「以下」を付加して新料金表の表記と揃える） */}
+                <span className="text-stone-700 dark:text-zinc-300">
+                  {row.guests}名{row.guests === 4 ? "以下" : ""}
+                  <span className="ml-1.5 text-xs text-stone-500 dark:text-zinc-400">
+                    ({row.note})
+                  </span>
+                </span>
+                {/* 清掃費文: CLEANING_FEES から人数をキーに取得 */}
+                <span className="tabular-nums font-medium text-stone-900 dark:text-zinc-50">
+                  {yen(CLEANING_FEES[row.guests]!)}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
